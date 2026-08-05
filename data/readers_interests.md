@@ -6,6 +6,7 @@ Changes in the balance of power between left and right.
 The rise of far-right/nationalists/right-populist politicians and parties. Especially Vox (Spain), AfD (Germany), Front-National (France) and UDC/SVP (Switzerland). 
 The rise of the far-left, communist, anticapitalist, left-populist politicians. Especially La France Insoumise and Mélenchon (in France), Die Linke (in Germany).
 Any mention of POP, les Jeunes POP, Kommunistische Jugend PdA or Solidarités in Switzerland. 
+Their favorite read are the Financial Times, Le Monde Diplomatique, Jacobin and NZZ.
 Any social movement, strike, protests, riots.
 Crises of capitalism, of the market, big firms being at a loss. Technological change, especially in its socio-economic implications.
 Any massive change in a big firm's profitability or in the competitive environment. 
@@ -27,10 +28,8 @@ Les crises du capitalisme, du marché, les pertes subies par les grandes entrepr
 Tout changement majeur dans la rentabilité d’une grande entreprise ou dans son environnement concurrentiel.
 Ils s’intéressent également beaucoup à la géopolitique, en particulier lorsqu’elle concerne les États-Unis, la Chine ou la France.
 Les questions militaires lorsqu’elles sont liées à la géopolitique.
-Les articles peuvent être en français, en anglais, en allemand ou en espagnol. Le lecteur est un militant de gauche qui s’intéresse aux sujets suivants. 
-Les évolutions du paysage politique, notamment dans les pays suivants : la France, la Suisse, l’Allemagne, l’Espagne et les États-Unis.
-Les changements dans l’équilibre des forces entre la gauche et la droite. 
-La montée de l’extrême droite
+Les articles peuvent être en français, en anglais, en allemand ou en espagnol.
+
 -----
 
 Español
@@ -46,10 +45,7 @@ Las crisis del capitalismo, del mercado y las pérdidas de las grandes empresas.
 Cualquier cambio significativo en la rentabilidad de una gran empresa o en el entorno competitivo.
 También les interesa mucho la geopolítica, especialmente cuando afecta a EE. UU., China o Francia.
 Las cuestiones militares cuando están relacionadas con la geopolítica.
-Los artículos pueden estar en francés, inglés, alemán o español. El lector es un activista de izquierdas interesado en los siguientes temas. 
-Evolución del panorama político, especialmente en estos países: Francia, Suiza, Alemania, España y Estados Unidos.
-Cambios en el equilibrio de poder entre la izquierda y la derecha. 
-El auge de la extrema derecha
+Los artículos pueden estar en francés, inglés, alemán o español. 
 -----
 
 Deutsch:
@@ -65,7 +61,4 @@ Krisen des Kapitalismus, des Marktes, Verluste großer Unternehmen. Technologisc
 Jede massive Veränderung der Rentabilität eines großen Unternehmens oder des Wettbewerbsumfelds.
 Sie interessieren sich zudem sehr für Geopolitik, insbesondere wenn es um die USA, China oder Frankreich geht.
 Militärische Fragen, sofern sie mit Geopolitik zusammenhängen.
-Die Artikel können auf Französisch, Englisch, Deutsch oder Spanisch verfasst sein. Der Leser ist ein linker Aktivist, der sich für folgende Themen interessiert. 
-Entwicklungen der politischen Landschaft, insbesondere in diesen Ländern: Frankreich, Schweiz, Deutschland, Spanien, USA.
-Veränderungen im Kräfteverhältnis zwischen Linken und Rechten. 
-Der Aufstieg der extremen Rechten
+Die Artikel können auf Französisch, Englisch, Deutsch oder Spanisch verfasst sein. 

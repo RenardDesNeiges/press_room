@@ -1,7 +1,8 @@
-"""Generate a static newspaper-style page from filtered_entries.yml."""
+"""Generate a static newspaper-style page from parsed_entries.yml."""
 
 from __future__ import annotations
 
+import re
 import html
 from datetime import datetime
 from pathlib import Path
@@ -10,16 +11,82 @@ from typing import Any
 
 import yaml
 
-from rank_entries import rank_entries
-from rerank_llm import rerank_with_llm
-from config import *
+from config import DEFAULT_PARSED_ENTRIES_PATH, DEFAULT_TEMPLATE_DIR
 
 
-def load_entries(path: str | Path = DEFAULT_ENTRIES_PATH) -> list[dict[str, Any]]:
-    """Load filtered entries from a YAML file."""
+def load_parsed_data(
+    path: str | Path = DEFAULT_PARSED_ENTRIES_PATH,
+) -> tuple[list[dict[str, Any]], str | None]:
+    """Load parsed entries and optional editorial from a YAML file."""
     with open(path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
-    return data.get("entries", [])
+    return data.get("entries", []), data.get("editorial")
+
+
+def format_inline(text: str) -> str:
+    """Escape HTML entities and convert bold/italic Markdown to HTML tags."""
+    escaped = html.escape(text, quote=False)
+
+    # Bold: **text** or __text__
+    escaped = re.sub(
+        r"\*\*(.+?)\*\*",
+        lambda m: f"<strong>{html.escape(m.group(1), quote=False)}</strong>",
+        escaped,
+    )
+    escaped = re.sub(
+        r"__(.+?)__",
+        lambda m: f"<strong>{html.escape(m.group(1), quote=False)}</strong>",
+        escaped,
+    )
+
+    # Italic: *text* or _text_
+    escaped = re.sub(
+        r"\*(.+?)\*",
+        lambda m: f"<em>{html.escape(m.group(1), quote=False)}</em>",
+        escaped,
+    )
+    escaped = re.sub(
+        r"_(.+?)_",
+        lambda m: f"<em>{html.escape(m.group(1), quote=False)}</em>",
+        escaped,
+    )
+
+    return escaped
+
+
+def render_markdown(markdown_text: str) -> str:
+    """Convert simple Markdown to HTML (headers, paragraphs, bold, italic)."""
+    lines = markdown_text.splitlines()
+    html_lines: list[str] = []
+    paragraph_buffer: list[str] = []
+
+    def flush_paragraph() -> None:
+        if paragraph_buffer:
+            content = " ".join(paragraph_buffer).strip()
+            if content:
+                html_lines.append(f"<p>{format_inline(content)}</p>")
+            paragraph_buffer.clear()
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            flush_paragraph()
+            continue
+
+        if stripped.startswith("# "):
+            flush_paragraph()
+            html_lines.append(f"<h1>{format_inline(stripped[2:])}</h1>")
+        elif stripped.startswith("## "):
+            flush_paragraph()
+            html_lines.append(f"<h2>{format_inline(stripped[3:])}</h2>")
+        elif stripped.startswith("### "):
+            flush_paragraph()
+            html_lines.append(f"<h3>{format_inline(stripped[4:])}</h3>")
+        else:
+            paragraph_buffer.append(stripped)
+
+    flush_paragraph()
+    return "\n".join(html_lines)
 
 
 def shorten_summary(text: str | None, max_length: int = 280) -> str:
@@ -41,21 +108,6 @@ def format_date(date_value: str | None) -> str:
         return dt.strftime("%d %B %Y")
     except ValueError:
         return date_value
-
-
-def select_top_entries(
-    entries: list[dict[str, Any]], semantic_count: int = 80, final_count: int = 20
-) -> list[dict[str, Any]]:
-    """Select articles in two steps.
-
-    1. Rank all entries by WordLlama similarity to readers_interests.md and keep
-       the top `semantic_count` candidates.
-    2. Rerank those candidates with an LLM to select the `final_count` most
-       important articles, ensuring diversity across countries and topics.
-    """
-    ranked = rank_entries(entries)
-    candidates = ranked[:semantic_count]
-    return rerank_with_llm(candidates)[:final_count]
 
 
 def render_article(entry: dict[str, Any], article_template: Template) -> str:
@@ -93,6 +145,7 @@ def load_template(name: str, template_dir: Path = DEFAULT_TEMPLATE_DIR) -> Templ
 
 def build_html(
     entries: list[dict[str, Any]],
+    editorial: str | None = None,
     site_title: str = "press-room",
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
 ) -> str:
@@ -100,26 +153,38 @@ def build_html(
     article_template = load_template("article.html", template_dir)
     page_template = load_template("page.html", template_dir)
 
-    articles_html = "\n".join(
-        render_article(entry, article_template) for entry in entries
+    lead_entries = entries[:4]
+    grid_entries = entries[4:]
+
+    lead_articles_html = "\n".join(
+        render_article(entry, article_template) for entry in lead_entries
     )
+
+    articles_html = "\n".join(
+        render_article(entry, article_template) for entry in grid_entries
+    )
+
+    editorial_html = ""
+    if editorial:
+        editorial_html = f'<div class="editorial">\n{render_markdown(editorial)}\n</div>'
 
     return page_template.substitute(
         site_title=html.escape(site_title, quote=False),
+        lead_articles=lead_articles_html,
+        editorial=editorial_html,
         articles=articles_html,
         article_count=len(entries),
     )
 
 
 def main() -> None:
-    """Generate the static page."""
-    entries = load_entries()
-    selected = select_top_entries(entries, semantic_count=80, final_count=20)
-    html_content = build_html(selected)
+    """Generate the static page from parsed entries."""
+    entries, editorial = load_parsed_data()
+    html_content = build_html(entries, editorial=editorial)
 
     output_path = Path("press_room.html")
     output_path.write_text(html_content, encoding="utf-8")
-    print(f"Generated {output_path} with {len(selected)} articles.")
+    print(f"Generated {output_path} with {len(entries)} articles.")
 
 
 if __name__ == "__main__":

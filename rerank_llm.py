@@ -36,23 +36,31 @@ def build_candidate_prompt_block(
     return "\n".join(lines)
 
 
+def load_additional_prompt(path: str | Path = DEFAULT_ARRANK_PROMPT_PATH) -> str:
+    """Load additional reranking instructions from a Markdown file."""
+    with open(path, "r", encoding="utf-8") as fh:
+        return fh.read()
+
+
 def build_rerank_prompt(
     entries: list[dict[str, Any]],
+    final_count: int = 20,
     interests_path: str | Path = DEFAULT_INTERESTS_PATH,
-    additional_rerank_proompt: str | Path = DEFAULT_ARRANK_PROMPT_PATH,
+    additional_prompt_path: str | Path = DEFAULT_ARRANK_PROMPT_PATH,
 ) -> str:
     """Build the full prompt for the LLM reranking step."""
-    interests = load_interests(interests_path).split('-----')[0] # ignore the mutlilingual nature of the prompt for reranking
+    interests = load_interests(interests_path).split('-----')[0]  # ignore multilingual repeats
+    additional_prompt = load_additional_prompt(additional_prompt_path)
     candidates_block = build_candidate_prompt_block(entries)
 
     return f"""You are a careful editorial assistant selecting articles for a left-wing activist reader.
 
 READER PROFILE:
 {interests}
-{additional_rerank_proompt}
+{additional_prompt}
 
 TASK:
-From the {len(entries)} candidate articles below, select exactly 20 articles that are most important and relevant to the reader profile above.
+From the {len(entries)} candidate articles below, select exactly {final_count} articles that are most important and relevant to the reader profile above.
 
 SELECTION CRITERIA:
 1. Relevance to the reader's political interests (left-wing perspective, geopolitics, far-right/far-left movements, social movements, capitalism crises, etc.).
@@ -63,7 +71,7 @@ CANDIDATE ARTICLES (numbered by EID):
 {candidates_block}
 
 OUTPUT FORMAT:
-Return ONLY a JSON array of exactly 20 objects, ordered from most to least important. Each object must have:
+Return ONLY a JSON array of exactly {final_count} objects, ordered from most to least important. Each object must have:
 - "EID": the integer EID of the selected article
 - "reason": a one-sentence explanation of why it was selected
 
@@ -107,10 +115,11 @@ def query_model(
 
 def rerank_with_llm(
     entries: list[dict[str, Any]],
-    model_name: str = DEFAULT_MODEL,
+    final_count: int = 20,
+    model_name: str = FANCY_MODEL,
     interests_path: str | Path = DEFAULT_INTERESTS_PATH,
 ) -> list[dict[str, Any]]:
-    """Rerank candidate entries into 20 articles using an LLM.
+    """Rerank candidate entries into `final_count` articles using an LLM.
 
     The LLM is asked to ensure diversity across countries and topics.
     Returns the selected entries in the order chosen by the LLM, with a
@@ -119,7 +128,7 @@ def rerank_with_llm(
     if not entries:
         return []
 
-    prompt = build_rerank_prompt(entries, interests_path)
+    prompt = build_rerank_prompt(entries, final_count=final_count, interests_path=interests_path)
     response_text = query_model(prompt, model_name=model_name)
 
     eids = parse_eids_from_response(response_text)
@@ -147,22 +156,23 @@ def rerank_with_llm(
         enriched["rerank_reason"] = reasons.get(eid, "")
         selected.append(enriched)
 
-    return selected[:20]
+    return selected[:final_count]
 
 
 def main() -> None:
-    """CLI smoke test: load filtered entries, get top 80, rerank to 20."""
+    """CLI smoke test: load filtered entries, get top candidates, rerank to final."""
     import yaml
+    from config import DEFAULT_CANDIDATES_COUNT, DEFAULT_ENTRIES_PATH, DEFAULT_FINAL_COUNT
     from rank_entries import rank_entries
 
     with open(DEFAULT_ENTRIES_PATH, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
 
-    top80 = rank_entries(data.get("entries", []))[:80]
-    top20 = rerank_with_llm(top80)
+    candidates = rank_entries(data.get("entries", []))[:DEFAULT_CANDIDATES_COUNT]
+    selected = rerank_with_llm(candidates, final_count=DEFAULT_FINAL_COUNT)
 
-    print(f"Selected {len(top20)} articles:\n")
-    for entry in top20:
+    print(f"Selected {len(selected)} articles:\n")
+    for entry in selected:
         print(
             f"[{entry.get('EID')}] {entry.get('source', 'Unknown')} · "
             f"{entry.get('title', 'Untitled')}"

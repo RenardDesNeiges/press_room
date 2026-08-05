@@ -38,7 +38,7 @@ publications:
   - name: "Libération"
     lang: "FR"
     notes: "https://www.liberation.fr/arc/outboundfeeds/rss-all/category/politique/"
-  # - name: "El Diario (España)"
-  #   lang: "ES"
-  #   feeds:
-  #     - "https://www.eldiario.es/rss/"
+  - name: "El Diario (España)"
+    lang: "ES"
+    feeds:
+      - "https://www.eldiario.es/rss/"

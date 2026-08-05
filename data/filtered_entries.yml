@@ -1,4 +1,17 @@
 entries:
+- title: Dans le Michigan, la gauche progressiste renforce ses positions avant les
+    midterms
+  summary: Dans une circonscription aux portes de Detroit, Abdul el-Sayed a créé la
+    surprise en l’emportant face à une rivale centriste, lors des primaires tenues
+    mardi 4 août pour les prochaines élections de mi-mandat à l’automne. William Lawrence,
+    engagé dans la lutte contre le dérèglement climatique, est lui aussi sorti vainqueur.
+  media: https://static.mediapart.fr/etmagine/default/files/2026/08/05/260805-img-dans-le-michigan-la-gauche-progressiste-renforce-ses-positions-avant-les-midterms.jpg
+  url: https://www.mediapart.fr/journal/international/050826/dans-le-michigan-la-gauche-progressiste-renforce-ses-positions-avant-les-midterms
+  date: '2026-08-05T16:11:56+00:00'
+  lang: FR
+  author: François Bougon
+  source: Mediapart
+  EID: 1
 - title: 'Affaire Jean Pormanove: prison avec sursis pour les influenceurs Naruto
     et Safine, bannis six mois de Kick'
   summary: Le tribunal correctionnel de Nice a condamné Owen C. et Safine H., mercredi
@@ -11,7 +24,7 @@ entries:
   lang: FR
   author: Marie Turcan
   source: Mediapart
-  EID: 1
+  EID: 2
 - title: Les personnes atteintes d’un cancer du sang sont toujours plus nombreuses,
     malgré les progrès
   summary: 'Une étude publiée mardi 4 août constate que des traitements permettent
@@ -24,7 +37,7 @@ entries:
   lang: FR
   author: Caroline Coq-Chodorge
   source: Mediapart
-  EID: 2
+  EID: 3
 - title: L’Argentine se mobilise contre un projet de loi sur la propriété privée
   summary: Avec son texte sur «l’inviolabilité de la propriété privée», facilitant
     l’achat d’énormes portions de terre par des capitaux étrangers, le président argentin
@@ -36,7 +49,7 @@ entries:
   lang: FR
   author: Louise André-Williams
   source: Mediapart
-  EID: 3
+  EID: 4
 - title: La mémoire de Patrice Lumumba résiste à l’annihilation occidentale
   summary: La famille du leader congolais n’a pas renoncé à obtenir justice et vérité,
     soixante-cinq ans après son assassinat. Devenu une «icône de la libération» de
@@ -48,7 +61,7 @@ entries:
   lang: FR
   author: Fanny Pigeaud
   source: Mediapart
-  EID: 4
+  EID: 5
 - title: 'Nétanyahou: Israël n’a pas accepté le plan pour Gaza soutenu par Washington'
   summary: Benyamin Nétanyahou a rencontré lundi le «Conseil de paix» de Donald Trump.
     Les ministres d’extrême droite mettent la pression sur le premier ministre. Une
@@ -59,7 +72,7 @@ entries:
   lang: FR
   author: Agence France-Presse
   source: Mediapart
-  EID: 5
+  EID: 6
 - title: La préfecture de police de Paris sommée de revoir le fonctionnement de son
     infirmerie psychiatrique
   summary: Le Conseil d’État a donné raison aux associations qui dénonçaient des atteintes
@@ -71,7 +84,7 @@ entries:
   lang: FR
   author: Hugo Lemonier, Camille Polloni
   source: Mediapart
-  EID: 6
+  EID: 7
 - title: Profitant du commerce mondial, le trafic de «narcobananes» prospère
   summary: En pleine expansion en Europe, le narcotrafic profite aussi du commerce
     transatlantique des bananes pour se développer. Le sujet s’est fait plus saillant
@@ -83,7 +96,7 @@ entries:
   lang: FR
   author: Marion Briswalter
   source: Mediapart
-  EID: 7
+  EID: 8
 - title: Au Brésil, Flávio Bolsonaro, sur les traces de son père
   summary: Le fils aîné de l’ex-président brésilien, assigné à résidence pour tentative
     de coup d’État, s’est lancé comme candidat à la présidentielle pour prendre sa
@@ -95,7 +108,7 @@ entries:
   lang: FR
   author: Jean-Mathieu Albertini
   source: Mediapart
-  EID: 8
+  EID: 9
 - title: 'Ukraine: des frappes russes font 15 morts à Kyiv et dans ses environs'
   summary: L’armée russe a tiré dans la nuit 115 drones et 28 missiles à haute vitesse,
     notamment balistiques. L’Ukraine n’a pas pu abattre un seul missile russe lors
@@ -103,19 +116,6 @@ entries:
   media: https://static.mediapart.fr/etmagine/default/files/2026/08/05/260805-img-ukraine-des-frappes-russes-font-15-morts-kyiv-et-dans-ses-environs.jpg
   url: https://www.mediapart.fr/journal/international/050826/ukraine-des-frappes-russes-font-15-morts-kyiv-et-dans-ses-environs
   date: '2026-08-05T08:38:04+00:00'
-  lang: FR
-  author: Agence France-Presse
-  source: Mediapart
-  EID: 9
-- title: Trump espère un accord dès mercredi sur Ormuz, lance un nouvel ultimatum
-    à l’Iran
-  summary: Un accord temporaire de soixante jours serait en discussion pour organiser
-    le passage dans le détroit entre l’Iran et le sultanat d’Oman. En mer Rouge, un
-    navire indien a coulé mardi après avoir été attaqué. Le gouvernement yéménite
-    a attribué l’attaque aux houthis.
-  media: https://static.mediapart.fr/etmagine/default/files/2026/08/05/260805-img-trump-espere-un-accord-des-mercredi-sur-ormuz-lance-un-nouvel-ultimatum-l-iran.jpg
-  url: https://www.mediapart.fr/journal/international/050826/trump-espere-un-accord-des-mercredi-sur-ormuz-lance-un-nouvel-ultimatum-l-iran
-  date: '2026-08-05T05:27:37+00:00'
   lang: FR
   author: Agence France-Presse
   source: Mediapart
@@ -816,6 +816,15 @@ entries:
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 72
+- title: 'Lara Gut-Behrami tritt zurück: Kein Comeback nach der Verletzung'
+  summary: Die Tessiner Skifahrerin beendet ihre grosse Karriere.
+  media: null
+  url: https://www.nzz.ch/sport/lara-gut-behrami-tritt-zurueck-kein-comeback-nach-der-verletzung-ld.10018385
+  date: '2026-08-05T16:12:25+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 73
 - title: 'DIE NEUESTEN ENTWICKLUNGEN - Gescheiterte Investorenpläne der Fifa: Infantino
     beruft Krisensitzung am Mittwoch ein'
   summary: Die Fifa wollte einen Teil der kommerziellen Rechte an den Turnieren an
@@ -824,17 +833,6 @@ entries:
   media: null
   url: https://www.nzz.ch/sport/fussball/die-investorenplaene-der-fifa-die-wichtigsten-fragen-und-antworten-ld.10017724
   date: '2026-08-05T10:21:29+00:00'
-  lang: DE
-  author: null
-  source: NZZ (Neue Zürcher Zeitung)
-  EID: 73
-- title: 'Die erste Schweizerin im Maillot jaune: Marlen Reusser gewinnt das Zeitfahren
-    der Tour de France'
-  summary: Die Bernerin wird am vierten Renntag ihrer Favoritenrolle gerecht – doch
-    beinahe hätte der Wind den Triumph verhindert.
-  media: null
-  url: https://www.nzz.ch/sport/rad/die-erste-schweizerin-im-maillot-jaune-marlen-reusser-gewinnt-das-zeitfahren-tour-de-france-ld.10018078
-  date: '2026-08-04T16:15:19+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
@@ -1121,6 +1119,32 @@ entries:
   author: null
   source: Al Jazeera
   EID: 102
+- title: 'Albert Rösti, sur les coupes dans l’adaptation des forêts: «Je ne peux pas
+    justifier cette décision sur le fond. Ces moyens sont nécessaires.»'
+  summary: 'Face aux vagues de chaleur, Albert Rösti défend la nécessité d’accélérer
+    l’adaptation du pays: le ministre de l’environnement confirme une nouvelle loi
+    CO₂, une stratégie nationale pour l’eau et revient sur la coupe de 25 millions
+    destinés à adapter les forêtsCanicule, sécheresse, forêts fragilisées: l’été 2026
+    donne un avant-goût des défis climatiques auxquels la Suisse doit se confronter.
+    Pour Albert Rösti, il faut désormais renforcer les moyens consacrés à l’adaptation,
+    sans réduire ceux destinés à la baisse des émissions. Le conseiller fédéral prépare
+    une nouvelle loi CO₂ pour la période 2030-2040. Il annonce aussi une stratégie
+    nationale pour mieux coordonner l’utilisation de l’eau en période de pénurie.
+    Sur les 25 millions de francs annuels auxquels la Confédération a renoncé pour
+    rendre les forêts plus résistantes au changement climatique, il reconnaît une
+    situation inconfortable. Entretien.
+
+    Le Temps: L’été 2026 fait tomber des records de températures. La Suisse doit-elle
+    désormais changer sa manière de se préparer aux épisodes de chaleur extrême?
+
+    Voir plus'
+  media: null
+  url: https://www.letemps.ch/articles/albert-rosti-sur-les-coupes-dans-l-adaptation-des-forets-je-ne-peux-pas-justifier-cette-decision-sur-le-fond-ces-moyens-sont-necessaires
+  date: '2026-08-05T16:12:19+00:00'
+  lang: FR
+  author: Fanny Scuderi, Annick Chevillot
+  source: Le Temps
+  EID: 103
 - title: 'Caserne, train d’extinction et déluge d’eau: à Olten, les pompiers du rail
     offrent un aperçu de leur quotidien'
   summary: 'Le service du feu des CFF fête les 20 ans de sa professionnalisation et
@@ -1150,7 +1174,7 @@ entries:
   lang: FR
   author: Léo Tichelli
   source: Le Temps
-  EID: 103
+  EID: 104
 - title: Le Rock’R Sauvage, festival de plus en plus à l’ouest (et c’est heureux)
   summary: Le raout ajoulot dédié aux musiques indépendantes s’est trouvé un nouveau
     lieu d’élection. Il débute jeudi. Brève présentationSi on fait un pas de côté
@@ -1169,7 +1193,7 @@ entries:
   lang: FR
   author: Philippe Simon
   source: Le Temps
-  EID: 104
+  EID: 105
 - title: Au Jardin Robinson, les enfants Crusoé de la cité du Lignon
   summary: 'Alors que la nature a été boutée hors des villes et que les angoisses
     parentales atteignent des sommets, le Jardin Robinson du Lignon fait de la résistance.
@@ -1196,7 +1220,7 @@ entries:
   lang: FR
   author: Lorène Mesot
   source: Le Temps
-  EID: 105
+  EID: 106
 - title: Le tunnel routier du Gothard sera fermé durant douze nuits
   summary: 'Du 10 au 27 août, le trajet routier vers le Tessin devra s’effectuer par
     le col du Gothard durant 10 nuits, pour des travaux d''«entretien préventif»Les
@@ -1227,7 +1251,7 @@ entries:
   lang: FR
   author: Le Temps avec l’ATS
   source: Le Temps
-  EID: 106
+  EID: 107
 - title: Il y a plus de Suisses frontaliers que de Lausannois
   summary: 'Une enquête de Tamedia montre que 154 700 Suisses vivent près de la frontière
     et travaillent en Suisse. On ne peut pas parler de boom, mais la proportion augmente
@@ -1289,7 +1313,7 @@ entries:
   lang: FR
   author: Nicolas Dufour
   source: Le Temps
-  EID: 107
+  EID: 108
 - title: Les Blocher, d’un combat contre l’Europe à l’autre
   summary: 'Trente ans après le refus historique de l’EEE mené par Christoph Blocher,
     sa fille Magdalena Martullo-Blocher s’apprête à mener la charge contre les bilatérales III.
@@ -1319,7 +1343,7 @@ entries:
   lang: FR
   author: Yan Pauchard
   source: Le Temps
-  EID: 108
+  EID: 109
 - title: '«Sans lui, il aurait pu y avoir des morts»: un policier vaudois jugé pour
     une intervention tendue sur son jour de congé'
   summary: S’est-il pris pour un sherif, ou a-t-il simplement fait son devoir? Un
@@ -1342,7 +1366,7 @@ entries:
   lang: FR
   author: Pauline Rumpf
   source: Le Temps
-  EID: 109
+  EID: 110
 - title: La neutralité suisse n’interdit pas l’achat d’armes à l’Ukraine, confirme
     Armasuisse
   summary: Le chef de l’armement s’est récemment rendu en Israël, pays en guerre,
@@ -1372,7 +1396,7 @@ entries:
   lang: FR
   author: Frédéric Koller
   source: Le Temps
-  EID: 110
+  EID: 111
 - title: 'La neutralité: la dernière croisade de Christoph Blocher'
   summary: 'A 86 ans, l’ancien conseiller fédéral mène personnellement la campagne
     en faveur de l’initiative sur la neutralité, soumise au vote le 27 septembre.
@@ -1400,7 +1424,7 @@ entries:
   lang: FR
   author: Yan Pauchard
   source: Le Temps
-  EID: 111
+  EID: 112
 - title: Nobody Asked for AI
   summary: We tend to think that markets reflect consumer choice. But the artificial-intelligence
     boom has been powered by the investment decisions of concentrated capital rather
@@ -1411,7 +1435,7 @@ entries:
   lang: EN
   author: Grace Blakeley
   source: Jacobin
-  EID: 112
+  EID: 113
 - title: No, Americans Aren’t Better Off Than Western Europeans
   summary: You were born on the wrong continent. Yes, the United States has a greater
     GDP per capita than Western Europe. But that GDP has not translated into broader
@@ -1422,7 +1446,7 @@ entries:
   lang: EN
   author: Matt Bruenig
   source: Jacobin
-  EID: 113
+  EID: 114
 - title: The Marxist Case for the Technofeudal Hypothesis
   summary: Yanis Varoufakis has called Big Tech’s overweening power to shape the modern
     economy “technofeudalism.” Writing for Jacobin, he argues that this isn’t a moral
@@ -1433,7 +1457,7 @@ entries:
   lang: EN
   author: Yanis Varoufakis
   source: Jacobin
-  EID: 114
+  EID: 115
 - title: New York’s Socialist Victories Can't Be So Easily Dismissed
   summary: Centrist Democrats are writing off New York City socialist wins as a fluke
     reducible to gentrification and low turnout. But it was the Democratic Party machine
@@ -1444,7 +1468,7 @@ entries:
   lang: EN
   author: Michael Kinnucan
   source: Jacobin
-  EID: 115
+  EID: 116
 - title: Mexican Sovereignty in the Era of the Donroe Doctrine
   summary: US governments have long relied on Mexico as a southern gendarme, even
     as it proudly declares its sovereignty. Faced with Trumpian imperialism, the challenge
@@ -1455,7 +1479,7 @@ entries:
   lang: EN
   author: Alexander Aviña
   source: Jacobin
-  EID: 116
+  EID: 117
 - title: L’attentat de Berlin révèle-t-il le tournant sahélien du djihad européen ?
   summary: 'De nouveaux documents sur le terroriste de la Marche des Fiertés pourraient
     signaler une nouvelle phase de l''État islamique.
@@ -1468,7 +1492,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 117
+  EID: 118
 - title: Trump peut encore gagner les élections de mi-mandat
   summary: 'Les sondages erronés et les divisions démocrates pourraient offrir une
     victoire inattendue en novembre au parti républicain.
@@ -1481,7 +1505,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 118
+  EID: 119
 - title: Avec V4-Flash, DeepSeek mise sur l’IA à faible coût plutôt que sur la course
     à la puissance
   summary: "Fin juillet, le Chinois DeepSeek, leader de l'IA à bas coût, a publié\
@@ -1496,7 +1520,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 119
+  EID: 120
 - title: Pourquoi le Maroc n’a pas pu orchestrer la crise de Ceuta
   summary: 'Attribuer la crise à Rabat revient à méconnaître la dynamique sociale
     marocaine et la singularité de l’exclave.
@@ -1509,7 +1533,7 @@ entries:
   lang: FR
   author: Louis Puel
   source: Le Grand Continent
-  EID: 120
+  EID: 121
 - title: Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ?
   summary: 'Une enquête OSINT reconstitue le passage de 50 000 migrants dans l’exclave
     espagnole.
@@ -1522,19 +1546,20 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 121
+  EID: 122
 - title: 'Présidentielle 2027 : Gabriel Attal visé à son tour par «une ingérence en
     provenance de Russie»'
-  summary: Le candidat à la présidentielle et patron de Renaissance a été victime
-    d’«une ingérence en provenance de Russie», cherchant à le déstabiliser à huit
-    mois du premier tour de scrutin, a fait savoir son entourage ce mercredi 5 août.
+  summary: Des faux reportages usurpant l’identité de plusieurs médias dont «Libération»
+    affirment que le président de Renaissance présente «des signes de la maladie de
+    Parkinson» ou plaide pour une politique plus favorable à l’égard des squatteurs
+    de logements vides.
   media: null
   url: https://www.liberation.fr/politique/presidentielle-2027-gabriel-attal-vise-a-son-tour-par-une-ingerence-en-provenance-de-russie-20260805_3ADS475V65E3JCJA2C7SXECSZY/
-  date: '2026-08-05T15:16:08+00:00'
+  date: '2026-08-05T16:15:09+00:00'
   lang: FR
   author: Libération ., AFP .
   source: Libération
-  EID: 122
+  EID: 123
 - title: 'Suicides et tentatives à Matignon : mis en cause, les services du Premier
     ministre donnent leur version des faits'
   summary: L’administration a réagi ce mercredi 5 août aux révélations, lundi, de
@@ -1546,7 +1571,7 @@ entries:
   lang: FR
   author: Libération ., AFP .
   source: Libération
-  EID: 123
+  EID: 124
 - title: 'Affaire de la tête de cochon à Nice : Eric Ciotti veut se porter partie
     civile'
   summary: Après de nouvelles révélations dans «Nice-Matin» sur les méthodes «border»
@@ -1559,7 +1584,7 @@ entries:
   lang: FR
   author: Nicolas Massol
   source: Libération
-  EID: 124
+  EID: 125
 - title: 'Ingérences : Raphaël Glucksmann appelle les autorités à ne pas avoir «la
     main qui tremble» face à TikTok et X'
   summary: Après avoir été visé par une campagne de désinformation, le prétendant
@@ -1571,7 +1596,7 @@ entries:
   lang: FR
   author: Libération ., AFP .
   source: Libération
-  EID: 125
+  EID: 126
 - title: Le nouveau coup de main d’Elon Musk aux influenceurs d’extrême droite français
   summary: Interpellé par une militante identitaire française, Elon Musk est intervenu
     samedi pour réactiver des comptes d’extrême droite suspendus sur X. Si l’épisode
@@ -1583,7 +1608,7 @@ entries:
   lang: FR
   author: Maxime Macé, Pierre Plottu
   source: Libération
-  EID: 126
+  EID: 127
 - title: Comment «l’arc républicain» pave la voie de Marine Le Pen au pouvoir, par
     Michel Feher
   summary: Politique migratoire, retour des pesticides, présomption de légitime défense
@@ -1596,7 +1621,7 @@ entries:
   lang: FR
   author: Michel Feher
   source: Libération
-  EID: 127
+  EID: 128
 - title: 'Quiz : quand les vacances présidentielles prennent l’eau'
   summary: (16/30) Du fort de Brégançon aux virées moins officielles, partez en vacances
     avec nos présidents.
@@ -1606,7 +1631,7 @@ entries:
   lang: FR
   author: Laure Equy
   source: Libération
-  EID: 128
+  EID: 129
 - title: A Besançon, le musée de la Résistance et de la Déportation face à une recrudescence
     de saluts nazis
   summary: Deux personnes ont été interpellées et placées en garde à vue, lundi 3 août,
@@ -1618,7 +1643,7 @@ entries:
   lang: FR
   author: Arthur Louis
   source: Libération
-  EID: 129
+  EID: 130
 - title: 'Présidentielle 2027 : cet été, Gabriel Attal passe son rattrapage'
   summary: Pour combler son retard sur Edouard Philippe, son grand concurrent du centre
     droit, l’ex-Premier ministre profite de l’espace médiatique laissé libre par la
@@ -1629,7 +1654,7 @@ entries:
   lang: FR
   author: Lilian Alemagna
   source: Libération
-  EID: 130
+  EID: 131
 - title: 'Présidentielle 2027 : Gabriel Attal l’aoûtsider'
   summary: En retard dans les sondages par rapport à son concurrent Edouard Philippe,
     le Parisien se rêve en Macron 2.0, prônant dix ans après son mentor le «dépassement»
@@ -1640,7 +1665,7 @@ entries:
   lang: FR
   author: Alexandra Schwartzbrod
   source: Libération
-  EID: 131
+  EID: 132
 - title: '«C’est pas chez vous ici, monsieur» : en Vendée, Gabriel Attal dénonce les
     occupations illégales des gens du voyage'
   summary: Poursuivant sa tournée d’été, l’ex-Premier ministre a réaffirmé ce mardi
@@ -1653,4 +1678,4 @@ entries:
   lang: FR
   author: Chloé Dasquet
   source: Libération
-  EID: 132
+  EID: 133
