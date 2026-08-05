@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import html
-import random
 from datetime import datetime
 from pathlib import Path
 from string import Template
@@ -11,11 +10,12 @@ from typing import Any
 
 import yaml
 
+from rank_entries import rank_entries
+from rerank_llm import rerank_with_llm
+from config import *
 
-DEFAULT_TEMPLATE_DIR = Path(__file__).parent / "templates"
 
-
-def load_entries(path: str | Path = "filtered_entries.yml") -> list[dict[str, Any]]:
+def load_entries(path: str | Path = DEFAULT_ENTRIES_PATH) -> list[dict[str, Any]]:
     """Load filtered entries from a YAML file."""
     with open(path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
@@ -43,13 +43,19 @@ def format_date(date_value: str | None) -> str:
         return date_value
 
 
-def select_entries(
-    entries: list[dict[str, Any]], count: int = 20
+def select_top_entries(
+    entries: list[dict[str, Any]], semantic_count: int = 80, final_count: int = 20
 ) -> list[dict[str, Any]]:
-    """Randomly select a given number of entries."""
-    if len(entries) <= count:
-        return entries
-    return random.sample(entries, count)
+    """Select articles in two steps.
+
+    1. Rank all entries by WordLlama similarity to readers_interests.md and keep
+       the top `semantic_count` candidates.
+    2. Rerank those candidates with an LLM to select the `final_count` most
+       important articles, ensuring diversity across countries and topics.
+    """
+    ranked = rank_entries(entries)
+    candidates = ranked[:semantic_count]
+    return rerank_with_llm(candidates)[:final_count]
 
 
 def render_article(entry: dict[str, Any], article_template: Template) -> str:
@@ -108,7 +114,7 @@ def build_html(
 def main() -> None:
     """Generate the static page."""
     entries = load_entries()
-    selected = select_entries(entries, count=20)
+    selected = select_top_entries(entries, semantic_count=80, final_count=20)
     html_content = build_html(selected)
 
     output_path = Path("press_room.html")

@@ -10,6 +10,8 @@ from typing import Any
 import feedparser
 import yaml
 
+from config import *
+
 
 class HTMLStripper(HTMLParser):
     """Collect text content while ignoring HTML tags."""
@@ -34,7 +36,7 @@ def strip_html(value: str | None) -> str | None:
     return stripper.get_text() or None
 
 
-def read_feeds_yaml(path: str | Path = "feeds.yml") -> dict[str, Any]:
+def read_feeds_yaml(path: str | Path = DEFAULT_FEEDS_PATH) -> dict[str, Any]:
     """Read the feeds YAML file and return its contents as a dictionary."""
     with open(path, "r", encoding="utf-8") as fh:
         return yaml.safe_load(fh)
@@ -203,7 +205,7 @@ def flatten_filtered_entries(
 
 def export_entries_yaml(
     entries: list[dict[str, Any]],
-    path: str | Path = "filtered_entries.yml",
+    path: str | Path = DEFAULT_ENTRIES_PATH,
 ) -> None:
     """Export a list of entries to a YAML file in the requested schema."""
     payload = {"entries": entries}
@@ -229,7 +231,7 @@ def main() -> None:
 
     export_entries = flatten_filtered_entries(recent)
     export_entries_yaml(export_entries)
-    print(f"\nExported {len(export_entries)} entries to filtered_entries.yml")
+    print(f"\nExported {len(export_entries)} entries to {DEFAULT_ENTRIES_PATH}")
 
 
 if __name__ == "__main__":

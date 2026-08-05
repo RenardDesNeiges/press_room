@@ -231,6 +231,17 @@ entries:
   author: null
   source: Financial Times
   EID: 21
+- title: Washington holds up approval for France’s US ambassador pick amid human rights
+    spat
+  summary: Trump and Macron play up their friendship in front of the cameras, but
+    the simmering diplomatic tensions between the two countries aren't going away.
+  media: null
+  url: https://www.politico.eu/article/washington-holding-up-approval-for-france-us-ambassador-pick-over-human-rights-row/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
+  date: '2026-08-05T16:01:57+00:00'
+  lang: EN
+  author: Clea Caulcutt
+  source: Politico EU
+  EID: 22
 - title: Former European Parliament President Klaus Hänsch has died
   summary: The German Social Democrat served as head of the Parliament from 1994 to
     1997.
@@ -240,7 +251,7 @@ entries:
   lang: EN
   author: Ferdinand Knapp
   source: Politico EU
-  EID: 22
+  EID: 23
 - title: Das Phantom Tom Rohrböck
   summary: Pauline von Pezold und Frederik Schindler widmen sich in dieser Sonderfolge
     einem mysteriösen Politikberater, der seit der AfD-Gründung im Hintergrund mitzumischen
@@ -254,7 +265,7 @@ entries:
   lang: EN
   author: Pauline von Pezold, Frederik Schindler
   source: Politico EU
-  EID: 23
+  EID: 24
 - title: EU to transfer €1.4B in profits from frozen Russian assets to Ukraine
   summary: The latest transfer follows another deadly night of missile attacks on
     Kyiv.
@@ -264,7 +275,7 @@ entries:
   lang: EN
   author: Milena Wälde
   source: Politico EU
-  EID: 24
+  EID: 25
 - title: Anthropic- und OpenAI-Modelle versuchten, Softwareentwickler zu täuschen
   summary: Die KI-Modelle wollen die Menschen dazu bringen, unwissentlich an einem
     Cyberangriff mitzuwirken. Das befeuert die Debatte um die Gefahren der KI-Entwicklung.
@@ -274,7 +285,7 @@ entries:
   lang: EN
   author: John Sakellariadis
   source: Politico EU
-  EID: 25
+  EID: 26
 - title: Self-driving startup approved to take taxi passengers in London
   summary: Transport for London has granted licenses for 15 vehicles operated by Wayve
     and Uber.
@@ -284,7 +295,7 @@ entries:
   lang: EN
   author: Joseph Bambridge
   source: Politico EU
-  EID: 26
+  EID: 27
 - title: Italy to spend billions more on energy and defense, finance minister says
   summary: Rome will boost expenditures on green investment and military spending
     after the EU relaxed its strict spending rules, Giancarlo Giorgetti told parliament.
@@ -294,7 +305,7 @@ entries:
   lang: EN
   author: Gregorio Sorgi
   source: Politico EU
-  EID: 27
+  EID: 28
 - title: UK not ‘actively’ considering Epstein public inquiry
   summary: Victims Minister Alex Davies-Jones had told the BBC the British prime minister
     was looking into holding a probe.
@@ -304,7 +315,7 @@ entries:
   lang: EN
   author: Noah Keate
   source: Politico EU
-  EID: 28
+  EID: 29
 - title: Europe has the defense budget. The test now is delivery.
   summary: The coming years will test whether Europe's defense industry can keep pace
     with its security ambitions.
@@ -315,7 +326,7 @@ entries:
   author: Jonathan Dimson, senior partner, McKinsey's London office and Mikael Robertson,
     senior partner, McKinsey’s Stockholm office
   source: Politico EU
-  EID: 29
+  EID: 30
 - title: Europe’s Palantir problem
   summary: Europe wants to kick its U.S. tech habit, but it’s struggling to detangle
     itself from American data analytics firm Palantir.  The problem is, the company’s
@@ -327,17 +338,6 @@ entries:
   date: '2026-08-05T04:05:00+00:00'
   lang: EN
   author: Zoya Sheftalovich, Ian Wishart, Saga Ringmar
-  source: Politico EU
-  EID: 30
-- title: 'Electricité : à gauche, Bernard Cazeneuve joue sa propre partition'
-  summary: Prudent sur le déploiement des énergies renouvelables et très favorable
-    au nucléaire, l’ancien Premier ministre et potentiel candidat à la présidentielle
-    porte une voix singulière à gauche.
-  media: null
-  url: https://www.politico.eu/article/electricite-a-gauche-bernard-cazeneuve-joue-sa-propre-partition/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
-  date: '2026-08-05T04:04:55+00:00'
-  lang: EN
-  author: Alexandre Léchenet
   source: Politico EU
   EID: 31
 - title: Satellitenbilder zeigen den Massenansturm auf Ceuta – und wie sich die Grenze
@@ -436,6 +436,18 @@ entries:
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 39
+- title: Der Linkspopulist El-Sayed setzt sich beim Richtungskampf der Demokraten
+    in Michigan knapp durch
+  summary: Nach einer überaus hart umkämpften Vorwahl um den Senatssitz in Michigan
+    schneidet die Kandidatin des demokratischen Establishments besser ab als erwartet.
+    Doch der linke Parteiflügel hat das Momentum auf seiner Seite.
+  media: null
+  url: https://www.nzz.ch/international/linkspopulist-abdul-el-sayed-setzt-sich-in-michigan-durch-ld.10018180
+  date: '2026-08-05T15:28:59+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 40
 - title: Polizei sichert Drohne mit Sprengstoff bei ukrainischem Flugzeug in Leipzig
   summary: Am Flughafen Leipzig/Halle wurde in der Nacht der Flugbetrieb vorübergehend
     eingestellt. Zwei weitere Vorfälle sorgten für Aufregung.
@@ -445,7 +457,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 40
+  EID: 41
 - title: Bildung war im Judentum von Anfang an Ideal und Wirklichkeit zugleich. Die
     Juden hatten damit viel Erfolg, doch sie erfuhren auch Neid und Hass
   summary: Das Dogma jüdischer Auserwähltheit kann auch ein Grund für Selbstzweifel
@@ -456,18 +468,18 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 41
-- title: Walo Kamm gründete einst den Reiseveranstalter Globetrotter. Heute blickt
-    er kritisch darauf, wie viele unterwegs sind
-  summary: Für Walo Kamm, heute 85 Jahre alt, war Reisen Flucht, Leidenschaft und
-    ein Geschäft. Ein Gespräch über die Geschichte des günstigen Reisens.
+  EID: 42
+- title: 'Er galt als akademisches Wunderkind: Anschuldigungen gegen Cambridge-Professor'
+  summary: Der Soziologe Jason Arday wurde als jüngster schwarzer Professor der britischen
+    Elite-Uni gefeiert. Nun stehen nicht nur Plagiatsvorwürfe im Raum, auch mehrere
+    Angaben zu seiner Biografie werden infrage gestellt.
   media: null
-  url: https://www.nzz.ch/zuerich/ein-leben-fuer-das-reisen-warum-den-globetrotter-gruender-walo-kamm-die-nostalgie-erfasst-hat-ld.10017710
-  date: '2026-08-05T09:42:14+00:00'
+  url: https://www.nzz.ch/feuilleton/er-galt-als-akademisches-wunderkind-anschuldigungen-gegen-cambridge-professor-ld.10018325
+  date: '2026-08-05T14:42:24+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 42
+  EID: 43
 - title: 'Rätsel um Russlands Kamikazedrohnen: Der Kreml ändert seine Taktik im Luftkrieg'
   summary: Noch vor kurzem waren die massenhaft eingesetzten Shahed-Drohnen die grösste
     Bedrohung für ukrainische Städte – nun sind solche Angriffe deutlich seltener.
@@ -479,7 +491,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 43
+  EID: 44
 - title: 'LIVE-TICKER - Krieg in der Ukraine: Mindestens 17 Tote nach einem Angriff
     auf Kiew und die Umgebung gemeldet'
   summary: Seit über vier Jahren führt Russland Krieg gegen die Ukraine. Die wichtigsten
@@ -490,28 +502,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 44
-- title: 'Er galt als akademisches Wunderkind: Anschuldigungen gegen Cambridge-Professor'
-  summary: Der Soziologe Jason Arday wurde als jüngster schwarzer Professor der britischen
-    Elite-Uni gefeiert. Nun stehen nicht nur Plagiatsvorwürfe im Raum, auch mehrere
-    Angaben zu seiner Biografie werden infrage gestellt.
-  media: null
-  url: https://www.nzz.ch/feuilleton/er-galt-als-akademisches-wunderkind-anschuldigungen-gegen-cambridge-professor-ld.10018325
-  date: '2026-08-05T14:42:24+00:00'
-  lang: DE
-  author: null
-  source: NZZ (Neue Zürcher Zeitung)
   EID: 45
-- title: Mehrere Personen werden im Zentrum von London niedergestochen
-  summary: Im berühmten Viertel Covent Garden werden nach ersten Erkenntnissen mehrere
-    Männer verletzt, eine Frau wird festgenommen. Vieles ist noch unklar.
-  media: null
-  url: https://www.nzz.ch/panorama/mehrere-personen-werden-im-zentrum-von-london-niedergestochen-ld.10018356
-  date: '2026-08-05T14:06:13+00:00'
-  lang: DE
-  author: null
-  source: NZZ (Neue Zürcher Zeitung)
-  EID: 46
 - title: 'INTERAKTIV - Hitzewelle in Europa: Diese interaktive Temperaturkarte zeigt,
     wo es besonders heiss ist'
   summary: Erneut wird der Kontinent von einer Hitzewelle überrollt. Finden Sie mit
@@ -520,6 +511,17 @@ entries:
   media: null
   url: https://www.nzz.ch/visuals/hitzewelle-in-europa-die-interaktive-temperatur-karte-im-live-check-ld.10012978
   date: '2026-08-05T07:12:14+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 46
+- title: Walo Kamm gründete einst den Reiseveranstalter Globetrotter. Heute blickt
+    er kritisch darauf, wie viele unterwegs sind
+  summary: Für Walo Kamm, heute 85 Jahre alt, war Reisen Flucht, Leidenschaft und
+    ein Geschäft. Ein Gespräch über die Geschichte des günstigen Reisens.
+  media: null
+  url: https://www.nzz.ch/zuerich/ein-leben-fuer-das-reisen-warum-den-globetrotter-gruender-walo-kamm-die-nostalgie-erfasst-hat-ld.10017710
+  date: '2026-08-05T09:42:14+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
@@ -536,28 +538,6 @@ entries:
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 48
-- title: Heute Morgen ist eine SpaceX-Rakete auf den Mond gekracht. Mit einem Teleskop
-    konnte man von der Erde aus zuschauen
-  summary: Am Mittwochmorgen um 8 Uhr 35 hat eine zurückgelassene Falcon-9-Rakete
-    dem Mond einen neuen Krater verschafft. Geplant war das nicht.
-  media: null
-  url: https://www.nzz.ch/wissenschaft/morgen-kracht-eine-spacex-rakete-in-den-mond-mit-einem-teleskop-kann-man-von-der-erde-aus-zuschauen-ld.10017597
-  date: '2026-08-05T08:51:09+00:00'
-  lang: DE
-  author: null
-  source: NZZ (Neue Zürcher Zeitung)
-  EID: 49
-- title: 'Die unsichtbare Gefahr im Kontaktsport: Der Todesfall eines Footballspielers
-    verschärft Australiens Debatte über Kopfverletzungen'
-  summary: Bei zahlreichen weiteren verstorbenen Profis und Amateuren wurde die Gehirnerkrankung
-    CTE nachgewiesen. Im Fussball reagieren Verbände bereits.
-  media: null
-  url: https://www.nzz.ch/sport/weitere-sportarten/die-unsichtbare-gefahr-im-kontaktsport-der-todesfall-eines-footballspielers-verschaerft-australiens-debatte-ueber-kopfverletzungen-ld.10017126
-  date: '2026-08-05T03:30:00+00:00'
-  lang: DE
-  author: null
-  source: NZZ (Neue Zürcher Zeitung)
-  EID: 50
 - title: 'Rekordjagd an den Börsen: Der Boom bei den Aktien ist nicht zu bremsen und
     hat sich jüngst noch beschleunigt'
   summary: Banken wie die UBS erwarten weitere Kursgewinne. Treiber der Euphorie ist
@@ -569,7 +549,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 51
+  EID: 49
 - title: 'Ein Sieg für das Polit-Urgestein Hans-Peter Amrein: Gericht erklärt einen
     Beschluss über die Sanierung eines Gasthofs in Küsnacht für unrechtmässig'
   summary: Die «Krone Forch», ein beliebtes Ausflugsrestaurant, sollte für gut 7 Millionen
@@ -580,7 +560,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 52
+  EID: 50
 - title: 'Der «ägyptische König» verlässt Liverpool: Mohamed Salah spielt künftig
     in der Türkei'
   summary: In England reifte Salah zum Weltstar und gewann zahlreiche Titel. Bei Trabzonspor
@@ -592,7 +572,19 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 53
+  EID: 51
+- title: DER ANDERE BLICK - Berlins Aufrüstung sorgt bei den Verbündeten für Bedenken,
+    doch Europas Verteidigung braucht ein starkes Deutschland
+  summary: Die sicherheitspolitische Situation erfordert eine neue europäische Führungsmacht.
+    Deutschland schickt sich an, diese zu werden, muss jedoch die Skeptiker beruhigen
+    und seine Partner mit einbinden.
+  media: null
+  url: https://www.nzz.ch/der-andere-blick/berlins-aufruestung-sorgt-bei-den-verbuendeten-fuer-bedenken-doch-europas-verteidigung-braucht-ein-starkes-deutschland-ld.10018284
+  date: '2026-08-05T15:59:42+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 52
 - title: KOMMENTAR - Wer zur Schweiz steht, wendet sich gegen die Einmischung Russlands
     in den schweizerischen Abstimmungskampf
   summary: Moskau unterstützt offen die Neutralitätsinitiative der SVP. Dieser Beeinflussungsversuch
@@ -605,7 +597,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 54
+  EID: 53
 - title: Die USA sind zu Recht nervös – das Vertrauen in die amerikanischen Staatsschulden
     ist gesunken
   summary: Der amerikanische Finanzminister stützt die japanische Währung und will
@@ -617,7 +609,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 55
+  EID: 54
 - title: 'Aktiensparen mit dem Präsidenten: Schon sieben Millionen Kinder in Amerika
     haben einen «Trump Account»'
   summary: Die amerikanische Regierung will neue Schichten an den Aktienmarkt heranführen
@@ -629,7 +621,29 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
+  EID: 55
+- title: Heute Morgen ist eine SpaceX-Rakete auf den Mond gekracht. Mit einem Teleskop
+    konnte man von der Erde aus zuschauen
+  summary: Am Mittwochmorgen um 8 Uhr 35 hat eine zurückgelassene Falcon-9-Rakete
+    dem Mond einen neuen Krater verschafft. Geplant war das nicht.
+  media: null
+  url: https://www.nzz.ch/wissenschaft/morgen-kracht-eine-spacex-rakete-in-den-mond-mit-einem-teleskop-kann-man-von-der-erde-aus-zuschauen-ld.10017597
+  date: '2026-08-05T08:51:09+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
   EID: 56
+- title: 'Die unsichtbare Gefahr im Kontaktsport: Der Todesfall eines Footballspielers
+    verschärft Australiens Debatte über Kopfverletzungen'
+  summary: Bei zahlreichen weiteren verstorbenen Profis und Amateuren wurde die Gehirnerkrankung
+    CTE nachgewiesen. Im Fussball reagieren Verbände bereits.
+  media: null
+  url: https://www.nzz.ch/sport/weitere-sportarten/die-unsichtbare-gefahr-im-kontaktsport-der-todesfall-eines-footballspielers-verschaerft-australiens-debatte-ueber-kopfverletzungen-ld.10017126
+  date: '2026-08-05T03:30:00+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 57
 - title: 'Ein KI-Modell manipuliert Software und sendet Phishing-Mails: Warum sich
     die Berichte über «bösartige» KI-Agenten gerade häufen'
   summary: In Tests eines britischen Sicherheitsinstituts haben KI-Modelle unter falschem
@@ -641,7 +655,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 57
+  EID: 58
 - title: ERKLÄRT - Kommt es auf die Grösse an? Weshalb Minitomaten besonders gesund
     sind
   summary: Wie sich kleine von grossen Tomaten unterscheiden und warum bei Peperoni
@@ -652,7 +666,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 58
+  EID: 59
 - title: Angelina Jolie glänzt im Modedrama «Couture»
   summary: Die Regisseurin Alice Winocour nutzt die Paris Fashion Week als Bühne für
     Krankheit, Körper und weibliche Solidarität. «Couture» ist nicht nur ein Film
@@ -660,18 +674,6 @@ entries:
     miteinander verbinden.
   media: null
   url: https://www.nzz.ch/feuilleton/kino-fernsehen-streaming/angelina-jolie-glaenzt-im-modedrama-couture-ld.10017527
-  date: '2026-08-05T03:30:00+00:00'
-  lang: DE
-  author: null
-  source: NZZ (Neue Zürcher Zeitung)
-  EID: 59
-- title: Lissabon hat ein Museum, in dem man übernachten kann – ein Fünfsternehotel
-    mit hochkarätiger Kunst
-  summary: Das Macam ist ein hybrides Museum für zeitgenössische Kunst, kombiniert
-    mit einem Boutique-Hotel. Das Modell könnte zum Vorbild für Europas Privatsammler
-    werden.
-  media: null
-  url: https://www.nzz.ch/feuilleton/kunst_architektur/lissabon-hat-ein-museum-in-dem-man-uebernachten-kann-ein-fuenfsternehotel-mit-hochkaraetiger-kunst-ld.10015385
   date: '2026-08-05T03:30:00+00:00'
   lang: DE
   author: null
@@ -688,13 +690,14 @@ entries:
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 61
-- title: Taiwan übt den Widerstand gegen einen chinesischen Angriff
-  summary: 'Mit dem Manöver «Han Kuang» probt Taiwan zehn Tage lang, wie es einen
-    Angriff aus China überstehen könnte. Neu im Programm: eine Stärkung der zivilen
-    Verteidigungsfähigkeit. Auch das Internet wird zeitweise verlangsamt.'
+- title: 'DIE NEUESTEN ENTWICKLUNGEN - Migrationskrise in Europa: Litauen entdeckt
+    Tunnel unter Grenzzaun zu Weissrussland'
+  summary: Über die griechischen Inseln, die Balkanroute oder den Ärmelkanal versuchen
+    neben den Fluchtbewegungen aus der Ukraine noch immer täglich Migranten, unter
+    Lebensgefahr nach Europa zu gelangen.
   media: null
-  url: https://www.nzz.ch/international/taiwan-uebt-den-widerstand-gegen-einen-chinesischen-angriff-ld.10018329
-  date: '2026-08-05T12:37:10+00:00'
+  url: https://www.nzz.ch/international/migrationskrise-in-europa-die-wichtigsten-fakten-und-news-ld.1535949
+  date: '2026-08-05T15:52:07+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
@@ -706,23 +709,34 @@ entries:
     Anfang Juli für beendet erklärt. Die neuesten Entwicklungen im Ticker.
   media: null
   url: https://www.nzz.ch/international/iran-krieg-iran-droht-grossbritannien-teheran-verurteilt-mutmasslich-ukrainischen-angriff-auf-frachtschiff-ld.10009801
-  date: '2026-08-05T09:03:44+00:00'
+  date: '2026-08-05T15:48:12+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 63
-- title: 'Elon Musk darf, was Jens Spahn die Karriere gekostet hat: Leihmütter sind
-    in den USA völlig normal'
-  summary: Ein schwuler Mann, dessen Zwillinge heute 25 Jahre alt sind, leistete Pionierarbeit.
-    Eine ehemalige Leihmutter erzählt eine Horrorstory. Auf den Spuren des Phänomens
-    Leihmutterschaft in den USA.
+- title: Taiwan übt den Widerstand gegen einen chinesischen Angriff
+  summary: 'Mit dem Manöver «Han Kuang» probt Taiwan zehn Tage lang, wie es einen
+    Angriff aus China überstehen könnte. Neu im Programm: eine Stärkung der zivilen
+    Verteidigungsfähigkeit. Auch das Internet wird zeitweise verlangsamt.'
   media: null
-  url: https://www.nzz.ch/international/leihmutterschaft-in-den-usa-von-jens-spahn-bis-elon-musk-ld.10017913
-  date: '2026-08-05T03:30:00+00:00'
+  url: https://www.nzz.ch/international/taiwan-uebt-den-widerstand-gegen-einen-chinesischen-angriff-ld.10018329
+  date: '2026-08-05T12:37:10+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 64
+- title: Was sind die Folgen des niedrigen Wasserstands? «Für die Versorgungsknappheit
+    ist der Rheinpegel schlimmer als die Strasse von Hormuz»
+  summary: Der Wasserpegel im Rhein ist auf den niedrigsten Stand seit Beginn der
+    Aufzeichnungen gefallen. Dadurch fehlen Deutschlands Wirtschaft Rohstoffe, steigen
+    die Preise, und die Produktion kommt ins Stocken.
+  media: null
+  url: https://www.nzz.ch/wirtschaft/rheinpegel-schlimmer-als-strasse-von-hormuz-was-sind-die-wirtschaftlichen-folgen-des-niedrigen-wasserstands-ld.10018265
+  date: '2026-08-05T16:00:00+00:00'
+  lang: DE
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 65
 - title: 'INTERVIEW - Katherina Reiche sagt über den deutschen Atomausstieg: «Das
     war eine schwere Fehlentscheidung»'
   summary: Die deutsche Wirtschaftsministerin hält die Klimaziele des Landes für eine
@@ -735,7 +749,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 65
+  EID: 66
 - title: Elon Musks SpaceX hat seinen Umsatz fast verdoppelt – doch die Anleger reagieren
     enttäuscht auf die ersten Quartalszahlen
   summary: Das Raumfahrtunternehmen legt kurz nach dem Börsengang eindrückliche Wachstumszahlen
@@ -746,7 +760,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 66
+  EID: 67
 - title: So klingt es, wenn sich Russland in den Neutralitäts-Abstimmungskampf einmischt
   summary: Maria Sacharowa, die Sprecherin des russischen auswärtigen Amtes, gibt
     eine klare Abstimmungsempfehlung für die Neutralitätsinitiative. Der Text im O-Ton.
@@ -756,7 +770,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 67
+  EID: 68
 - title: 'Berner Polizeigesetz kommt vors Bundesgericht: Darf der Kanton die Reitschule
     per Video überwachen?'
   summary: Die Justiz pfeift Kantone bei neuen Überwachungsmethoden in Polizeigesetzen
@@ -768,7 +782,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 68
+  EID: 69
 - title: 'Beats, Drogen, Gestank – und Hunderttausende hüpfende Techno-Fans: das Wichtigste
     zur Street Parade, die Zürich am Samstag lahmlegt'
   summary: 'Von A wie Amphetamine bis Z wie Zitronenspray: das Abc zum grössten Techno-Festival
@@ -779,7 +793,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 69
+  EID: 70
 - title: 'Ein Feuerwehrmann und zwei Teenager legen Brand um Brand: Nun kommt der
     Jüngste aus dem Trio vor Gericht'
   summary: Gerichtsunterlagen zur Brandserie in einer Zürcher Landgemeinde zeigen,
@@ -790,7 +804,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 70
+  EID: 71
 - title: 'Sprühduschen, Eiskaffee, eine Task-Force – aber kaum Klimaanlagen: So versuchen
     die Zürcher Heime, alte Menschen vor der Hitze zu schützen'
   summary: Seniorinnen und Senioren leiden besonders unter hohen Temperaturen. Das
@@ -801,7 +815,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 71
+  EID: 72
 - title: 'DIE NEUESTEN ENTWICKLUNGEN - Gescheiterte Investorenpläne der Fifa: Infantino
     beruft Krisensitzung am Mittwoch ein'
   summary: Die Fifa wollte einen Teil der kommerziellen Rechte an den Turnieren an
@@ -813,7 +827,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 72
+  EID: 73
 - title: 'Die erste Schweizerin im Maillot jaune: Marlen Reusser gewinnt das Zeitfahren
     der Tour de France'
   summary: Die Bernerin wird am vierten Renntag ihrer Favoritenrolle gerecht – doch
@@ -824,7 +838,7 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 73
+  EID: 74
 - title: 'KURZMELDUNGEN - Kultur: Nächste Met-Gala ehrt den Modedesigner John Galliano'
   summary: Dies sind die neuesten Meldungen aus dem Feuilleton.
   media: null
@@ -833,19 +847,19 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 74
-- title: '«The Odyssey» und «Spider-Man: Brand New Day» steuern auf die Milliardenmarke
-    zu: Das Kino sendet ein auffälliges Lebenszeichen'
-  summary: 'Bemerkenswert ist nicht nur der Kassenerfolg der Blockbuster: Beide Filme
-    lösen Debatten aus, dominieren die sozialen Netzwerke und ziehen eine junge Generation
-    zurück in die Kinos.'
+  EID: 75
+- title: Lissabon hat ein Museum, in dem man übernachten kann – ein Fünfsternehotel
+    mit hochkarätiger Kunst
+  summary: Das Macam ist ein hybrides Museum für zeitgenössische Kunst, kombiniert
+    mit einem Boutique-Hotel. Das Modell könnte zum Vorbild für Europas Privatsammler
+    werden.
   media: null
-  url: https://www.nzz.ch/feuilleton/kino-fernsehen-streaming/the-odyssey-und-spider-man-brand-new-day-steuern-auf-die-milliardenmarke-zu-das-kino-sendet-ein-auffaelliges-lebenszeichen-ld.10018019
-  date: '2026-08-04T15:30:00+00:00'
+  url: https://www.nzz.ch/feuilleton/kunst_architektur/lissabon-hat-ein-museum-in-dem-man-uebernachten-kann-ein-fuenfsternehotel-mit-hochkaraetiger-kunst-ld.10015385
+  date: '2026-08-05T03:30:00+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 75
+  EID: 76
 - title: 'DIE NEUESTEN ENTWICKLUNGEN - Ebola-Ausbruch in Zentralafrika: USA verdoppeln
     finanzielle Unterstützung +++ Die Lage in Kongo-Kinshasa ist laut Einschätzung
     von Ärzte ohne Grenzen «kritischer denn je»'
@@ -858,7 +872,37 @@ entries:
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
-  EID: 76
+  EID: 77
+- title: Top Arab, Muslim diplomats launch plan to protect Jerusalem religious sites
+  summary: Foreign ministers warn Christian and Islamic holy sites 'threatened' by
+    Israel 'as never before'.
+  media: null
+  url: https://www.aljazeera.com/news/2026/8/5/arab-and-muslim-ministers-launch-plan-to-protect-jerusalem-religious-sites?traffic_source=rss
+  date: '2026-08-05T15:50:06+00:00'
+  lang: EN
+  author: null
+  source: Al Jazeera
+  EID: 78
+- title: UK tribunal confirms professor’s anti-Zionism is legally protected belief
+  summary: David Miller has told Al Jazeera the ruling is a victory that will encourage
+    others to speak out against Zionism.
+  media: null
+  url: https://www.aljazeera.com/news/2026/8/5/uk-tribunal-confirms-professors-anti-zionism-is-legally-protected-belief?traffic_source=rss
+  date: '2026-08-05T15:22:39+00:00'
+  lang: EN
+  author: null
+  source: Al Jazeera
+  EID: 79
+- title: 'War on Iran: US-Iran deal edges closer'
+  summary: A deal between the US and Iran could be signed within 48 hours, according
+    to US officials.
+  media: null
+  url: https://www.aljazeera.com/video/newsfeed/2026/8/5/war-on-iran-us-iran-deal-edges-closer?traffic_source=rss
+  date: '2026-08-05T15:12:34+00:00'
+  lang: EN
+  author: null
+  source: Al Jazeera
+  EID: 80
 - title: Germany investigates explosive device attached to drone at Leipzig airport
   summary: An airport employee spotted the object carrying what authorities described
     as 'an unknown explosive device'.
@@ -868,7 +912,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 77
+  EID: 81
 - title: Demolition complicates the search for bodies after Venezuela’s earthquakes
   summary: Venezuela has begun tearing down unstable buildings after its deadly earthquakes.
     But what is the cost to survivors?
@@ -878,7 +922,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 78
+  EID: 82
 - title: Gaza father opens play center to restore childhood amid Israeli attacks
   summary: A Palestinian father opened a Gaza play center offering children free escape
     and joy amid near daily Israeli attacks.
@@ -888,7 +932,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 79
+  EID: 83
 - title: Boxer Chapman recovering after emergency surgery for brain bleed
   summary: Featherweight Raven Chapman collapsed while sparring on July 24 and was
     rushed to surgery, her team says.
@@ -898,7 +942,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 80
+  EID: 84
 - title: Ex-PM Sheikh Hasina announces plan to return to Bangladesh
   summary: The decision of the 78-year-old ousted leader comes despite her facing
     the death penalty in Bangladesh.
@@ -908,7 +952,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 81
+  EID: 85
 - title: Why are US Republicans losing faith in War Secretary Pete Hegseth?
   summary: The reasons for dissent are not unanimous, ranging from the war in Iran
     to an overhaul of military leadership.
@@ -918,7 +962,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 82
+  EID: 86
 - title: Iraq faces crisis as Shia armed groups defy disarmament
   summary: Iraqi PM faces a serious crisis as powerful Shia paramilitaries refuse
     to disarm as September 30 deadline looms.
@@ -928,7 +972,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 83
+  EID: 87
 - title: Former heavyweight champ ⁠Parker cleared to fight again after doping ban
   summary: Joseph Parker was suspended in October after failing a voluntary drug test,
     but denied taking any prohibited substance.
@@ -938,7 +982,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 84
+  EID: 88
 - title: UN rights chief says Iran executed at least 56 people since March
   summary: Volker Turk warns of surge in Iran executions to suppress dissent after
     January uprising.
@@ -948,7 +992,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 85
+  EID: 89
 - title: 'Pakistan’s Khan in jail for 3 years: PTI rallies over ‘arbitrary detention’'
   summary: Thousands of supporters of former PM Imran Khan's party demonstrate across
     country to call for his immediate release.
@@ -958,7 +1002,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 86
+  EID: 90
 - title: 'SpaceX rocket segment to crash into the moon: What happened?'
   summary: A piece of the SpaceX Falcon 9 rocket is believed to have crashed into
     the moon after floating in space since last year.
@@ -968,7 +1012,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 87
+  EID: 91
 - title: Mohamed Salah lands in Turkiye to fan frenzy ahead of Trabzonspor move
   summary: Mohamed Salah lands in Turkiye to fan frenzy ahead of Trabzonspor move.
   media: null
@@ -977,7 +1021,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 88
+  EID: 92
 - title: In Bandar Abbas, the ceasefire never came
   summary: A single mother from Bandar Abbas reflects on the fear and resilience of
     living through repeated attacks.
@@ -987,7 +1031,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 89
+  EID: 93
 - title: 'Iran, Oman, US ‘close’ to Hormuz deal: What do they all want?'
   summary: An agreement could restore shipping through crucial waterway, paving way
     for peace talks between Tehran and Washington.
@@ -997,7 +1041,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 90
+  EID: 94
 - title: Protesters stage sit-in against settler violence-linked Smotrich funds
   summary: Palestinian and Israeli protesters staged a sit-in at the Religious Zionist
     Party’s headquarters in Shoham on Wednesday.
@@ -1007,7 +1051,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 91
+  EID: 95
 - title: Turkish cargo ship catches fire after Black Sea drone attack
   summary: A Turkish cargo ship caught fire after a drone attack near Russia’s Black
     Sea port of Novorossiysk.
@@ -1017,7 +1061,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 92
+  EID: 96
 - title: How a social media campaign triggered huge migrant surge on Ceuta
   summary: Following a court ruling protecting migrants swimming to Ceuta the previous
     week, accounts called on thousands to go.
@@ -1027,7 +1071,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 93
+  EID: 97
 - title: Ex-Liverpool star Salah arrives in Turkiye before move to Trabzonspor
   summary: Egypt forward Mohamed Salah landed in Istanbul on Wednesday to complete
     his move to Turkiye club Trabzonspor.
@@ -1037,7 +1081,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 94
+  EID: 98
 - title: Israeli forces detain Palestinians during raid in occupied West Bank
   summary: A journalist covering events was severely beaten by Israeli soldiers, while
     locals were also attacked.
@@ -1047,7 +1091,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 95
+  EID: 99
 - title: Lebanon and Israel still split over disarming Hezbollah at Rome talks
   summary: Disagreements remain in second day of resumed talks over disarming Hezbollah
     and Israeli withdrawal from South Lebanon.
@@ -1057,7 +1101,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 96
+  EID: 100
 - title: Vozinha moves on from World Cup, says ‘Colo-Colo is the best moment’
   summary: Cape Verde's World Cup goalkeeper Vozinha has been officially unveiled
     as the newest signing for Chilean club Colo-Colo.
@@ -1067,7 +1111,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 97
+  EID: 101
 - title: Israeli raid deepens fears across West Bank refugee camps
   summary: Israeli raid deepens fears across West Bank refugee camps
   media: null
@@ -1076,37 +1120,37 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 98
-- title: India’s severe monsoon season causes more than 100 deaths since July
-  summary: Monsoon downpours cause floods and landslides as climate change and El
-    Nino disrupt rainfall patterns.
+  EID: 102
+- title: 'Caserne, train d’extinction et déluge d’eau: à Olten, les pompiers du rail
+    offrent un aperçu de leur quotidien'
+  summary: 'Le service du feu des CFF fête les 20 ans de sa professionnalisation et
+    procédait à un exercice à la caserne d’Olten, à Soleure. 340 collaborateurs se
+    répartissent sur 15 sites à travers la Suisse, avec une centrale située à BerneLe
+    service d’intervention des pompiers CFF est en alerte. De la fumée s’échappe d’un
+    wagon de S-Bahn de la ZVV. Il a dérayé et penche dangereusement sur la droite.
+    Une voiture d’intervention rouge pétant débarque à vive allure, gyrophare bleu
+    sur le toit. Des secouristes ferroviaires, casques jaune fluo et combinaison réfléchissante
+    sur le dos, s’activent, dressent un plan du sinistre, jaugent de sa gravité. Puis
+    débarque un véhicule de première intervention (VPI) avec tout une batterie de
+    matériel pour diverses situations: une lance incendie apponté à un réservoir de
+    400 litres d’eau, des équipements de mise à la terre pour mettre hors tension
+    la ligne de contact, un pont d’évacuation, un système de ventilation, des appareils
+    respiratoires, une échelle, de l’éclairage, du matériel médical.Un bruit sourd
+    de locomotive se fait entendre. C’est au tour de l’artillerie lourde d’intervenir.
+    Un TES, ou train d’extinction et de sauvetage, se place derrière le wagon en difficulté
+    et prend le relais avec ses 48 000 litres de réservoir. Après le VPI, le déluge.
+    Ce mercredi, c’est matinée d’exercice pour le service du feu de l’ex-régie fédérale.
+    Chaque année, les quelque 340 employés de cette organisation professionnelle effectuent
+    environ 10 500 interventions de la sorte sur tout le territoire. Ce service, sur
+    le pont 24h sur 24 et 7 jours sur 7, fête les 20 ans de sa professionnalisation
+    et livre quelques-uns de ses secrets sur son site d’Olten.Voir plus'
   media: null
-  url: https://www.aljazeera.com/news/2026/8/5/indias-severe-monsoon-season-causes-more-than-100-deaths-since-july?traffic_source=rss
-  date: '2026-08-05T10:10:07+00:00'
-  lang: EN
-  author: null
-  source: Al Jazeera
-  EID: 99
-- title: How Israeli restrictions on Palestinians’ movement break up the West Bank
-  summary: While barriers to free movement make the lives of Palestinians extremely
-    difficult, they do not make Israel more secure.
-  media: null
-  url: https://www.aljazeera.com/opinions/2026/8/5/how-israeli-restrictions-on-palestinians-movement-break-up-the-west-bank?traffic_source=rss
-  date: '2026-08-05T10:09:22+00:00'
-  lang: EN
-  author: null
-  source: Al Jazeera
-  EID: 100
-- title: Reform UK plan to return asylum seekers using navy ‘dangerous in practice’
-  summary: Nigel Farage's party says 'Operation Fortress' would stop migrants 'invading',
-    but experts slam proposal as unrealistic.
-  media: null
-  url: https://www.aljazeera.com/news/2026/8/5/reform-uk-plan-to-return-asylum-seekers-using-navy-dangerous-in-practice?traffic_source=rss
-  date: '2026-08-05T10:07:20+00:00'
-  lang: EN
-  author: null
-  source: Al Jazeera
-  EID: 101
+  url: https://www.letemps.ch/articles/caserne-train-d-extinction-et-deluge-d-eau-a-olten-les-pompiers-du-rail-offrent-un-apercu-de-leur-quotidien
+  date: '2026-08-05T15:44:43+00:00'
+  lang: FR
+  author: Léo Tichelli
+  source: Le Temps
+  EID: 103
 - title: Le Rock’R Sauvage, festival de plus en plus à l’ouest (et c’est heureux)
   summary: Le raout ajoulot dédié aux musiques indépendantes s’est trouvé un nouveau
     lieu d’élection. Il débute jeudi. Brève présentationSi on fait un pas de côté
@@ -1125,7 +1169,7 @@ entries:
   lang: FR
   author: Philippe Simon
   source: Le Temps
-  EID: 102
+  EID: 104
 - title: Au Jardin Robinson, les enfants Crusoé de la cité du Lignon
   summary: 'Alors que la nature a été boutée hors des villes et que les angoisses
     parentales atteignent des sommets, le Jardin Robinson du Lignon fait de la résistance.
@@ -1152,7 +1196,7 @@ entries:
   lang: FR
   author: Lorène Mesot
   source: Le Temps
-  EID: 103
+  EID: 105
 - title: Le tunnel routier du Gothard sera fermé durant douze nuits
   summary: 'Du 10 au 27 août, le trajet routier vers le Tessin devra s’effectuer par
     le col du Gothard durant 10 nuits, pour des travaux d''«entretien préventif»Les
@@ -1183,7 +1227,7 @@ entries:
   lang: FR
   author: Le Temps avec l’ATS
   source: Le Temps
-  EID: 104
+  EID: 106
 - title: Il y a plus de Suisses frontaliers que de Lausannois
   summary: 'Une enquête de Tamedia montre que 154 700 Suisses vivent près de la frontière
     et travaillent en Suisse. On ne peut pas parler de boom, mais la proportion augmente
@@ -1245,7 +1289,7 @@ entries:
   lang: FR
   author: Nicolas Dufour
   source: Le Temps
-  EID: 105
+  EID: 107
 - title: Les Blocher, d’un combat contre l’Europe à l’autre
   summary: 'Trente ans après le refus historique de l’EEE mené par Christoph Blocher,
     sa fille Magdalena Martullo-Blocher s’apprête à mener la charge contre les bilatérales III.
@@ -1275,7 +1319,7 @@ entries:
   lang: FR
   author: Yan Pauchard
   source: Le Temps
-  EID: 106
+  EID: 108
 - title: '«Sans lui, il aurait pu y avoir des morts»: un policier vaudois jugé pour
     une intervention tendue sur son jour de congé'
   summary: S’est-il pris pour un sherif, ou a-t-il simplement fait son devoir? Un
@@ -1298,7 +1342,7 @@ entries:
   lang: FR
   author: Pauline Rumpf
   source: Le Temps
-  EID: 107
+  EID: 109
 - title: La neutralité suisse n’interdit pas l’achat d’armes à l’Ukraine, confirme
     Armasuisse
   summary: Le chef de l’armement s’est récemment rendu en Israël, pays en guerre,
@@ -1328,7 +1372,7 @@ entries:
   lang: FR
   author: Frédéric Koller
   source: Le Temps
-  EID: 108
+  EID: 110
 - title: 'La neutralité: la dernière croisade de Christoph Blocher'
   summary: 'A 86 ans, l’ancien conseiller fédéral mène personnellement la campagne
     en faveur de l’initiative sur la neutralité, soumise au vote le 27 septembre.
@@ -1356,7 +1400,7 @@ entries:
   lang: FR
   author: Yan Pauchard
   source: Le Temps
-  EID: 109
+  EID: 111
 - title: Nobody Asked for AI
   summary: We tend to think that markets reflect consumer choice. But the artificial-intelligence
     boom has been powered by the investment decisions of concentrated capital rather
@@ -1367,7 +1411,7 @@ entries:
   lang: EN
   author: Grace Blakeley
   source: Jacobin
-  EID: 110
+  EID: 112
 - title: No, Americans Aren’t Better Off Than Western Europeans
   summary: You were born on the wrong continent. Yes, the United States has a greater
     GDP per capita than Western Europe. But that GDP has not translated into broader
@@ -1378,7 +1422,7 @@ entries:
   lang: EN
   author: Matt Bruenig
   source: Jacobin
-  EID: 111
+  EID: 113
 - title: The Marxist Case for the Technofeudal Hypothesis
   summary: Yanis Varoufakis has called Big Tech’s overweening power to shape the modern
     economy “technofeudalism.” Writing for Jacobin, he argues that this isn’t a moral
@@ -1389,7 +1433,7 @@ entries:
   lang: EN
   author: Yanis Varoufakis
   source: Jacobin
-  EID: 112
+  EID: 114
 - title: New York’s Socialist Victories Can't Be So Easily Dismissed
   summary: Centrist Democrats are writing off New York City socialist wins as a fluke
     reducible to gentrification and low turnout. But it was the Democratic Party machine
@@ -1400,7 +1444,7 @@ entries:
   lang: EN
   author: Michael Kinnucan
   source: Jacobin
-  EID: 113
+  EID: 115
 - title: Mexican Sovereignty in the Era of the Donroe Doctrine
   summary: US governments have long relied on Mexico as a southern gendarme, even
     as it proudly declares its sovereignty. Faced with Trumpian imperialism, the challenge
@@ -1411,7 +1455,7 @@ entries:
   lang: EN
   author: Alexander Aviña
   source: Jacobin
-  EID: 114
+  EID: 116
 - title: L’attentat de Berlin révèle-t-il le tournant sahélien du djihad européen ?
   summary: 'De nouveaux documents sur le terroriste de la Marche des Fiertés pourraient
     signaler une nouvelle phase de l''État islamique.
@@ -1424,7 +1468,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 115
+  EID: 117
 - title: Trump peut encore gagner les élections de mi-mandat
   summary: 'Les sondages erronés et les divisions démocrates pourraient offrir une
     victoire inattendue en novembre au parti républicain.
@@ -1437,7 +1481,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 116
+  EID: 118
 - title: Avec V4-Flash, DeepSeek mise sur l’IA à faible coût plutôt que sur la course
     à la puissance
   summary: "Fin juillet, le Chinois DeepSeek, leader de l'IA à bas coût, a publié\
@@ -1452,7 +1496,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 117
+  EID: 119
 - title: Pourquoi le Maroc n’a pas pu orchestrer la crise de Ceuta
   summary: 'Attribuer la crise à Rabat revient à méconnaître la dynamique sociale
     marocaine et la singularité de l’exclave.
@@ -1465,7 +1509,7 @@ entries:
   lang: FR
   author: Louis Puel
   source: Le Grand Continent
-  EID: 118
+  EID: 120
 - title: Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ?
   summary: 'Une enquête OSINT reconstitue le passage de 50 000 migrants dans l’exclave
     espagnole.
@@ -1478,4 +1522,135 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 119
+  EID: 121
+- title: 'Présidentielle 2027 : Gabriel Attal visé à son tour par «une ingérence en
+    provenance de Russie»'
+  summary: Le candidat à la présidentielle et patron de Renaissance a été victime
+    d’«une ingérence en provenance de Russie», cherchant à le déstabiliser à huit
+    mois du premier tour de scrutin, a fait savoir son entourage ce mercredi 5 août.
+  media: null
+  url: https://www.liberation.fr/politique/presidentielle-2027-gabriel-attal-vise-a-son-tour-par-une-ingerence-en-provenance-de-russie-20260805_3ADS475V65E3JCJA2C7SXECSZY/
+  date: '2026-08-05T15:16:08+00:00'
+  lang: FR
+  author: Libération ., AFP .
+  source: Libération
+  EID: 122
+- title: 'Suicides et tentatives à Matignon : mis en cause, les services du Premier
+    ministre donnent leur version des faits'
+  summary: L’administration a réagi ce mercredi 5 août aux révélations, lundi, de
+    France Inter sur les souffrances au travail et leurs conséquences ces derniers
+    mois dans les entités rattachées à la rue de Varenne.
+  media: null
+  url: https://www.liberation.fr/politique/suicides-et-tentatives-a-matignon-mis-en-cause-les-services-du-premier-ministre-donnent-leur-version-des-faits-20260805_JI3K4NCY2FDPBGTJ3XM2Y6L24M/
+  date: '2026-08-05T15:11:00+00:00'
+  lang: FR
+  author: Libération ., AFP .
+  source: Libération
+  EID: 123
+- title: 'Affaire de la tête de cochon à Nice : Eric Ciotti veut se porter partie
+    civile'
+  summary: Après de nouvelles révélations dans «Nice-Matin» sur les méthodes «border»
+    de l’équipe de son rival Christian Estrosi, le nouveau maire de la ville des Alpes-Maritimes
+    s’offusque de ce qui pourrait être, selon lui, «l’un de plus graves scandales
+    politiques de la Ve République».
+  media: null
+  url: https://www.liberation.fr/politique/elections/affaire-de-la-tete-de-cochon-a-nice-eric-ciotti-veut-se-porter-partie-civile-20260805_QOGSNFHKMNB7NFAERQG3G23EII/
+  date: '2026-08-05T14:40:34+00:00'
+  lang: FR
+  author: Nicolas Massol
+  source: Libération
+  EID: 124
+- title: 'Ingérences : Raphaël Glucksmann appelle les autorités à ne pas avoir «la
+    main qui tremble» face à TikTok et X'
+  summary: Après avoir été visé par une campagne de désinformation, le prétendant
+    non déclaré à l’Elysée a demandé, mercredi 5 août, à l’Etat et à l’Europe de la
+    fermeté face aux plateformes sur lesquelles prospèrent les tentatives de déstabilisation.
+  media: null
+  url: https://www.liberation.fr/politique/ingerences-raphael-glucksmann-appelle-les-autorites-a-ne-pas-avoir-la-main-qui-tremble-face-a-tiktok-et-x-20260805_KHAZ3XTR7RECXL47TDUXYCQV7Q/
+  date: '2026-08-05T08:41:20+00:00'
+  lang: FR
+  author: Libération ., AFP .
+  source: Libération
+  EID: 125
+- title: Le nouveau coup de main d’Elon Musk aux influenceurs d’extrême droite français
+  summary: Interpellé par une militante identitaire française, Elon Musk est intervenu
+    samedi pour réactiver des comptes d’extrême droite suspendus sur X. Si l’épisode
+    n’est pas une première, il pose la question d’une forme d’éditorialisation de
+    la plateforme aux centaines de millions d’abonnés.
+  media: null
+  url: https://www.liberation.fr/politique/le-nouveau-coup-de-main-delon-musk-aux-influenceurs-dextreme-droite-francais-20260805_UJXOL7CMGREWXKCBKTRMWHQVW4/
+  date: '2026-08-05T05:20:00+00:00'
+  lang: FR
+  author: Maxime Macé, Pierre Plottu
+  source: Libération
+  EID: 126
+- title: Comment «l’arc républicain» pave la voie de Marine Le Pen au pouvoir, par
+    Michel Feher
+  summary: Politique migratoire, retour des pesticides, présomption de légitime défense
+    des policiers… La droite et le macronisme font tout pour que nul ne constate de
+    changement notable entre la fin de la mandature d’Emmanuel Macron et les éventuels
+    premiers mois d’une présidence Le Pen, estime le philosophe.
+  media: null
+  url: https://www.liberation.fr/idees-et-debats/tribunes/comment-larc-republicain-pave-la-voie-de-marine-le-pen-au-pouvoir-par-michel-feher-20260805_V3YQ55MFKVBIJHOU4M2SMDNBLM/
+  date: '2026-08-05T05:00:00+00:00'
+  lang: FR
+  author: Michel Feher
+  source: Libération
+  EID: 127
+- title: 'Quiz : quand les vacances présidentielles prennent l’eau'
+  summary: (16/30) Du fort de Brégançon aux virées moins officielles, partez en vacances
+    avec nos présidents.
+  media: null
+  url: https://www.liberation.fr/plus/speciaux-cahier-ete/quiz-quand-les-vacances-presidentielles-prennent-leau-20260805_YWFQZGBHYND6LFDOEQOYFQ3ME4/
+  date: '2026-08-05T04:00:01+00:00'
+  lang: FR
+  author: Laure Equy
+  source: Libération
+  EID: 128
+- title: A Besançon, le musée de la Résistance et de la Déportation face à une recrudescence
+    de saluts nazis
+  summary: Deux personnes ont été interpellées et placées en garde à vue, lundi 3 août,
+    après avoir tendu leur bras devant un drapeau du IIIe Reich exposé dans l’établissement.
+    Selon la direction, ces actes font partie d’un phénomène en expansion.
+  media: null
+  url: https://www.liberation.fr/politique/a-besancon-le-musee-de-la-resistance-et-de-la-deportation-face-a-une-recrudescence-de-saluts-nazis-20260804_5EGPDB4IHBFDDEDHDVUHXUY2FI/
+  date: '2026-08-04T18:57:05+00:00'
+  lang: FR
+  author: Arthur Louis
+  source: Libération
+  EID: 129
+- title: 'Présidentielle 2027 : cet été, Gabriel Attal passe son rattrapage'
+  summary: Pour combler son retard sur Edouard Philippe, son grand concurrent du centre
+    droit, l’ex-Premier ministre profite de l’espace médiatique laissé libre par la
+    plupart des présidentiables pour écumer la France «du quotidien».
+  media: null
+  url: https://www.liberation.fr/politique/elections/presidentielle-2027-cet-ete-gabriel-attal-passe-son-rattrapage-20260804_X2QVXTXTZVF3JLZJCZSLQUETCA/
+  date: '2026-08-04T18:50:00+00:00'
+  lang: FR
+  author: Lilian Alemagna
+  source: Libération
+  EID: 130
+- title: 'Présidentielle 2027 : Gabriel Attal l’aoûtsider'
+  summary: En retard dans les sondages par rapport à son concurrent Edouard Philippe,
+    le Parisien se rêve en Macron 2.0, prônant dix ans après son mentor le «dépassement»
+    des clivages. Mais les Français le veulent-ils vraiment ?
+  media: null
+  url: https://www.liberation.fr/idees-et-debats/editorial/presidentielle-2027-gabriel-attal-laoutsider-20260804_JXKGZ6PSKNGWDHTDP4H7YMEONA/
+  date: '2026-08-04T18:10:10+00:00'
+  lang: FR
+  author: Alexandra Schwartzbrod
+  source: Libération
+  EID: 131
+- title: '«C’est pas chez vous ici, monsieur» : en Vendée, Gabriel Attal dénonce les
+    occupations illégales des gens du voyage'
+  summary: Poursuivant sa tournée d’été, l’ex-Premier ministre a réaffirmé ce mardi
+    4 août sa volonté de lutter contre les installations illégales d’une partie des
+    membres de la communauté. Une offensive soutenue par certains, face à une population
+    qui se dit inquiète de sa «mise à l’écart de la société».
+  media: null
+  url: https://www.liberation.fr/politique/cest-pas-chez-vous-ici-monsieur-en-vendee-gabriel-attal-denonce-les-occupations-illegales-des-gens-du-voyage-20260804_5YYSPSQ47JAYVII7QB5SKXQZJE/
+  date: '2026-08-04T17:52:36+00:00'
+  lang: FR
+  author: Chloé Dasquet
+  source: Libération
+  EID: 132
