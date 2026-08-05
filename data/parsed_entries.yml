@@ -12,55 +12,8 @@ entries:
   source: Libération
   EID: 126
   similarity_score: 0.6642014980316162
-  rerank_reason: Appels à des mesures ferme contre TikTok et X, reflétant l'intérêt
-    des lecteurs pour les questions technologiques et géopolitiques.
-- title: A Besançon, le musée de la Résistance et de la Déportation face à une recrudescence
-    de saluts nazis
-  summary: Deux personnes ont été interpellées et placées en garde à vue, lundi 3 août,
-    après avoir tendu leur bras devant un drapeau du IIIe Reich exposé dans l’établissement.
-    Selon la direction, ces actes font partie d’un phénomène en expansion.
-  media: null
-  url: https://www.liberation.fr/politique/a-besancon-le-musee-de-la-resistance-et-de-la-deportation-face-a-une-recrudescence-de-saluts-nazis-20260804_5EGPDB4IHBFDDEDHDVUHXUY2FI/
-  date: '2026-08-04T18:57:05+00:00'
-  lang: FR
-  author: Arthur Louis
-  source: Libération
-  EID: 130
-  similarity_score: 0.6369787454605103
-  rerank_reason: Les亮点揭示了法国右翼极端主义情绪的上升，通过纳粹行为体现。
-- title: Comment «l’arc républicain» pave la voie de Marine Le Pen au pouvoir, par
-    Michel Feher
-  summary: Politique migratoire, retour des pesticides, présomption de légitime défense
-    des policiers… La droite et le macronisme font tout pour que nul ne constate de
-    changement notable entre la fin de la mandature d’Emmanuel Macron et les éventuels
-    premiers mois d’une présidence Le Pen, estime le philosophe.
-  media: null
-  url: https://www.liberation.fr/idees-et-debats/tribunes/comment-larc-republicain-pave-la-voie-de-marine-le-pen-au-pouvoir-par-michel-feher-20260805_V3YQ55MFKVBIJHOU4M2SMDNBLM/
-  date: '2026-08-05T05:00:00+00:00'
-  lang: FR
-  author: Michel Feher
-  source: Libération
-  EID: 128
-  similarity_score: 0.5710099339485168
-  rerank_reason: Analyse comment les partis de droite ouvrent la voie à Marine Le
-    Pen en France.
-- title: Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ?
-  summary: 'Une enquête OSINT reconstitue le passage de 50 000 migrants dans l’exclave
-    espagnole.
-
-    L’article Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ? est apparu
-    en premier sur Le Grand Continent.'
-  media: null
-  url: https://legrandcontinent.eu/fr/2026/08/04/les-reseaux-sociaux-ont-ils-organise-la-ruee-vers-ceuta/
-  date: '2026-08-04T17:44:09+00:00'
-  lang: FR
-  author: Ramona Bloj
-  source: Le Grand Continent
-  EID: 122
-  similarity_score: 0.5295352339744568
-  rerank_reason: Investigue le rôle des médias sociaux dans l'organisation de la crise
-    migratoire, pertinent pour l'intérêt du lecteur envers les mouvements d-extremite
-    droite.
+  rerank_reason: Appels à une position ferme contre TikTok et X, reflétant les inquiétudes
+    concernant l'influence des entreprises technologiques et les tensions géopolitiques.
 - title: 'Albert Rösti, sur les coupes dans l’adaptation des forêts: «Je ne peux pas
     justifier cette décision sur le fond. Ces moyens sont nécessaires.»'
   summary: 'Face aux vagues de chaleur, Albert Rösti défend la nécessité d’accélérer
@@ -88,8 +41,391 @@ entries:
   source: Le Temps
   EID: 103
   similarity_score: 0.666273832321167
-  rerank_reason: Discute des politiques environnementales et de la nécessité des mesures
-    d'adaptation.
+  rerank_reason: Le ministre défend les mesures d'adaptation environnementales, abordant
+    le changement climatique et la position politique sur la durabilité.
+- title: Les Blocher, d’un combat contre l’Europe à l’autre
+  summary: 'Trente ans après le refus historique de l’EEE mené par Christoph Blocher,
+    sa fille Magdalena Martullo-Blocher s’apprête à mener la charge contre les bilatérales III.
+    Rencontre dans leur fief d’Herrliberg, où ils ont accepté de raconter cette histoire
+    de transmission, où la réussite économique a précédé le relais politique. Et où
+    l’indépendance de la Suisse s’est imposée comme un dogme familialA Noël, le soir
+    du 24 décembre, il est interdit de parler politique à la table des Blocher. Cette
+    règle d’or absolue, c’est Silvia Blocher qui l’a imposée, lassée de voir le ton
+    monter. Car quand son mari Christoph Blocher et leur fille Magdalena Martullo-Blocher
+    empoignent un sujet d’actualité, ils finissent toujours par s’emporter et l’émotion
+    déborde immanquablement. Cette anecdote pourrait sembler triviale, si elle ne
+    touchait pas l’une des dynasties les plus marquantes et les plus polarisantes
+    de l’histoire suisse récente. Elle permet aussi de raconter cette histoire rare
+    de succession qui fut économique avant d’être politique.L’aînée des quatre enfants
+    n’a en effet pas seulement repris avec succès les rênes de l’empire familial d’EMS-Chemie,
+    dont elle est aujourd’hui la directrice générale et actionnaire majoritaire. Depuis
+    2015, elle poursuit également l’engagement de son père dans la Berne fédérale,
+    où elle siège comme conseillère nationale, sous la bannière de l’UDC des Grisons.
+    Un parti dont elle est vice-présidente suisse. Plus de trente ans après le combat
+    victorieux de son père contre l’Espace économique européen (EEE), Magdalena Martullo-Blocher
+    s’apprête une fois de plus à reprendre le flambeau. Ce sera contre les bilatérales
+    III, avec toujours le même mantra familial: la force de la Suisse réside dans
+    son indépendance.Voir plus'
+  media: null
+  url: https://www.letemps.ch/articles/les-blocher-d-un-combat-contre-l-europe-a-l-autre
+  date: '2026-08-04T18:40:51+00:00'
+  lang: FR
+  author: Yan Pauchard
+  source: Le Temps
+  EID: 109
+  similarity_score: 0.6885848045349121
+  rerank_reason: Axé sur l'influence persistante de Christoph Blocher, une figure
+    clé des politiques extrémement à droite en Suisse.
+- title: 'La neutralité: la dernière croisade de Christoph Blocher'
+  summary: 'A 86 ans, l’ancien conseiller fédéral mène personnellement la campagne
+    en faveur de l’initiative sur la neutralité, soumise au vote le 27 septembre.
+    Financier et figure de proue du texte, le Zurichois entend inscrire dans la Constitution
+    une conception stricte de ce principe, au risque, selon ses opposants, d’isoler
+    la SuisseRarement un ancien conseiller fédéral ne s’est autant engagé pour une
+    votation populaire. Au point que la presse alémanique parle de «l’initiative Blocher»
+    quand elle écrit au sujet de l’initiative sur la neutralité, soumise au peuple
+    le 27 septembre prochain. A 86 ans, l’UDC zurichois est sur tous les fronts. Alors
+    que vendredi dernier il tenait un discours enflammé devant 1500 personnes réunies
+    sur le site du théâtre en plein air de Guillaume Tell, non loin d’Interlaken,
+    Christoph Blocher participait ce mardi matin à la traditionnelle conférence de
+    presse d’ouverture de campagne à Berne. Le milliardaire est également l’un des
+    principaux financiers d’un texte lancé en 2022, après la reprise par le Conseil
+    fédéral des sanctions européennes contre la Russie, par l’association Pro Suisse
+    (issue de l’Action pour une Suisse indépendante et neutre, qu’il a fondée en 1986).
+
+    Lire également: Un manifeste pour contrer l’initiative sur la neutralité de Christoph
+    Blocher
+
+    Voir plus'
+  media: null
+  url: https://www.letemps.ch/articles/la-neutralite-la-derniere-croisade-de-christoph-blocher
+  date: '2026-08-04T16:22:42+00:00'
+  lang: FR
+  author: Yan Pauchard
+  source: Le Temps
+  EID: 112
+  similarity_score: 0.6850979328155518
+  rerank_reason: Évoque l'advocacy de Christoph Blocher pour la neutralité suisse,
+    un enjeu politique majeur en Suisse.
+- title: 'Caserne, train d’extinction et déluge d’eau: à Olten, les pompiers du rail
+    offrent un aperçu de leur quotidien'
+  summary: 'Le service du feu des CFF fête les 20 ans de sa professionnalisation et
+    procédait à un exercice à la caserne d’Olten, à Soleure. 340 collaborateurs se
+    répartissent sur 15 sites à travers la Suisse, avec une centrale située à BerneLe
+    service d’intervention des pompiers CFF est en alerte. De la fumée s’échappe d’un
+    wagon de S-Bahn de la ZVV. Il a dérayé et penche dangereusement sur la droite.
+    Une voiture d’intervention rouge pétant débarque à vive allure, gyrophare bleu
+    sur le toit. Des secouristes ferroviaires, casques jaune fluo et combinaison réfléchissante
+    sur le dos, s’activent, dressent un plan du sinistre, jaugent de sa gravité. Puis
+    débarque un véhicule de première intervention (VPI) avec tout une batterie de
+    matériel pour diverses situations: une lance incendie apponté à un réservoir de
+    400 litres d’eau, des équipements de mise à la terre pour mettre hors tension
+    la ligne de contact, un pont d’évacuation, un système de ventilation, des appareils
+    respiratoires, une échelle, de l’éclairage, du matériel médical.Un bruit sourd
+    de locomotive se fait entendre. C’est au tour de l’artillerie lourde d’intervenir.
+    Un TES, ou train d’extinction et de sauvetage, se place derrière le wagon en difficulté
+    et prend le relais avec ses 48 000 litres de réservoir. Après le VPI, le déluge.
+    Ce mercredi, c’est matinée d’exercice pour le service du feu de l’ex-régie fédérale.
+    Chaque année, les quelque 340 employés de cette organisation professionnelle effectuent
+    environ 10 500 interventions de la sorte sur tout le territoire. Ce service, sur
+    le pont 24h sur 24 et 7 jours sur 7, fête les 20 ans de sa professionnalisation
+    et livre quelques-uns de ses secrets sur son site d’Olten.Voir plus'
+  media: null
+  url: https://www.letemps.ch/articles/caserne-train-d-extinction-et-deluge-d-eau-a-olten-les-pompiers-du-rail-offrent-un-apercu-de-leur-quotidien
+  date: '2026-08-05T15:44:43+00:00'
+  lang: FR
+  author: Léo Tichelli
+  source: Le Temps
+  EID: 104
+  similarity_score: 0.6580671668052673
+  rerank_reason: Présente la vie quotidienne des pompiers suisses, un sujet pertinent
+    dans le contexte des discussions récentes sur les services publics.
+- title: A Besançon, le musée de la Résistance et de la Déportation face à une recrudescence
+    de saluts nazis
+  summary: Deux personnes ont été interpellées et placées en garde à vue, lundi 3 août,
+    après avoir tendu leur bras devant un drapeau du IIIe Reich exposé dans l’établissement.
+    Selon la direction, ces actes font partie d’un phénomène en expansion.
+  media: null
+  url: https://www.liberation.fr/politique/a-besancon-le-musee-de-la-resistance-et-de-la-deportation-face-a-une-recrudescence-de-saluts-nazis-20260804_5EGPDB4IHBFDDEDHDVUHXUY2FI/
+  date: '2026-08-04T18:57:05+00:00'
+  lang: FR
+  author: Arthur Louis
+  source: Libération
+  EID: 130
+  similarity_score: 0.6369787454605103
+  rerank_reason: Les rapports sur les saluts nazi neo-fascistes dans un musée, mettant
+    en lumière les activités dextrême droite et leur impact sur les espaces publics.
+- title: Comment «l’arc républicain» pave la voie de Marine Le Pen au pouvoir, par
+    Michel Feher
+  summary: Politique migratoire, retour des pesticides, présomption de légitime défense
+    des policiers… La droite et le macronisme font tout pour que nul ne constate de
+    changement notable entre la fin de la mandature d’Emmanuel Macron et les éventuels
+    premiers mois d’une présidence Le Pen, estime le philosophe.
+  media: null
+  url: https://www.liberation.fr/idees-et-debats/tribunes/comment-larc-republicain-pave-la-voie-de-marine-le-pen-au-pouvoir-par-michel-feher-20260805_V3YQ55MFKVBIJHOU4M2SMDNBLM/
+  date: '2026-08-05T05:00:00+00:00'
+  lang: FR
+  author: Michel Feher
+  source: Libération
+  EID: 128
+  similarity_score: 0.5710099339485168
+  rerank_reason: Analyse comment l'« arc républicain » prépare le terrain pour Marine
+    Le Pen, un développement majeur en politique française.
+- title: 'Épargne-action avec le président : déjà sept millions d''enfants aux États-Unis
+    ont un « compte Trump »'
+  summary: L'administration américaine souhaite attirer de nouvelles couches vers
+    le marché boursier et faire quelque chose contre l'inégalité élevée. Les milliardaires
+    trouvent le projet formidable – aussi parce qu'il pourrait atténuer les appels
+    à une taxe sur la fortune des gauche.
+  media: null
+  url: https://www.nzz.ch/wirtschaft/aktiensparen-mit-dem-praesidenten-schon-sieben-millionen-kinder-in-amerika-haben-einen-trump-account-ld.10018055
+  date: '2026-08-05T03:30:00+00:00'
+  lang: FR
+  author: null
+  source: NZZ (Neue Zürcher Zeitung)
+  EID: 55
+  similarity_score: 0.577449381351471
+  rerank_reason: Discute de l'impact des « comptes Trump » sur le paysage financier
+    américain et l'inégalité sociale.
+- title: Trump peut encore gagner les élections de mi-mandat
+  summary: 'Les sondages erronés et les divisions démocrates pourraient offrir une
+    victoire inattendue en novembre au parti républicain.
+
+    L’article Trump peut encore gagner les élections de mi-mandat est apparu en premier
+    sur Le Grand Continent.'
+  media: null
+  url: https://legrandcontinent.eu/fr/2026/08/05/trump-peut-encore-gagner-les-elections-de-mi-mandat/
+  date: '2026-08-05T09:29:40+00:00'
+  lang: FR
+  author: Ramona Bloj
+  source: Le Grand Continent
+  EID: 119
+  similarity_score: 0.5602293014526367
+  rerank_reason: Analyse les perspectives de gains républicains aux élections de mi-mandat,
+    un développement politique clé aux États-Unis.
+- title: Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ?
+  summary: 'Une enquête OSINT reconstitue le passage de 50 000 migrants dans l’exclave
+    espagnole.
+
+    L’article Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ? est apparu
+    en premier sur Le Grand Continent.'
+  media: null
+  url: https://legrandcontinent.eu/fr/2026/08/04/les-reseaux-sociaux-ont-ils-organise-la-ruee-vers-ceuta/
+  date: '2026-08-04T17:44:09+00:00'
+  lang: FR
+  author: Ramona Bloj
+  source: Le Grand Continent
+  EID: 122
+  similarity_score: 0.5295352339744568
+  rerank_reason: Investige le rôle des médias sociaux dans l'organisation de la migration
+    massive vers Ceuta, un événement géopolitique majeur.
+- title: Le nouveau coup de main d’Elon Musk aux influenceurs d’extrême droite français
+  summary: Interpellé par une militante identitaire française, Elon Musk est intervenu
+    samedi pour réactiver des comptes d’extrême droite suspendus sur X. Si l’épisode
+    n’est pas une première, il pose la question d’une forme d’éditorialisation de
+    la plateforme aux centaines de millions d’abonnés.
+  media: null
+  url: https://www.liberation.fr/politique/le-nouveau-coup-de-main-delon-musk-aux-influenceurs-dextreme-droite-francais-20260805_UJXOL7CMGREWXKCBKTRMWHQVW4/
+  date: '2026-08-05T05:20:00+00:00'
+  lang: FR
+  author: Maxime Macé, Pierre Plottu
+  source: Libération
+  EID: 127
+  similarity_score: 0.5269044637680054
+  rerank_reason: Les rapports sur le soutien d'Elon Musk aux influents d'extrême droite,
+    un sujet pertinent compte tenu de l'intersection entre la technologie et la politique.
+- title: 'Affaire de la tête de cochon à Nice : Eric Ciotti veut se porter partie
+    civile'
+  summary: Après de nouvelles révélations dans «Nice-Matin» sur les méthodes «border»
+    de l’équipe de son rival Christian Estrosi, le nouveau maire de la ville des Alpes-Maritimes
+    s’offusque de ce qui pourrait être, selon lui, «l’un de plus graves scandales
+    politiques de la Ve République».
+  media: null
+  url: https://www.liberation.fr/politique/elections/affaire-de-la-tete-de-cochon-a-nice-eric-ciotti-veut-se-porter-partie-civile-20260805_QOGSNFHKMNB7NFAERQG3G23EII/
+  date: '2026-08-05T14:40:34+00:00'
+  lang: FR
+  author: Nicolas Massol
+  source: Libération
+  EID: 125
+  similarity_score: 0.5544766187667847
+  rerank_reason: Les rapports sur le désir d'Eric Ciotti de devenir partie d'un dossier
+    judiciaire, un développement politique important en France.
+- title: L’attentat de Berlin révèle-t-il le tournant sahélien du djihad européen ?
+  summary: 'De nouveaux documents sur le terroriste de la Marche des Fiertés pourraient
+    signaler une nouvelle phase de l''État islamique.
+
+    L’article L’attentat de Berlin révèle-t-il le tournant sahélien du djihad européen ?
+    est apparu en premier sur Le Grand Continent.'
+  media: null
+  url: https://legrandcontinent.eu/fr/2026/08/05/lattentat-de-berlin-revele-t-il-le-tournant-sahelien-du-djihad-europeen/
+  date: '2026-08-05T15:16:05+00:00'
+  lang: FR
+  author: Ramona Bloj
+  source: Le Grand Continent
+  EID: 118
+  similarity_score: 0.5514861345291138
+  rerank_reason: Analyse la possible évolution du menace terroriste en Europe, un
+    enjeu géopolitique critique.
+- title: Souveraineté mexicaine dans l'ère de la doctrine Donroe
+  summary: Les gouvernements des États-Unis ont longtemps compté sur le Mexique en
+    tant que gendarme du sud, malgré les déclarations fières de sa souveraineté. Faisant
+    face à un imperialisme trumpien, le défi pour le gouvernement de Claudia Sheinbaum
+    est de rendre cette indépendance plus réelle.
+  media: null
+  url: https://jacobin.com/2026/08/us-imperialism-mexico-donroe-doctrine
+  date: '2026-08-04T16:29:13+00:00'
+  lang: FR
+  author: Alexander Aviña
+  source: Jacobin
+  EID: 117
+  similarity_score: 0.24534769356250763
+  rerank_reason: Discute du défi pour le Mexique de concilier la pression des États-Unis
+    avec sa souveraineté propre, un sujet géopolitique pertinent.
+- title: Les victoires socialiste de New York ne peuvent pas être si facilement déniées
+  summary: Les démocrates centristes écartent les victoires socialiste de la ville
+    de New York comme un hasard réductible à la gentrification et au faible taux d'abstention.
+    Mais c'est bien la machine du parti démocrate elle-même qui a passé des décennies
+    à cultiver un électorat dés-politisé.
+  media: null
+  url: https://jacobin.com/2026/08/dsa-elections-turnout-gentrification-democratic-machine
+  date: '2026-08-04T17:13:54+00:00'
+  lang: FR
+  author: Michael Kinnucan
+  source: Jacobin
+  EID: 116
+  similarity_score: 0.1669774055480957
+  rerank_reason: Analyse la signification des victoires socialiste à New York, un
+    développement politique majeur aux États-Unis.
+- title: Non, les Américains ne sont pas mieux lotis que les Européens occidentaux
+  summary: Vous êtes né sur le mauvais continent. Oui, les États-Unis ont un PIB par
+    habitant supérieur à celui de l'Europe occidentale. Mais ce PIB n'a pas traduit
+    en prospérité plus large en termes de temps et de bien-être pour les travailleurs
+    ordinaires.
+  media: null
+  url: https://jacobin.com/2026/08/gdp-us-europe-economy-inequality
+  date: '2026-08-05T12:45:01+00:00'
+  lang: FR
+  author: Matt Bruenig
+  source: Jacobin
+  EID: 114
+  similarity_score: 0.14552265405654907
+  rerank_reason: Contredit la narrative selon laquelle les Américains sont mieux lotis
+    que les Européens occidentaux, un enjeu économique et social pertinent.
+- title: Le Liban et Israël restent divisés sur l'armement du Hezbollah lors des discussions
+    de Rome
+  summary: Des disagreements persistent le deuxième jour de la reprise des discussions
+    concernant l'armement de Hezbollah et le retrait israélien du sud du Liban.
+  media: null
+  url: https://www.aljazeera.com/news/2026/8/5/lebanon-and-israel-still-split-over-disarming-hezbollah-at-rome-talks?traffic_source=rss
+  date: '2026-08-05T11:01:32+00:00'
+  lang: FR
+  author: null
+  source: Al Jazeera
+  EID: 100
+  similarity_score: 0.11387443542480469
+  rerank_reason: Les rapports sur les négociations en cours entre le Liban et Israël
+    concernant l'armement de Hezbollah, un enjeu géopolitique majeur.
+- title: Vozinha passe sur la Coupe du Monde, dit « Colo-Colo est le meilleur moment
+    »
+  summary: Le gardien de but de la sélection cap-verdienne pour la Coupe du Monde
+    Vozinha a été officiellement présentée comme le nouveau signing du club chilien
+    Colo-Colo.
+  media: null
+  url: https://www.aljazeera.com/video/newsfeed/2026/8/5/vozinha-moves-on-from-world-cup-says-colo-colo-is-the-best?traffic_source=rss
+  date: '2026-08-05T10:50:34+00:00'
+  lang: FR
+  author: null
+  source: Al Jazeera
+  EID: 101
+  similarity_score: 0.16798320412635803
+  rerank_reason: Les rapports sur le gardien de but du Cap-Vert rejoignant un club
+    chilien, une développement sportive et géopolitique pertinente.
+- title: Le tunnel routier du Gothard sera fermé durant douze nuits
+  summary: 'Du 10 au 27 août, le trajet routier vers le Tessin devra s’effectuer par
+    le col du Gothard durant 10 nuits, pour des travaux d''«entretien préventif»Les
+    automobilistes souhaitant se rendre au Tessin vont devoir passer par le col du
+    Gothard à certaines heures ces prochains jours. Le tunnel routier du Gothard sera
+    en effet fermé durant douze nuits, du 10 au 27 août.L’ouvrage restera clos entre
+    23h et 5h du lundi soir au vendredi matin, indique mercredi l’Office fédéral des
+    routes (Ofrou). Du vendredi soir au lundi matin, les voitures pourront circuler
+    dans le tunnel.
+
+    Lire aussi: Environ 14 km de bouchon au Gothard, pendant que les régions proches
+    disent leur énervement
+
+
+    Rénover la voûte intermédiaire
+
+    Cette fermeture doit permettre de procéder à des travaux d''«entretien préventif»,
+    explique l’Ofrou. Ils concernent la voûte intermédiaire. Des découpes seront effectuées
+    à titre préventif pour soulager ces éléments de construction et réduire ainsi
+    le risque de dommages.Les tensions sur la voûte intermédiaire seront surveillées
+    en continu. En 2023, une fissure s’était formée près du portail nord, provoquant
+    l’éclatement de débris. En cause, des changements de tension dans la montagne,
+    qui auraient entraîné des modifications locales de la pression et sollicité le
+    tunnel dans le tronçon concerné.'
+  media: null
+  url: https://www.letemps.ch/articles/le-tunnel-routier-du-gothard-sera-ferme-durant-douze-nuits
+  date: '2026-08-05T09:44:35+00:00'
+  lang: FR
+  author: Le Temps avec l’ATS
+  source: Le Temps
+  EID: 107
+  similarity_score: 0.6116071939468384
+  rerank_reason: Les rapports sur la fermeture du tunnel du Gotthard, un développement
+    logistique et politique majeur en Suisse.
+- title: Au Jardin Robinson, les enfants Crusoé de la cité du Lignon
+  summary: 'Alors que la nature a été boutée hors des villes et que les angoisses
+    parentales atteignent des sommets, le Jardin Robinson du Lignon fait de la résistance.
+    Depuis 1971, les enfants de ce quartier populaire genevois y apprennent l’art
+    de la débrouilleSur le bitume de la cité du Lignon, le long du petit chemin qui
+    longe le Rhône derrière les tours, Tournesol a laissé un indice. Ou peut-être
+    est-ce Coco, Rubis ou Cheyenne. Qui de l’âne ou des poneys a osé? Insolite pour
+    le visiteur, le crottin n’étonnera aucun des habitants de ce quartier populaire
+    de Vernier. La présence d’animaux de ferme au pied des méga-immeubles est en réalité
+    presque aussi vieille que la cité elle-même: c’est parce que les enfants des premiers
+    locataires jouaient sur le chantier lors de sa construction dans les années 1960
+    que des parents ont imaginé un espace où les plus jeunes pourraient gambader,
+    sans risquer le drame.Ainsi commence l’histoire du premier Jardin Robinson de
+    Suisse romande, conte l’animatrice Théa en faisant les présentations avec le charmeur
+    et charmant Tournesol, naseaux de velours et yeux à tomber. Un peu plus haut,
+    il y a aussi Maïs, Flamme et une ribambelle de lapins, des poules et des tortues,
+    des petites parcelles de forêt, un hangar à vélos et un pavillon principal dans
+    lequel on trouve un atelier bois, une cuisine et autres recoins à coussins colorés.
+    Le royaume du papier mâché, des plans de travail encombrés et des parties de baby-foot
+    endiablées.Voir plus'
+  media: null
+  url: https://www.letemps.ch/articles/au-jardin-robinson-les-enfants-crusoe-de-la-cite-du-lignon
+  date: '2026-08-05T10:20:10+00:00'
+  lang: FR
+  author: Lorène Mesot
+  source: Le Temps
+  EID: 106
+  similarity_score: 0.6641443967819214
+  rerank_reason: Rapports sur un parc pour enfants unique en Suisse, un enjeu social
+    et politique pertinent.
+- title: Le Rock’R Sauvage, festival de plus en plus à l’ouest (et c’est heureux)
+  summary: Le raout ajoulot dédié aux musiques indépendantes s’est trouvé un nouveau
+    lieu d’élection. Il débute jeudi. Brève présentationSi on fait un pas de côté
+    alors qu’on est déjà à la marge, est-ce qu’on tombe? En Ajoie, pas forcément,
+    et c’est ce que tentera le Rock’R Sauvage dès ce jeudi. Ces dernières années,
+    le festival dédié aux musiques indépendantes avait ses quartiers au parc du Pré
+    de l’Etang, à Porrentruy. Il se déplace cette année dans l’un des villages adjacents,
+    à Courtedoux.On est à peine plus à l’ouest géographiquement, et la programmation
+    du Rock’R conserve heureusement sa volonté d’aller explorer les franges. Des polyphonies
+    électro-orientales avec yaL, du hip hop au violoncelle avec Elias D, du rock de
+    cave avec les Biennois de Virgin Bitch, des vibrations ambiantes avec Mathilde
+    Tirard…Voir plus
+  media: null
+  url: https://www.letemps.ch/articles/le-rock-r-sauvage-festival-de-plus-en-plus-a-l-ouest-et-c-est-heureux
+  date: '2026-08-05T10:42:41+00:00'
+  lang: FR
+  author: Philippe Simon
+  source: Le Temps
+  EID: 105
+  similarity_score: 0.6404148936271667
+  rerank_reason: Rapports sur un festival en Suisse, un développement social et culturel
+    pertinent.
 - title: Il y a plus de Suisses frontaliers que de Lausannois
   summary: 'Une enquête de Tamedia montre que 154 700 Suisses vivent près de la frontière
     et travaillent en Suisse. On ne peut pas parler de boom, mais la proportion augmente
@@ -153,104 +489,8 @@ entries:
   source: Le Temps
   EID: 108
   similarity_score: 0.7351027131080627
-  rerank_reason: Les rapports sur le nombre croissant de travailleurs frontaliers
-    suisses, pertinents pour l'intérêt du lecteur en matière de travail et de migration.
-- title: 'Suicides et tentatives à Matignon : mis en cause, les services du Premier
-    ministre donnent leur version des faits'
-  summary: L’administration a réagi ce mercredi 5 août aux révélations, lundi, de
-    France Inter sur les souffrances au travail et leurs conséquences ces derniers
-    mois dans les entités rattachées à la rue de Varenne.
-  media: null
-  url: https://www.liberation.fr/politique/suicides-et-tentatives-a-matignon-mis-en-cause-les-services-du-premier-ministre-donnent-leur-version-des-faits-20260805_JI3K4NCY2FDPBGTJ3XM2Y6L24M/
-  date: '2026-08-05T15:11:00+00:00'
-  lang: FR
-  author: Libération ., AFP .
-  source: Libération
-  EID: 124
-  similarity_score: 0.6289904117584229
-  rerank_reason: Les rapports sur les suicides au sein du gouvernement français, reflétant
-    l'intérêt des lecteurs pour les questions sociales.
-- title: Trump peut encore gagner les élections de mi-mandat
-  summary: 'Les sondages erronés et les divisions démocrates pourraient offrir une
-    victoire inattendue en novembre au parti républicain.
-
-    L’article Trump peut encore gagner les élections de mi-mandat est apparu en premier
-    sur Le Grand Continent.'
-  media: null
-  url: https://legrandcontinent.eu/fr/2026/08/05/trump-peut-encore-gagner-les-elections-de-mi-mandat/
-  date: '2026-08-05T09:29:40+00:00'
-  lang: FR
-  author: Ramona Bloj
-  source: Le Grand Continent
-  EID: 119
-  similarity_score: 0.5602293014526367
-  rerank_reason: Analyse les perspectives de gains républicains aux élections de mi-mandat
-    aux États-Unis, pertinent pour l'intérêt du lecteur envers la politique américaine.
-- title: Le tunnel routier du Gothard sera fermé durant douze nuits
-  summary: 'Du 10 au 27 août, le trajet routier vers le Tessin devra s’effectuer par
-    le col du Gothard durant 10 nuits, pour des travaux d''«entretien préventif»Les
-    automobilistes souhaitant se rendre au Tessin vont devoir passer par le col du
-    Gothard à certaines heures ces prochains jours. Le tunnel routier du Gothard sera
-    en effet fermé durant douze nuits, du 10 au 27 août.L’ouvrage restera clos entre
-    23h et 5h du lundi soir au vendredi matin, indique mercredi l’Office fédéral des
-    routes (Ofrou). Du vendredi soir au lundi matin, les voitures pourront circuler
-    dans le tunnel.
-
-    Lire aussi: Environ 14 km de bouchon au Gothard, pendant que les régions proches
-    disent leur énervement
-
-
-    Rénover la voûte intermédiaire
-
-    Cette fermeture doit permettre de procéder à des travaux d''«entretien préventif»,
-    explique l’Ofrou. Ils concernent la voûte intermédiaire. Des découpes seront effectuées
-    à titre préventif pour soulager ces éléments de construction et réduire ainsi
-    le risque de dommages.Les tensions sur la voûte intermédiaire seront surveillées
-    en continu. En 2023, une fissure s’était formée près du portail nord, provoquant
-    l’éclatement de débris. En cause, des changements de tension dans la montagne,
-    qui auraient entraîné des modifications locales de la pression et sollicité le
-    tunnel dans le tronçon concerné.'
-  media: null
-  url: https://www.letemps.ch/articles/le-tunnel-routier-du-gothard-sera-ferme-durant-douze-nuits
-  date: '2026-08-05T09:44:35+00:00'
-  lang: FR
-  author: Le Temps avec l’ATS
-  source: Le Temps
-  EID: 107
-  similarity_score: 0.6116071939468384
-  rerank_reason: Les rapports sur les fermetures de routes en raison de travaux de
-    maintenance, relevant de l'intérêt du lecteur envers l'infrastructure.
-- title: 'La neutralité: la dernière croisade de Christoph Blocher'
-  summary: 'A 86 ans, l’ancien conseiller fédéral mène personnellement la campagne
-    en faveur de l’initiative sur la neutralité, soumise au vote le 27 septembre.
-    Financier et figure de proue du texte, le Zurichois entend inscrire dans la Constitution
-    une conception stricte de ce principe, au risque, selon ses opposants, d’isoler
-    la SuisseRarement un ancien conseiller fédéral ne s’est autant engagé pour une
-    votation populaire. Au point que la presse alémanique parle de «l’initiative Blocher»
-    quand elle écrit au sujet de l’initiative sur la neutralité, soumise au peuple
-    le 27 septembre prochain. A 86 ans, l’UDC zurichois est sur tous les fronts. Alors
-    que vendredi dernier il tenait un discours enflammé devant 1500 personnes réunies
-    sur le site du théâtre en plein air de Guillaume Tell, non loin d’Interlaken,
-    Christoph Blocher participait ce mardi matin à la traditionnelle conférence de
-    presse d’ouverture de campagne à Berne. Le milliardaire est également l’un des
-    principaux financiers d’un texte lancé en 2022, après la reprise par le Conseil
-    fédéral des sanctions européennes contre la Russie, par l’association Pro Suisse
-    (issue de l’Action pour une Suisse indépendante et neutre, qu’il a fondée en 1986).
-
-    Lire également: Un manifeste pour contrer l’initiative sur la neutralité de Christoph
-    Blocher
-
-    Voir plus'
-  media: null
-  url: https://www.letemps.ch/articles/la-neutralite-la-derniere-croisade-de-christoph-blocher
-  date: '2026-08-04T16:22:42+00:00'
-  lang: FR
-  author: Yan Pauchard
-  source: Le Temps
-  EID: 112
-  similarity_score: 0.6850979328155518
-  rerank_reason: Axé sur la campagne de Christoph Blocher pour la neutralité suisse,
-    pertinent pour l'intérêt du lecteur envers les mouvements d-extremite droite.
+  rerank_reason: Les rapports sur le nombre de résidents frontaliers suisses, un sujet
+    démographique et politique pertinent.
 - title: La neutralité suisse n’interdit pas l’achat d’armes à l’Ukraine, confirme
     Armasuisse
   summary: Le chef de l’armement s’est récemment rendu en Israël, pays en guerre,
@@ -282,93 +522,34 @@ entries:
   source: Le Temps
   EID: 111
   similarity_score: 0.6619395017623901
-  rerank_reason: Les rapports sur la position de la Suisse concernant les ventes d'armes,
-    pertinents pour l'intérêt des lecteurs en géopolitique.
-- title: Au Jardin Robinson, les enfants Crusoé de la cité du Lignon
-  summary: 'Alors que la nature a été boutée hors des villes et que les angoisses
-    parentales atteignent des sommets, le Jardin Robinson du Lignon fait de la résistance.
-    Depuis 1971, les enfants de ce quartier populaire genevois y apprennent l’art
-    de la débrouilleSur le bitume de la cité du Lignon, le long du petit chemin qui
-    longe le Rhône derrière les tours, Tournesol a laissé un indice. Ou peut-être
-    est-ce Coco, Rubis ou Cheyenne. Qui de l’âne ou des poneys a osé? Insolite pour
-    le visiteur, le crottin n’étonnera aucun des habitants de ce quartier populaire
-    de Vernier. La présence d’animaux de ferme au pied des méga-immeubles est en réalité
-    presque aussi vieille que la cité elle-même: c’est parce que les enfants des premiers
-    locataires jouaient sur le chantier lors de sa construction dans les années 1960
-    que des parents ont imaginé un espace où les plus jeunes pourraient gambader,
-    sans risquer le drame.Ainsi commence l’histoire du premier Jardin Robinson de
-    Suisse romande, conte l’animatrice Théa en faisant les présentations avec le charmeur
-    et charmant Tournesol, naseaux de velours et yeux à tomber. Un peu plus haut,
-    il y a aussi Maïs, Flamme et une ribambelle de lapins, des poules et des tortues,
-    des petites parcelles de forêt, un hangar à vélos et un pavillon principal dans
-    lequel on trouve un atelier bois, une cuisine et autres recoins à coussins colorés.
-    Le royaume du papier mâché, des plans de travail encombrés et des parties de baby-foot
-    endiablées.Voir plus'
+  rerank_reason: Les rapports sur la neutralité suisse et les ventes d'armes, un enjeu
+    politique et militaire majeur.
+- title: '«Sans lui, il aurait pu y avoir des morts»: un policier vaudois jugé pour
+    une intervention tendue sur son jour de congé'
+  summary: S’est-il pris pour un sherif, ou a-t-il simplement fait son devoir? Un
+    agent vaudois, alors instructeur à l’Académie de police, comparaissait ce mardi
+    pour abus d’autorité après avoir interpellé en civil des chauffards à l’aide de
+    son chien. L’intervention s’était finie par un échange de coups et une morsure«J’ai
+    fait mon travail, c’est tout. Les rodéos routiers tuent, j’ai protégé la population,
+    c’est mon devoir.» Droit dans ses bottes, bien qu’ébranlé, Didier* a assuré devant
+    le Tribunal de Nyon, ce mardi matin, avoir agi au plus près de sa conscience et
+    de la doctrine policière, ce dimanche de décembre 2023, lors d’une intervention
+    en civil qui a mal tourné.Le Ministère public vaudois, lui, estime au contraire
+    qu’il s’est rendu coupable d’abus d’autorité et de contravention à la loi vaudoise
+    sur la police des chiens. Il avait condamné l’agent à 20 jours-amende avec sursis,
+    dans une ordonnance pénale à laquelle celui-ci s’est opposé. «Ce n’est pas la
+    sanction qui compte. Si cette ordonnance absurde est maintenue, sa carrière s’écroule»,
+    a rappelé son avocat Me Raphaël Mahaim.Voir plus
   media: null
-  url: https://www.letemps.ch/articles/au-jardin-robinson-les-enfants-crusoe-de-la-cite-du-lignon
-  date: '2026-08-05T10:20:10+00:00'
+  url: https://www.letemps.ch/articles/sans-lui-il-aurait-pu-y-avoir-des-morts-un-policier-vaudois-juge-pour-une-intervention-tendue-sur-son-jour-de-conge
+  date: '2026-08-04T17:51:15+00:00'
   lang: FR
-  author: Lorène Mesot
+  author: Pauline Rumpf
   source: Le Temps
-  EID: 106
-  similarity_score: 0.6641443967819214
-  rerank_reason: Rapports sur un mouvement social en Suisse, pertinents pour l'intérêt
-    des lecteurs en matière d'questions sociales.
-- title: Le Rock’R Sauvage, festival de plus en plus à l’ouest (et c’est heureux)
-  summary: Le raout ajoulot dédié aux musiques indépendantes s’est trouvé un nouveau
-    lieu d’élection. Il débute jeudi. Brève présentationSi on fait un pas de côté
-    alors qu’on est déjà à la marge, est-ce qu’on tombe? En Ajoie, pas forcément,
-    et c’est ce que tentera le Rock’R Sauvage dès ce jeudi. Ces dernières années,
-    le festival dédié aux musiques indépendantes avait ses quartiers au parc du Pré
-    de l’Etang, à Porrentruy. Il se déplace cette année dans l’un des villages adjacents,
-    à Courtedoux.On est à peine plus à l’ouest géographiquement, et la programmation
-    du Rock’R conserve heureusement sa volonté d’aller explorer les franges. Des polyphonies
-    électro-orientales avec yaL, du hip hop au violoncelle avec Elias D, du rock de
-    cave avec les Biennois de Virgin Bitch, des vibrations ambiantes avec Mathilde
-    Tirard…Voir plus
-  media: null
-  url: https://www.letemps.ch/articles/le-rock-r-sauvage-festival-de-plus-en-plus-a-l-ouest-et-c-est-heureux
-  date: '2026-08-05T10:42:41+00:00'
-  lang: FR
-  author: Philippe Simon
-  source: Le Temps
-  EID: 105
-  similarity_score: 0.6404148936271667
-  rerank_reason: Des rapports sur un festival en Suisse, pertinents pour l'intérêt
-    des lecteurs envers les questions sociales.
-- title: 'Caserne, train d’extinction et déluge d’eau: à Olten, les pompiers du rail
-    offrent un aperçu de leur quotidien'
-  summary: 'Le service du feu des CFF fête les 20 ans de sa professionnalisation et
-    procédait à un exercice à la caserne d’Olten, à Soleure. 340 collaborateurs se
-    répartissent sur 15 sites à travers la Suisse, avec une centrale située à BerneLe
-    service d’intervention des pompiers CFF est en alerte. De la fumée s’échappe d’un
-    wagon de S-Bahn de la ZVV. Il a dérayé et penche dangereusement sur la droite.
-    Une voiture d’intervention rouge pétant débarque à vive allure, gyrophare bleu
-    sur le toit. Des secouristes ferroviaires, casques jaune fluo et combinaison réfléchissante
-    sur le dos, s’activent, dressent un plan du sinistre, jaugent de sa gravité. Puis
-    débarque un véhicule de première intervention (VPI) avec tout une batterie de
-    matériel pour diverses situations: une lance incendie apponté à un réservoir de
-    400 litres d’eau, des équipements de mise à la terre pour mettre hors tension
-    la ligne de contact, un pont d’évacuation, un système de ventilation, des appareils
-    respiratoires, une échelle, de l’éclairage, du matériel médical.Un bruit sourd
-    de locomotive se fait entendre. C’est au tour de l’artillerie lourde d’intervenir.
-    Un TES, ou train d’extinction et de sauvetage, se place derrière le wagon en difficulté
-    et prend le relais avec ses 48 000 litres de réservoir. Après le VPI, le déluge.
-    Ce mercredi, c’est matinée d’exercice pour le service du feu de l’ex-régie fédérale.
-    Chaque année, les quelque 340 employés de cette organisation professionnelle effectuent
-    environ 10 500 interventions de la sorte sur tout le territoire. Ce service, sur
-    le pont 24h sur 24 et 7 jours sur 7, fête les 20 ans de sa professionnalisation
-    et livre quelques-uns de ses secrets sur son site d’Olten.Voir plus'
-  media: null
-  url: https://www.letemps.ch/articles/caserne-train-d-extinction-et-deluge-d-eau-a-olten-les-pompiers-du-rail-offrent-un-apercu-de-leur-quotidien
-  date: '2026-08-05T15:44:43+00:00'
-  lang: FR
-  author: Léo Tichelli
-  source: Le Temps
-  EID: 104
-  similarity_score: 0.6580671668052673
-  rerank_reason: Rapports sur les politiques environnementales et mesures d'adaptation,
-    pertinents pour l'intérêt du lecteur envers les questions environnementales.
+  EID: 110
+  similarity_score: 0.6051837205886841
+  rerank_reason: Rapports sur les actions d'un policier lors d'un conflit, un sujet
+    social et politique pertinent.
 - title: 'Quiz : quand les vacances présidentielles prennent l’eau'
   summary: (16/30) Du fort de Brégançon aux virées moins officielles, partez en vacances
     avec nos présidents.
@@ -380,8 +561,55 @@ entries:
   source: Libération
   EID: 129
   similarity_score: 0.5214570760726929
-  rerank_reason: Rapports sur le vacances du président, pertinents pour l'intérêt
-    du lecteur envers les personnalités politiques.
+  rerank_reason: Les rapports sur les vacances du président Macron, un sujet politique
+    et social d'actualité.
+- title: 'Présidentielle 2027 : Gabriel Attal visé à son tour par «une ingérence en
+    provenance de Russie»'
+  summary: Des faux reportages usurpant l’identité de plusieurs médias dont «Libération»
+    affirment que le président de Renaissance présente «des signes de la maladie de
+    Parkinson» ou plaide pour une politique plus favorable à l’égard des squatteurs
+    de logements vides.
+  media: null
+  url: https://www.liberation.fr/politique/presidentielle-2027-gabriel-attal-vise-a-son-tour-par-une-ingerence-en-provenance-de-russie-20260805_3ADS475V65E3JCJA2C7SXECSZY/
+  date: '2026-08-05T16:15:09+00:00'
+  lang: FR
+  author: Libération ., AFP .
+  source: Libération
+  EID: 123
+  similarity_score: 0.5038800835609436
+  rerank_reason: Les rapports sur l'intervention russe dans la campagne de Gabriel
+    Attal, un développement politique majeur.
+- title: '«C’est pas chez vous ici, monsieur» : en Vendée, Gabriel Attal dénonce les
+    occupations illégales des gens du voyage'
+  summary: Poursuivant sa tournée d’été, l’ex-Premier ministre a réaffirmé ce mardi
+    4 août sa volonté de lutter contre les installations illégales d’une partie des
+    membres de la communauté. Une offensive soutenue par certains, face à une population
+    qui se dit inquiète de sa «mise à l’écart de la société».
+  media: null
+  url: https://www.liberation.fr/politique/cest-pas-chez-vous-ici-monsieur-en-vendee-gabriel-attal-denonce-les-occupations-illegales-des-gens-du-voyage-20260804_5YYSPSQ47JAYVII7QB5SKXQZJE/
+  date: '2026-08-04T17:52:36+00:00'
+  lang: FR
+  author: Chloé Dasquet
+  source: Libération
+  EID: 133
+  similarity_score: 0.6042025089263916
+  rerank_reason: Rapports sur les efforts du gouvernement pour combattre les encampements
+    illégaux, un enjeu social et politique pertinent.
+- title: 'Suicides et tentatives à Matignon : mis en cause, les services du Premier
+    ministre donnent leur version des faits'
+  summary: L’administration a réagi ce mercredi 5 août aux révélations, lundi, de
+    France Inter sur les souffrances au travail et leurs conséquences ces derniers
+    mois dans les entités rattachées à la rue de Varenne.
+  media: null
+  url: https://www.liberation.fr/politique/suicides-et-tentatives-a-matignon-mis-en-cause-les-services-du-premier-ministre-donnent-leur-version-des-faits-20260805_JI3K4NCY2FDPBGTJ3XM2Y6L24M/
+  date: '2026-08-05T15:11:00+00:00'
+  lang: FR
+  author: Libération ., AFP .
+  source: Libération
+  EID: 124
+  similarity_score: 0.6289904117584229
+  rerank_reason: Les rapports sur les suicides et les problèmes de santé mentale au
+    sein du gouvernement français, un enjeu social et politique majeur.
 - title: Avec V4-Flash, DeepSeek mise sur l’IA à faible coût plutôt que sur la course
     à la puissance
   summary: "Fin juillet, le Chinois DeepSeek, leader de l'IA à bas coût, a publié\
@@ -398,106 +626,63 @@ entries:
   source: Le Grand Continent
   EID: 120
   similarity_score: 0.5076708197593689
-  rerank_reason: Des rapports sur un nouveau modèle d'IA d'une entreprise chinoise,
-    pertinent pour l'intérêt des lecteurs en matière de changement technologique.
-- title: Le nouveau coup de main d’Elon Musk aux influenceurs d’extrême droite français
-  summary: Interpellé par une militante identitaire française, Elon Musk est intervenu
-    samedi pour réactiver des comptes d’extrême droite suspendus sur X. Si l’épisode
-    n’est pas une première, il pose la question d’une forme d’éditorialisation de
-    la plateforme aux centaines de millions d’abonnés.
+  rerank_reason: Rapports sur un nouveau modèle d'IA chinois, un sujet technologique
+    et économique pertinent.
+- title: Le cas marxiste pour l'hypothèse technoféodale
+  summary: Yanis Varoufakis appelle le pouvoir excessif de Big Tech de modeler l'économie
+    moderne « technoféodalisme. » Écrivant pour Jacobin, il argue que ce n'est pas
+    une critique morale, mais une critique basée sur le dynamisme de l'accumulation
+    du capital aujourd'hui.
   media: null
-  url: https://www.liberation.fr/politique/le-nouveau-coup-de-main-delon-musk-aux-influenceurs-dextreme-droite-francais-20260805_UJXOL7CMGREWXKCBKTRMWHQVW4/
-  date: '2026-08-05T05:20:00+00:00'
+  url: https://jacobin.com/2026/08/varoufakis-tech-capital-marxism-technofeudalism
+  date: '2026-08-04T18:27:48+00:00'
   lang: FR
-  author: Maxime Macé, Pierre Plottu
-  source: Libération
-  EID: 127
-  similarity_score: 0.5269044637680054
-  rerank_reason: Les rapports sur le soutien d'Elon Musk aux influents d'extrême droite,
-    pertinents pour l'intérêt des lecteurs envers les mouvements d'extrême droite.
-- title: 'Présidentielle 2027 : Gabriel Attal l’aoûtsider'
-  summary: En retard dans les sondages par rapport à son concurrent Edouard Philippe,
-    le Parisien se rêve en Macron 2.0, prônant dix ans après son mentor le «dépassement»
-    des clivages. Mais les Français le veulent-ils vraiment ?
-  media: null
-  url: https://www.liberation.fr/idees-et-debats/editorial/presidentielle-2027-gabriel-attal-laoutsider-20260804_JXKGZ6PSKNGWDHTDP4H7YMEONA/
-  date: '2026-08-04T18:10:10+00:00'
-  lang: FR
-  author: Alexandra Schwartzbrod
-  source: Libération
-  EID: 132
-  similarity_score: 0.5003294944763184
-  rerank_reason: Rapports sur la position de Gabriel Attal dans la course à l'élection
-    présidentielle française, pertinent pour l'intérêt des lecteurs envers la politique
-    française.
-- title: '«C’est pas chez vous ici, monsieur» : en Vendée, Gabriel Attal dénonce les
-    occupations illégales des gens du voyage'
-  summary: Poursuivant sa tournée d’été, l’ex-Premier ministre a réaffirmé ce mardi
-    4 août sa volonté de lutter contre les installations illégales d’une partie des
-    membres de la communauté. Une offensive soutenue par certains, face à une population
-    qui se dit inquiète de sa «mise à l’écart de la société».
-  media: null
-  url: https://www.liberation.fr/politique/cest-pas-chez-vous-ici-monsieur-en-vendee-gabriel-attal-denonce-les-occupations-illegales-des-gens-du-voyage-20260804_5YYSPSQ47JAYVII7QB5SKXQZJE/
-  date: '2026-08-04T17:52:36+00:00'
-  lang: FR
-  author: Chloé Dasquet
-  source: Libération
-  EID: 133
-  similarity_score: 0.6042025089263916
-  rerank_reason: Les rapports sur les efforts du gouvernement français pour combattre
-    les encampements illégaux, pertinents pour l'intérêt des lecteurs en matière d'enjeux
-    sociaux.
-- title: 'Affaire de la tête de cochon à Nice : Eric Ciotti veut se porter partie
-    civile'
-  summary: Après de nouvelles révélations dans «Nice-Matin» sur les méthodes «border»
-    de l’équipe de son rival Christian Estrosi, le nouveau maire de la ville des Alpes-Maritimes
-    s’offusque de ce qui pourrait être, selon lui, «l’un de plus graves scandales
-    politiques de la Ve République».
-  media: null
-  url: https://www.liberation.fr/politique/elections/affaire-de-la-tete-de-cochon-a-nice-eric-ciotti-veut-se-porter-partie-civile-20260805_QOGSNFHKMNB7NFAERQG3G23EII/
-  date: '2026-08-05T14:40:34+00:00'
-  lang: FR
-  author: Nicolas Massol
-  source: Libération
-  EID: 125
-  similarity_score: 0.5544766187667847
-  rerank_reason: Des rapports sur un cas juridique impliquant un policier, pertinent
-    pour l'intérêt des lecteurs en matière d'questions sociales.
-editorial: "**Titre : L’extrême droite à l’assaut, la gauche doit répondre**\n\n**Chapeau\
-  \ :**  \nCe 5 août 2026, l’actualité dessine une offensive coordonnée des forces\
-  \ réactionnaires, des réseaux sociaux aux institutions, tandis que les résistances\
-  \ s’organisent. Entre normalisation des idées extrêmes et fragilisation démocratique,\
-  \ le camp progressiste ne peut plus se contenter de subir.\n\n**Cœur de l’édito\
-  \ :**  \nEn France, l’analyse de Michel Feher tombe comme un pavé dans la mare :\
-  \ l’« arc républicain » n’est plus qu’un marchepied pour Marine Le Pen. La droite\
-  \ et le macronisme, en adoptant ses thèmes – immigration, sécurité, pesticides –,\
-  \ préparent l’opinion à une alternance sans rupture. Pendant ce temps, Raphaël Glucksmann,\
-  \ cible d’une campagne de désinformation, réclame une main ferme contre TikTok et\
-  \ X. Mais ces plateformes, dirigées par des milliardaires comme Elon Musk, ne sont\
-  \ pas de simples vecteurs : elles deviennent des outils politiques assumés. Musk,\
-  \ interpellé par une militante identitaire, réactive des comptes d’extrême droite\
-  \ français. La techno-liberté n’est qu’un alibi pour une éditorialisation réactionnaire.\n\
-  \nEn Suisse, la même lame de fond se dessine. Christoph Blocher, à 86 ans, mène\
-  \ sa dernière croisade pour une neutralité stricte, tandis que des saluts nazis\
-  \ se multiplient dans un musée de la Résistance. L’UDC prospère sur les peurs, et\
-  \ le Conseil fédéral, englué dans ses compromis, laisse faire. Pendant ce temps,\
-  \ la polémique sur l’achat d’armes à l’Ukraine révèle les contradictions d’une neutralité\
-  \ à géométrie variable – on peut s’approvisionner en Israël, mais pas à Kiev. La\
-  \ géopolitique sert toujours les intérêts dominants.\n\nAux États-Unis, Trump peut\
-  \ encore gagner les midterms, selon les analyses. Les sondages erronés et les divisions\
-  \ démocrates offrent un boulevard au trumpisme. Et pendant que l’IA chinoise DeepSeek\
-  \ casse les prix avec son modèle à bas coût, les géants américains imposent leur\
-  \ loi, accentuant les inégalités technologiques et économiques.\n\nFace à ce rouleau\
-  \ compresseur, des résistances émergent. Les révélations sur les suicides à Matignon\
-  \ rappellent la souffrance au travail, y compris au sommet de l’État. Les initiatives\
-  \ locales, comme le Jardin Robinson au Lignon ou les pompiers du rail à Olten, montrent\
-  \ que la solidarité et le service public restent des remparts. Mais ces contre-feux\
-  \ sont dispersés et manquent d’un projet politique unifié.\n\n**Regard prospectif\
-  \ :**  \nLes prochains mois seront décisifs : élections françaises de 2027, votation\
-  \ suisse sur la neutralité, midterms américains. La gauche doit cesser de courir\
-  \ après les thèmes de l’extrême droite et proposer une alternative claire : défense\
-  \ des services publics, justice sociale, régulation des plateformes, refus de l’austérité.\
-  \ L’heure n’est plus à la modération, mais à la mobilisation.\n\n**Conclusion :**\
-  \  \nSi la nuit semble s’épaissir, chaque acte de résistance, chaque collectif qui\
-  \ s’organise, chaque voix qui refuse la normalisation du pire est une brèche dans\
-  \ le mur. La gauche n’a pas le droit de se résigner."
+  author: Yanis Varoufakis
+  source: Jacobin
+  EID: 115
+  similarity_score: 0.12259513139724731
+  rerank_reason: Discute du cas marxiste pour le technofeodalisme, un sujet économique
+    et politique pertinent.
+editorial: 'L''ingérence russe s''impose comme le fil rouge de cette journée politique
+  française, ciblant désormais les principaux prétendants à l''Élysée : après Raphaël
+  Glucksmann, c''est Gabriel Attal qui est visé par de faux reportages usurpant l''identité
+  de médias, affirmant notamment qu''il présenterait des signes de la maladie de Parkinson.
+  Le président de Renaissance a réagi en dénonçant ces «occupations illégales» des
+  gens du voyage en Vendée, tandis que Glucksmann appelle les autorités à ne pas avoir
+  «la main qui tremble» face à TikTok et X, plateformes sur lesquelles prospèrent
+  ces campagnes de désinformation. Cette offensive numérique s''accompagne d''une
+  bataille judiciaire : Eric Ciotti, nouveau maire de Nice, veut se porter partie
+  civile dans l''affaire de la tête de cochon, dénonçant un possible scandale d''État.
+  Dans le même temps, la question des suicides à Matignon refait surface, les services
+  du Premier ministre donnant leur version des faits après les révélations de France
+  Inter.
+
+
+  La Suisse est dominée par la figure de Christoph Blocher, qui mène à 86 ans sa «dernière
+  croisade» pour l''initiative sur la neutralité, soumise au vote le 27 septembre,
+  tandis que sa fille Magdalena Martullo-Blocher s''apprête à reprendre le flambeau
+  contre les bilatérales III. Le conseiller fédéral Albert Rösti, lui, assume difficilement
+  les coupes dans l''adaptation des forêts face au changement climatique, tout en
+  préparant une nouvelle loi CO₂ et une stratégie nationale pour l''eau. Armasuisse
+  confirme que la neutralité n''interdit pas l''achat d''armes à l''Ukraine, alors
+  que le chef de l''armement s''est récemment rendu en Israël.
+
+
+  Aux États-Unis, les «comptes Trump» d''épargne-action séduisent déjà sept millions
+  d''enfants, une initiative qui pourrait atténuer les appels à la taxe sur la fortune.
+  Les républicains espèrent surprendre aux élections de mi-mandat, tandis que les
+  victoires socialistes à New York sont minimisées par les démocrates centristes.
+  Le débat sur la prospérité comparée entre Américains et Européens est relancé par
+  une étude contredisant le récit dominant.
+
+
+  Sur le plan géopolitique, les discussions de Rome entre Liban et Israël butent sur
+  le désarmement du Hezbollah, tandis que l''attentat de Berlin pourrait révéler un
+  tournant sahélien du djihad européen. L''enquête OSINT sur la ruée vers Ceuta met
+  en lumière le rôle des réseaux sociaux dans l''organisation de la migration massive.
+  DeepSeek, avec son modèle V4-Flash cent fois moins cher que Claude Fable 5, confirme
+  la stratégie chinoise de l''IA à bas coût, tandis que Yanis Varoufakis développe
+  le concept de «technoféodalisme» pour qualifier le pouvoir excessif des géants de
+  la tech. Elon Musk, lui, continue d''intervenir directement pour réactiver des comptes
+  d''extrême droite français suspendus sur X, posant la question d''une éditorialisation
+  de la plateforme.'

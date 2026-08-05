@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+import re
+
 import requests
 import yaml
 
@@ -12,9 +14,11 @@ from config import API_KEY, DEFAULT_PARSED_ENTRIES_PATH
 
 
 DEFAULT_OUTPUT_PATH = Path("data/editorial.mp3")
-DEFAULT_MODEL = "hexgrad/kokoro-82m"
-DEFAULT_VOICE = "ff_siwis"  # French female voice; Kokoro preset
+DEFAULT_MODEL = "mistralai/voxtral-mini-tts-2603"
+DEFAULT_VOICE = "fr_marie_curious"  # French female voice for Mistral TTS
 DEFAULT_ENDPOINT = "https://openrouter.ai/api/v1/audio/speech"
+DEFAULT_HTTP_REFERER = "https://pressroom.local"
+DEFAULT_APP_TITLE = "Pressroom"
 
 
 def load_editorial(path: Path = DEFAULT_PARSED_ENTRIES_PATH) -> str | None:
@@ -24,6 +28,32 @@ def load_editorial(path: Path = DEFAULT_PARSED_ENTRIES_PATH) -> str | None:
     return data.get("editorial")
 
 
+def strip_markdown(text: str) -> str:
+    """Remove common Markdown syntax and return plain text suitable for TTS."""
+    # Headers: # text, ## text, ### text
+    text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
+
+    # Links: [text](url) -> text
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", text)
+
+    # Bold and italic markers: **text**, *text*, __text__, _text_ -> text
+    text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
+    text = re.sub(r"__(.+?)__", r"\1", text)
+    text = re.sub(r"\*(.+?)\*", r"\1", text)
+    text = re.sub(r"_(.+?)_", r"\1", text)
+
+    # Blockquotes and list markers at line start
+    text = re.sub(r"^[>\-\*+]\s+", "", text, flags=re.MULTILINE)
+
+    # Horizontal rules
+    text = re.sub(r"^\s*[-=*]{3,}\s*$", "", text, flags=re.MULTILINE)
+
+    # Collapse multiple blank lines
+    text = re.sub(r"\n\s*\n+", "\n\n", text)
+
+    return text.strip()
+
+
 def text_to_speech(
     text: str,
     output_path: Path = DEFAULT_OUTPUT_PATH,
@@ -31,6 +61,8 @@ def text_to_speech(
     voice: str = DEFAULT_VOICE,
     endpoint: str = DEFAULT_ENDPOINT,
     api_key: str = API_KEY,
+    http_referer: str = DEFAULT_HTTP_REFERER,
+    app_title: str = DEFAULT_APP_TITLE,
 ) -> Path:
     """Synthesize text to speech via OpenRouter and save it as an MP3."""
     response = requests.post(
@@ -38,6 +70,8 @@ def text_to_speech(
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
+            "HTTP-Referer": http_referer,
+            "X-OpenRouter-Title": app_title,
         },
         json={
             "model": model,
@@ -53,6 +87,10 @@ def text_to_speech(
     with open(output_path, "wb") as fh:
         fh.write(response.content)
 
+    generation_id = response.headers.get("X-Generation-Id")
+    if generation_id:
+        print(f"Generation ID: {generation_id}")
+
     return output_path
 
 
@@ -63,8 +101,9 @@ def main() -> None:
         print("No editorial found in parsed entries.")
         return
 
+    plain_text = strip_markdown(editorial)
     print(f"Synthesizing editorial to MP3 using {DEFAULT_MODEL} (voice: {DEFAULT_VOICE})...")
-    output_path = text_to_speech(editorial)
+    output_path = text_to_speech(plain_text)
     print(f"Saved MP3 to {output_path}")
 
 

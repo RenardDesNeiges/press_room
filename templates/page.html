@@ -106,6 +106,34 @@
       font-size: 0.95rem;
     }
 
+    .audio-player {
+      margin-bottom: 1.5rem;
+    }
+
+    .audio-player audio {
+      display: none;
+    }
+
+    .audio-play-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 1.2rem;
+      background-color: var(--bg);
+      color: var(--fg);
+      border: 2px solid var(--rule);
+      font-family: var(--font-title);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .audio-play-button:hover {
+      background-color: var(--fg);
+      color: var(--bg);
+    }
+
     .article-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -223,7 +251,10 @@
       <div class="lead-articles">
         $lead_articles
       </div>
-      $editorial
+      <div class="editorial">
+        $audio_player
+        $editorial_content
+      </div>
     </section>
     <main class="article-grid">
       $articles
@@ -232,5 +263,28 @@
       Generated from filtered_entries.yml · $article_count articles selected
     </footer>
   </div>
+  <script>
+    (function () {
+      const player = document.querySelector('.audio-player');
+      if (!player) return;
+      const audio = player.querySelector('audio');
+      const button = player.querySelector('.audio-play-button');
+      if (!audio || !button) return;
+
+      button.addEventListener('click', function () {
+        if (audio.paused) {
+          audio.play();
+          button.textContent = '❚❚ Pause';
+        } else {
+          audio.pause();
+          button.textContent = '▶ Écouter l\'édito';
+        }
+      });
+
+      audio.addEventListener('ended', function () {
+        button.textContent = '▶ Écouter l\'édito';
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -24,34 +24,50 @@ def load_parsed_data(
 
 
 def format_inline(text: str) -> str:
-    """Escape HTML entities and convert bold/italic Markdown to HTML tags."""
-    escaped = html.escape(text, quote=False)
+    """Escape HTML entities and convert Markdown inline formatting to HTML."""
+    # Protect Markdown links by replacing them with placeholders.
+    links: list[str] = []
+
+    def save_link(match: re.Match) -> str:
+        link_text = html.escape(match.group(1), quote=False)
+        url = html.escape(match.group(2), quote=True)
+        links.append(f'<a href="{url}">{link_text}</a>')
+        return f"\x00LINK{len(links) - 1}\x00"
+
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", save_link, text)
+
+    # Escape remaining HTML entities.
+    text = html.escape(text, quote=False)
 
     # Bold: **text** or __text__
-    escaped = re.sub(
+    text = re.sub(
         r"\*\*(.+?)\*\*",
         lambda m: f"<strong>{html.escape(m.group(1), quote=False)}</strong>",
-        escaped,
+        text,
     )
-    escaped = re.sub(
+    text = re.sub(
         r"__(.+?)__",
         lambda m: f"<strong>{html.escape(m.group(1), quote=False)}</strong>",
-        escaped,
+        text,
     )
 
     # Italic: *text* or _text_
-    escaped = re.sub(
+    text = re.sub(
         r"\*(.+?)\*",
         lambda m: f"<em>{html.escape(m.group(1), quote=False)}</em>",
-        escaped,
+        text,
     )
-    escaped = re.sub(
+    text = re.sub(
         r"_(.+?)_",
         lambda m: f"<em>{html.escape(m.group(1), quote=False)}</em>",
-        escaped,
+        text,
     )
 
-    return escaped
+    # Restore Markdown links as HTML links.
+    for index, link_html in enumerate(links):
+        text = text.replace(f"\x00LINK{index}\x00", link_html)
+
+    return text
 
 
 def render_markdown(markdown_text: str) -> str:
@@ -164,14 +180,24 @@ def build_html(
         render_article(entry, article_template) for entry in grid_entries
     )
 
-    editorial_html = ""
+    audio_player_html = ""
+    editorial_content_html = ""
     if editorial:
-        editorial_html = f'<div class="editorial">\n{render_markdown(editorial)}\n</div>'
+        audio_player_html = (
+            '<div class="audio-player">'
+            '<audio preload="metadata">'
+            '<source src="data/editorial.mp3" type="audio/mpeg">'
+            "</audio>"
+            '<button class="audio-play-button" type="button">▶ Écouter l\'édito</button>'
+            "</div>"
+        )
+        editorial_content_html = render_markdown(editorial)
 
     return page_template.substitute(
         site_title=html.escape(site_title, quote=False),
         lead_articles=lead_articles_html,
-        editorial=editorial_html,
+        audio_player=audio_player_html,
+        editorial_content=editorial_content_html,
         articles=articles_html,
         article_count=len(entries),
     )
