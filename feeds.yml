@@ -1,0 +1,38 @@
+publications:
+  - name: "Mediapart"
+    lang: "FR"
+    feeds:
+      - "https://www.mediapart.fr/articles/feed"
+  - name: "Le Monde Diplomatique"
+    lang: "FR"
+    feeds:
+      - "https://www.monde-diplomatique.fr/rss/"
+      - "https://blog.mondediplo.net/rss"
+  - name: "Financial Times"
+    lang: "EN"
+    feeds:
+      - "https://www.ft.com/rss/"
+  - name: "Politico EU"
+    lang: "EN"
+    feeds:
+      - "https://www.politico.eu/feed/"
+  - name: "NZZ (Neue Zürcher Zeitung)"
+    lang: "DE"
+    notes: "https://www.nzz.ch/startseite.rss"
+  - name: "Al Jazeera"
+    lang: "EN"
+    feeds:
+      - "https://www.aljazeera.com/xml/rss/all.xml"
+  - name: "Phenomenal World"
+    notes: "https://phenomenalworld.org/rss"
+  - name: "Le Temps"
+    lang: "FR"
+    feeds:
+      - "https://www.letemps.ch/suisse.rss"
+  - name: "Jacobin"
+    lang: "EN"
+    notes: "https://jacobin.com/rss"
+  # - name: "El Diario (España)"
+  #   lang: "ES"
+  #   feeds:
+  #     - "https://www.eldiario.es/rss/"
