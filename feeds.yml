@@ -15,7 +15,7 @@ publications:
   - name: "Politico EU"
     lang: "EN"
     feeds:
-      - "https://www.politico.eu/feed/"
+      - "https://www.politico.eu/rss/feed"
   - name: "NZZ (Neue Zürcher Zeitung)"
     lang: "DE"
     notes: "https://www.nzz.ch/startseite.rss"
@@ -32,6 +32,12 @@ publications:
   - name: "Jacobin"
     lang: "EN"
     notes: "https://jacobin.com/rss"
+  - name: "Le Grand Continent"
+    lang: "FR"
+    notes: "https://legrandcontinent.eu/fr/rss"
+  - name: "Libération"
+    lang: "FR"
+    notes: "https://www.liberation.fr/arc/outboundfeeds/rss-all/category/politique/"
   # - name: "El Diario (España)"
   #   lang: "ES"
   #   feeds:

@@ -66,7 +66,7 @@ def collect_all_feeds(
 ) -> dict[str, dict[str, Any]]:
     """Query all RSS feeds referenced in the configuration and return a dict.
 
-    The returned structure maps feed URL -> {"feed": parsed_feed_data, "lang": lang}.
+    The returned structure maps feed URL -> {"feed": parsed_feed_data, "lang": lang, "source": source}.
     Feeds that fail to load are omitted.
     """
     if feeds_config is None:
@@ -81,10 +81,11 @@ def collect_all_feeds(
                 urls = [note]
 
         lang = publication.get("lang")
+        source = publication.get("name")
         for url in urls:
             feed_data = query_rss_feed(url)
             if feed_data is not None:
-                results[url] = {"feed": feed_data, "lang": lang}
+                results[url] = {"feed": feed_data, "lang": lang, "source": source}
 
     return results
 
@@ -96,8 +97,9 @@ def filter_feeds_by_date(
 ) -> dict[str, dict[str, Any]]:
     """Filter feed entries by date.
 
-    Returns a dict mapping feed URL -> {"entries": [...], "lang": lang} for entries
-    whose publication date is within `max_age` of `reference_date` (defaulting to UTC now).
+    Returns a dict mapping feed URL -> {"entries": [...], "lang": lang, "source": source}
+    for entries whose publication date is within `max_age` of `reference_date`
+    (defaulting to UTC now).
     """
     if reference_date is None:
         reference_date = datetime.now(timezone.utc)
@@ -110,7 +112,11 @@ def filter_feeds_by_date(
             if entry_date is not None and (reference_date - entry_date) <= max_age:
                 recent_entries.append(entry)
         if recent_entries:
-            filtered[url] = {"entries": recent_entries, "lang": meta.get("lang")}
+            filtered[url] = {
+                "entries": recent_entries,
+                "lang": meta.get("lang"),
+                "source": meta.get("source"),
+            }
 
     return filtered
 
@@ -159,7 +165,11 @@ def extract_author(entry: dict[str, Any]) -> str | None:
     return entry.get("author")
 
 
-def format_entry(entry: dict[str, Any], lang: str | None = None) -> dict[str, Any]:
+def format_entry(
+    entry: dict[str, Any],
+    lang: str | None = None,
+    source: str | None = None,
+) -> dict[str, Any]:
     """Convert a feedparser entry into the export schema."""
     entry_date = parse_feed_date(entry)
     return {
@@ -170,6 +180,7 @@ def format_entry(entry: dict[str, Any], lang: str | None = None) -> dict[str, An
         "date": entry_date.isoformat() if entry_date else None,
         "lang": lang,
         "author": extract_author(entry),
+        "source": source,
     }
 
 
@@ -181,8 +192,9 @@ def flatten_filtered_entries(
     eid = 1
     for meta in filtered.values():
         lang = meta.get("lang")
+        source = meta.get("source")
         for entry in meta["entries"]:
-            formatted = format_entry(entry, lang=lang)
+            formatted = format_entry(entry, lang=lang, source=source)
             formatted["EID"] = eid
             entries.append(formatted)
             eid += 1

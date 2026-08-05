@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>press-room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --accent: #000000;
+      --rule: #000000;
+      --font-title: "Playfair Display", Georgia, "Times New Roman", serif;
+      --font-body: "GT Pressura Mono", "Courier New", Courier, "Lucida Console", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.55;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 5vw;
+    }
+
+    header.masthead {
+      text-align: center;
+      border-top: 4px solid var(--rule);
+      border-bottom: 2px solid var(--rule);
+      padding: 1.5rem 0;
+      margin-bottom: 2.5rem;
+    }
+
+    .masthead-title {
+      margin: 0;
+      font-family: var(--font-title);
+      font-size: 3.2rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+
+    .masthead-tagline {
+      margin: 0.5rem 0 0;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .article {
+      border-top: 1px solid var(--rule);
+      padding-top: 1rem;
+    }
+
+    .article-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .article-link:hover .article-title {
+      text-decoration: underline;
+    }
+
+    .article img {
+      display: block;
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 1px solid var(--rule);
+      filter: grayscale(100%);
+    }
+
+    .article-title {
+      margin: 0 0 0.6rem;
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .article-byline {
+      margin: 0 0 0.8rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .article-summary {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.75rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 2rem 1.5rem;
+      }
+      .masthead-title {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <h1 class="masthead-title">press-room</h1>
+      <p class="masthead-tagline">A daily selection of the press</p>
+    </header>
+    <main class="grid">
+      <article class="article">
+  <a href="https://www.nzz.ch/feuilleton/er-galt-als-akademisches-wunderkind-anschuldigungen-gegen-cambridge-professor-ld.10018325" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Er galt als akademisches Wunderkind: Anschuldigungen gegen Cambridge-Professor</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Der Soziologe Jason Arday wurde als jüngster schwarzer Professor der britischen Elite-Uni gefeiert. Nun stehen nicht nur Plagiatsvorwürfe im Raum, auch mehrere Angaben zu seiner Biografie werden infrage gestellt.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.politico.eu/article/uk-jeffrey-epstein-inquiry-alex-davies-jones-andy-burnham/?utm_source=RSS_Feed&amp;utm_medium=RSS&amp;utm_campaign=RSS_Syndication" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">UK not ‘actively’ considering Epstein public inquiry</h2>
+    <p class="article-byline">Politico EU · Noah Keate · 05 August 2026</p>
+    <p class="article-summary">Victims Minister Alex Davies-Jones had told the BBC the British prime minister was looking into holding a probe.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/international/raetsel-um-russlands-kamikazedrohnen-der-kreml-aendert-seine-taktik-im-luftkrieg-ld.10018084" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Rätsel um Russlands Kamikazedrohnen: Der Kreml ändert seine Taktik im Luftkrieg</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Noch vor kurzem waren die massenhaft eingesetzten Shahed-Drohnen die grösste Bedrohung für ukrainische Städte – nun sind solche Angriffe deutlich seltener. Die Ukraine kann jedoch nicht aufatmen, denn Russland hat im Juli eine Rekordzahl von Raketen eingesetzt.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.mediapart.fr/journal/international/050826/ukraine-des-frappes-russes-font-15-morts-kyiv-et-dans-ses-environs" class="article-link" target="_blank" rel="noopener noreferrer">
+    <img src="https://static.mediapart.fr/etmagine/default/files/2026/08/05/260805-img-ukraine-des-frappes-russes-font-15-morts-kyiv-et-dans-ses-environs.jpg" alt="" loading="lazy">
+    <h2 class="article-title">Ukraine: des frappes russes font 15 morts à Kyiv et dans ses environs</h2>
+    <p class="article-byline">Mediapart · Agence France-Presse · 05 August 2026</p>
+    <p class="article-summary">L’armée russe a tiré dans la nuit 115 drones et 28 missiles à haute vitesse, notamment balistiques. L’Ukraine n’a pas pu abattre un seul missile russe lors de cette attaque meurtrière, a indiqué l’armée de l’air.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.aljazeera.com/news/2026/8/5/iran-oman-us-close-to-hormuz-deal-what-do-they-all-want?traffic_source=rss" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Iran, Oman, US ‘close’ to Hormuz deal: What do they all want?</h2>
+    <p class="article-byline">Al Jazeera · 05 August 2026</p>
+    <p class="article-summary">An agreement could restore shipping through crucial waterway, paving way for peace talks between Tehran and Washington.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.letemps.ch/articles/les-blocher-d-un-combat-contre-l-europe-a-l-autre" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Les Blocher, d’un combat contre l’Europe à l’autre</h2>
+    <p class="article-byline">Le Temps · Yan Pauchard · 04 August 2026</p>
+    <p class="article-summary">Trente ans après le refus historique de l’EEE mené par Christoph Blocher, sa fille Magdalena Martullo-Blocher s’apprête à mener la charge contre les bilatérales III. Rencontre dans leur fief d’Herrliberg, où ils ont accepté de raconter cette histoire de transmission, où la…</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.aljazeera.com/news/2026/8/5/iraq-faces-crisis-as-shia-armed-groups-defy-disarmament?traffic_source=rss" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Iraq faces crisis as Shia armed groups defy disarmament</h2>
+    <p class="article-byline">Al Jazeera · 05 August 2026</p>
+    <p class="article-summary">Iraqi PM faces a serious crisis as powerful Shia paramilitaries refuse to disarm as September 30 deadline looms.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/wissenschaft/gesunde-ernaehrung-was-mini-tomaten-so-besonders-macht-ld.10013926" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">ERKLÄRT - Kommt es auf die Grösse an? Weshalb Minitomaten besonders gesund sind</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Wie sich kleine von grossen Tomaten unterscheiden und warum bei Peperoni die Grösse nicht entscheidend ist.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.politico.eu/article/european-parliament-president-klaus-hansch-dead/?utm_source=RSS_Feed&amp;utm_medium=RSS&amp;utm_campaign=RSS_Syndication" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Former European Parliament President Klaus Hänsch has died</h2>
+    <p class="article-byline">Politico EU · Ferdinand Knapp · 05 August 2026</p>
+    <p class="article-summary">The German Social Democrat served as head of the Parliament from 1994 to 1997.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.aljazeera.com/news/2026/8/5/why-are-us-republicans-losing-faith-in-war-secretary-pete-hegseth?traffic_source=rss" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Why are US Republicans losing faith in War Secretary Pete Hegseth?</h2>
+    <p class="article-byline">Al Jazeera · 05 August 2026</p>
+    <p class="article-summary">The reasons for dissent are not unanimous, ranging from the war in Iran to an overhaul of military leadership.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.aljazeera.com/news/2026/8/5/ex-pm-sheikh-hasina-announces-her-plan-to-return-to-bangladesh?traffic_source=rss" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Ex-PM Sheikh Hasina announces plan to return to Bangladesh</h2>
+    <p class="article-byline">Al Jazeera · 05 August 2026</p>
+    <p class="article-summary">The decision of the 78-year-old ousted leader comes despite her facing the death penalty in Bangladesh.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/international/taiwan-uebt-den-widerstand-gegen-einen-chinesischen-angriff-ld.10018329" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Taiwan übt den Widerstand gegen einen chinesischen Angriff</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Mit dem Manöver «Han Kuang» probt Taiwan zehn Tage lang, wie es einen Angriff aus China überstehen könnte. Neu im Programm: eine Stärkung der zivilen Verteidigungsfähigkeit. Auch das Internet wird zeitweise verlangsamt.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/zuerich/ein-leben-fuer-das-reisen-warum-den-globetrotter-gruender-walo-kamm-die-nostalgie-erfasst-hat-ld.10017710" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Walo Kamm gründete einst den Reiseveranstalter Globetrotter. Heute blickt er kritisch darauf, wie viele unterwegs sind</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Für Walo Kamm, heute 85 Jahre alt, war Reisen Flucht, Leidenschaft und ein Geschäft. Ein Gespräch über die Geschichte des günstigen Reisens.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/zuerich/ein-feuerwehrmann-ein-jugendlicher-und-ein-mittaeter-legen-brand-um-brand-nun-kommt-der-juengste-aus-dem-trio-vor-gericht-ld.10017969" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Ein Feuerwehrmann und zwei Teenager legen Brand um Brand: Nun kommt der Jüngste aus dem Trio vor Gericht</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Gerichtsunterlagen zur Brandserie in einer Zürcher Landgemeinde zeigen, wie die Brandstifter mit jeder Tat skrupelloser wurden.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.aljazeera.com/news/longform/2026/8/5/demolition-complicates-the-search-for-bodies-after-venezuelas-earthquakes?traffic_source=rss" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Demolition complicates the search for bodies after Venezuela’s earthquakes</h2>
+    <p class="article-byline">Al Jazeera · 05 August 2026</p>
+    <p class="article-summary">Venezuela has begun tearing down unstable buildings after its deadly earthquakes. But what is the cost to survivors?</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/zuerich/hitze-im-altersheim-so-schuetzt-zuerich-alte-vor-hohen-temperaturen-ld.10017939" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Sprühduschen, Eiskaffee, eine Task-Force – aber kaum Klimaanlagen: So versuchen die Zürcher Heime, alte Menschen vor der Hitze zu schützen</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 05 August 2026</p>
+    <p class="article-summary">Seniorinnen und Senioren leiden besonders unter hohen Temperaturen. Das hat auch damit zu tun, wann und wie die hiesigen Alterszentren gebaut wurden.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.nzz.ch/sport/rad/die-erste-schweizerin-im-maillot-jaune-marlen-reusser-gewinnt-das-zeitfahren-tour-de-france-ld.10018078" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Die erste Schweizerin im Maillot jaune: Marlen Reusser gewinnt das Zeitfahren der Tour de France</h2>
+    <p class="article-byline">NZZ (Neue Zürcher Zeitung) · 04 August 2026</p>
+    <p class="article-summary">Die Bernerin wird am vierten Renntag ihrer Favoritenrolle gerecht – doch beinahe hätte der Wind den Triumph verhindert.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.ft.com/content/eee4bbbf-1d94-4910-9a61-2faefef61d55?syn-25a6b1a6=1" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Russia drone company chief injured in car bombing</h2>
+    <p class="article-byline">Financial Times · 05 August 2026</p>
+    <p class="article-summary">Attack on Vladimir Tkachuk is latest targeting prominent figures in the Russian war effort</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.aljazeera.com/news/2026/8/5/reform-uk-plan-to-return-asylum-seekers-using-navy-dangerous-in-practice?traffic_source=rss" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Reform UK plan to return asylum seekers using navy ‘dangerous in practice’</h2>
+    <p class="article-byline">Al Jazeera · 05 August 2026</p>
+    <p class="article-summary">Nigel Farage's party says 'Operation Fortress' would stop migrants 'invading', but experts slam proposal as unrealistic.</p>
+  </a>
+</article>
+
+<article class="article">
+  <a href="https://www.ft.com/content/ae7acfa8-32d6-496a-a1df-28206fa1661d?syn-25a6b1a6=1" class="article-link" target="_blank" rel="noopener noreferrer">
+    
+    <h2 class="article-title">Citadel surges 6% after swoop on Situational Awareness</h2>
+    <p class="article-byline">Financial Times · 05 August 2026</p>
+    <p class="article-summary">Ken Griffin’s flagship fund bought billions of dollars of AI stocks from Leopold Aschenbrenner’s firm</p>
+  </a>
+</article>
+
+    </main>
+    <footer>
+      Generated from filtered_entries.yml · 20 articles selected
+    </footer>
+  </div>
+</body>
+</html>
