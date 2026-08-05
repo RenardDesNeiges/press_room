@@ -171,8 +171,7 @@ entries:
   author: null
   source: Financial Times
   EID: 15
-- title: Iran says it has reached agreement with Oman on Strait of Hormuz shipping
-    route
+- title: Iran says it has reached agreement with Oman on Hormuz shipping route
   summary: Islamic republic is determined to retain a degree of control over the chokepoint
   media: null
   url: https://www.ft.com/content/e0b10cad-3e46-4a6d-9227-eba6fe11c676?syn-25a6b1a6=1
@@ -211,9 +210,9 @@ entries:
   author: null
   source: Financial Times
   EID: 19
-- title: Citadel surges 6% after swoop on Situational Awareness
-  summary: Ken Griffin’s flagship fund bought billions of dollars of AI stocks from
-    Leopold Aschenbrenner’s firm
+- title: Citadel’s flagship fund surges 6% after Situational Awareness swoop
+  summary: Ken Griffin’s company bought billions of dollars of AI stocks from Leopold
+    Aschenbrenner’s firm
   media: null
   url: https://www.ft.com/content/ae7acfa8-32d6-496a-a1df-28206fa1661d?syn-25a6b1a6=1
   date: '2026-08-05T11:05:27+00:00'
@@ -221,6 +220,16 @@ entries:
   author: null
   source: Financial Times
   EID: 20
+- title: German anti-terror police investigate explosive drone found at Leipzig airport
+  summary: Semtex-laden drone, found just meters from a Ukrainian aircraft, failed
+    to detonate.
+  media: null
+  url: https://www.politico.eu/article/germany-police-investigation-explosive-drone-leipzig-airport/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
+  date: '2026-08-05T18:00:16+00:00'
+  lang: EN
+  author: Ferdinand Knapp
+  source: Politico EU
+  EID: 21
 - title: Washington holds up approval for France’s US ambassador pick amid human rights
     spat
   summary: Trump and Macron play up their friendship in front of the cameras, but
@@ -231,7 +240,7 @@ entries:
   lang: EN
   author: Clea Caulcutt
   source: Politico EU
-  EID: 21
+  EID: 22
 - title: Former European Parliament President Klaus Hänsch has died
   summary: The German Social Democrat served as head of the Parliament from 1994 to
     1997.
@@ -241,7 +250,7 @@ entries:
   lang: EN
   author: Ferdinand Knapp
   source: Politico EU
-  EID: 22
+  EID: 23
 - title: Das Phantom Tom Rohrböck
   summary: Pauline von Pezold und Frederik Schindler widmen sich in dieser Sonderfolge
     einem mysteriösen Politikberater, der seit der AfD-Gründung im Hintergrund mitzumischen
@@ -255,7 +264,7 @@ entries:
   lang: EN
   author: Pauline von Pezold, Frederik Schindler
   source: Politico EU
-  EID: 23
+  EID: 24
 - title: EU to transfer €1.4B in profits from frozen Russian assets to Ukraine
   summary: The latest transfer follows another deadly night of missile attacks on
     Kyiv.
@@ -265,7 +274,7 @@ entries:
   lang: EN
   author: Milena Wälde
   source: Politico EU
-  EID: 24
+  EID: 25
 - title: Anthropic- und OpenAI-Modelle versuchten, Softwareentwickler zu täuschen
   summary: Die KI-Modelle wollen die Menschen dazu bringen, unwissentlich an einem
     Cyberangriff mitzuwirken. Das befeuert die Debatte um die Gefahren der KI-Entwicklung.
@@ -275,7 +284,7 @@ entries:
   lang: EN
   author: John Sakellariadis
   source: Politico EU
-  EID: 25
+  EID: 26
 - title: Self-driving startup approved to take taxi passengers in London
   summary: Transport for London has granted licenses for 15 vehicles operated by Wayve
     and Uber.
@@ -285,7 +294,7 @@ entries:
   lang: EN
   author: Joseph Bambridge
   source: Politico EU
-  EID: 26
+  EID: 27
 - title: Italy to spend billions more on energy and defense, finance minister says
   summary: Rome will boost expenditures on green investment and military spending
     after the EU relaxed its strict spending rules, Giancarlo Giorgetti told parliament.
@@ -295,7 +304,7 @@ entries:
   lang: EN
   author: Gregorio Sorgi
   source: Politico EU
-  EID: 27
+  EID: 28
 - title: UK not ‘actively’ considering Epstein public inquiry
   summary: Victims Minister Alex Davies-Jones had told the BBC the British prime minister
     was looking into holding a probe.
@@ -305,7 +314,7 @@ entries:
   lang: EN
   author: Noah Keate
   source: Politico EU
-  EID: 28
+  EID: 29
 - title: Europe has the defense budget. The test now is delivery.
   summary: The coming years will test whether Europe's defense industry can keep pace
     with its security ambitions.
@@ -315,19 +324,6 @@ entries:
   lang: EN
   author: Jonathan Dimson, senior partner, McKinsey's London office and Mikael Robertson,
     senior partner, McKinsey’s Stockholm office
-  source: Politico EU
-  EID: 29
-- title: Europe’s Palantir problem
-  summary: Europe wants to kick its U.S. tech habit, but it’s struggling to detangle
-    itself from American data analytics firm Palantir.  The problem is, the company’s
-    tools are already deeply embedded in critical sectors across the bloc like policing,
-    national defense and health systems. A report released today also shows that the
-    tech firm has found ways to pay minimal […]
-  media: null
-  url: https://www.politico.eu/podcast/brussels-playbook-podcast/europes-palantir-problem/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication
-  date: '2026-08-05T04:05:00+00:00'
-  lang: EN
-  author: Zoya Sheftalovich, Ian Wishart, Saga Ringmar
   source: Politico EU
   EID: 30
 - title: Satellitenbilder zeigen den Massenansturm auf Ceuta – und wie sich die Grenze
@@ -404,7 +400,7 @@ entries:
   summary: Die Tessiner Skifahrerin beendet ihre grosse Karriere.
   media: null
   url: https://www.nzz.ch/sport/lara-gut-behrami-tritt-zurueck-kein-comeback-nach-der-verletzung-ld.10018385
-  date: '2026-08-05T16:12:25+00:00'
+  date: '2026-08-05T17:56:58+00:00'
   lang: DE
   author: null
   source: NZZ (Neue Zürcher Zeitung)
@@ -883,6 +879,36 @@ entries:
   author: null
   source: NZZ (Neue Zürcher Zeitung)
   EID: 78
+- title: 'Photos: Israeli forces raid occupied West Bank’s Qalandiya refugee camp'
+  summary: Eight Palestinian people injured after Israeli forces enter homes, shops
+    in Qalandiya, issuing demolition threats.
+  media: null
+  url: https://www.aljazeera.com/gallery/2026/8/5/photos-israeli-forces-raid-occupied-west-banks-qalandiya-refugee-camp?traffic_source=rss
+  date: '2026-08-05T17:41:24+00:00'
+  lang: EN
+  author: null
+  source: Al Jazeera
+  EID: 79
+- title: El-Sayed wins Michigan Democratic Senate primary
+  summary: Abdul El-Sayed won Michigan's Democratic primary for US Senate, narrowly
+    defeating Rep. Haley Stevens.
+  media: null
+  url: https://www.aljazeera.com/video/newsfeed/2026/8/5/el-sayed-wins-michigan-democratic-senate-primary?traffic_source=rss
+  date: '2026-08-05T17:40:03+00:00'
+  lang: EN
+  author: null
+  source: Al Jazeera
+  EID: 80
+- title: Puntland forces seize government-held camp in Somalia’s Galkayo
+  summary: Puntland says it has taken control of Galkayo camp as rival federal-aligned
+    forces retreat following intense clashes.
+  media: null
+  url: https://www.aljazeera.com/news/2026/8/5/puntland-forces-seize-government-held-camp-in-somalias-galkayo?traffic_source=rss
+  date: '2026-08-05T17:38:33+00:00'
+  lang: EN
+  author: null
+  source: Al Jazeera
+  EID: 81
 - title: At least one Lebanese person, two Israeli soldiers killed in south Lebanon
   summary: The violence comes amid talks between Lebanon and Israel as Beirut pushes
     for a phased Israeli troop withdrawal.
@@ -892,7 +918,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 79
+  EID: 82
 - title: LIV Golf secures ‘lead’ investor for player-driven future after Saudi exit
   summary: An agreement with an unnamed investor is approved by the LIV Golf board
     to replace Saudi Arabia deal.
@@ -902,7 +928,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 80
+  EID: 83
 - title: Russia kills 17 in ballistic missile attacks around Kyiv
   summary: At least 17 people were killed after Russia launched an overnight ballistic
     missile and drone attack on Kyiv.
@@ -912,7 +938,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 81
+  EID: 84
 - title: Pope Leo XIV to visit Peru, Argentina and Uruguay in November
   summary: The pontiff’s first Latin America trip will take him back to Peru, where
     he spent decades as a missionary and bishop.
@@ -922,7 +948,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 82
+  EID: 85
 - title: Puerto Rican cities hit with water rationing measures during record drought
   summary: Governor Jenniffer Gonzalez says she does not know how long the rationing
     measures will remain in place.
@@ -932,7 +958,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 83
+  EID: 86
 - title: Arab officials call for action over Jerusalem tensions
   summary: Arab officials call for action over Jerusalem tensions
   media: null
@@ -941,7 +967,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 84
+  EID: 87
 - title: Top Arab, Muslim diplomats launch plan to protect Jerusalem religious sites
   summary: Foreign ministers warn Christian and Islamic holy sites 'threatened' by
     Israel 'as never before'.
@@ -951,7 +977,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 85
+  EID: 88
 - title: UK tribunal confirms professor’s anti-Zionism is legally protected belief
   summary: David Miller has told Al Jazeera the ruling is a victory that will encourage
     others to speak out against Zionism.
@@ -961,7 +987,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 86
+  EID: 89
 - title: 'War on Iran: US-Iran deal edges closer'
   summary: A deal between the US and Iran could be signed within 48 hours, according
     to US officials.
@@ -971,7 +997,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 87
+  EID: 90
 - title: Germany investigates explosive device attached to drone at Leipzig airport
   summary: An airport employee spotted the object carrying what authorities described
     as 'an unknown explosive device'.
@@ -981,7 +1007,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 88
+  EID: 91
 - title: Demolition complicates the search for bodies after Venezuela’s earthquakes
   summary: Venezuela has begun tearing down unstable buildings after its deadly earthquakes.
     But what is the cost to survivors?
@@ -991,7 +1017,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 89
+  EID: 92
 - title: Gaza father opens play center to restore childhood amid Israeli attacks
   summary: A Palestinian father opened a Gaza play center offering children free escape
     and joy amid near daily Israeli attacks.
@@ -1001,7 +1027,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 90
+  EID: 93
 - title: Boxer Chapman recovering after emergency surgery for brain bleed
   summary: Featherweight Raven Chapman collapsed while sparring on July 24 and was
     rushed to surgery, her team says.
@@ -1011,7 +1037,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 91
+  EID: 94
 - title: Ex-PM Sheikh Hasina announces plan to return to Bangladesh
   summary: The decision of the 78-year-old ousted leader comes despite her facing
     the death penalty in Bangladesh.
@@ -1021,7 +1047,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 92
+  EID: 95
 - title: Why are US Republicans losing faith in War Secretary Pete Hegseth?
   summary: The reasons for dissent are not unanimous, ranging from the war in Iran
     to an overhaul of military leadership.
@@ -1031,7 +1057,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 93
+  EID: 96
 - title: Iraq faces crisis as Shia armed groups defy disarmament
   summary: Iraqi PM faces a serious crisis as powerful Shia paramilitaries refuse
     to disarm as September 30 deadline looms.
@@ -1041,7 +1067,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 94
+  EID: 97
 - title: Former heavyweight champ ⁠Parker cleared to fight again after doping ban
   summary: Joseph Parker was suspended in October after failing a voluntary drug test,
     but denied taking any prohibited substance.
@@ -1051,7 +1077,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 95
+  EID: 98
 - title: UN rights chief says Iran executed at least 56 people since March
   summary: Volker Turk warns of surge in Iran executions to suppress dissent after
     January uprising.
@@ -1061,7 +1087,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 96
+  EID: 99
 - title: 'Pakistan’s Khan in jail for 3 years: PTI rallies over ‘arbitrary detention’'
   summary: Thousands of supporters of former PM Imran Khan's party demonstrate across
     country to call for his immediate release.
@@ -1071,7 +1097,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 97
+  EID: 100
 - title: 'SpaceX rocket segment to crash into the moon: What happened?'
   summary: A piece of the SpaceX Falcon 9 rocket is believed to have crashed into
     the moon after floating in space since last year.
@@ -1081,7 +1107,7 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 98
+  EID: 101
 - title: Mohamed Salah lands in Turkiye to fan frenzy ahead of Trabzonspor move
   summary: Mohamed Salah lands in Turkiye to fan frenzy ahead of Trabzonspor move.
   media: null
@@ -1090,43 +1116,13 @@ entries:
   lang: EN
   author: null
   source: Al Jazeera
-  EID: 99
+  EID: 102
 - title: In Bandar Abbas, the ceasefire never came
   summary: A single mother from Bandar Abbas reflects on the fear and resilience of
     living through repeated attacks.
   media: null
   url: https://www.aljazeera.com/features/2026/8/5/in-bandar-abbas-the-ceasefire-never-came?traffic_source=rss
   date: '2026-08-05T12:14:16+00:00'
-  lang: EN
-  author: null
-  source: Al Jazeera
-  EID: 100
-- title: 'Iran, Oman, US ‘close’ to Hormuz deal: What do they all want?'
-  summary: An agreement could restore shipping through crucial waterway, paving way
-    for peace talks between Tehran and Washington.
-  media: null
-  url: https://www.aljazeera.com/news/2026/8/5/iran-oman-us-close-to-hormuz-deal-what-do-they-all-want?traffic_source=rss
-  date: '2026-08-05T12:07:56+00:00'
-  lang: EN
-  author: null
-  source: Al Jazeera
-  EID: 101
-- title: Protesters stage sit-in against settler violence-linked Smotrich funds
-  summary: Palestinian and Israeli protesters staged a sit-in at the Religious Zionist
-    Party’s headquarters in Shoham on Wednesday.
-  media: null
-  url: https://www.aljazeera.com/video/newsfeed/2026/8/5/protesters-stage-sit-in-against-settler-violence-linked-smotrich-funds?traffic_source=rss
-  date: '2026-08-05T12:03:34+00:00'
-  lang: EN
-  author: null
-  source: Al Jazeera
-  EID: 102
-- title: Turkish cargo ship catches fire after Black Sea drone attack
-  summary: A Turkish cargo ship caught fire after a drone attack near Russia’s Black
-    Sea port of Novorossiysk.
-  media: null
-  url: https://www.aljazeera.com/video/newsfeed/2026/8/5/08-05-2026-drone-attacks-turkish-ship-sv?traffic_source=rss
-  date: '2026-08-05T11:49:25+00:00'
   lang: EN
   author: null
   source: Al Jazeera
@@ -1163,13 +1159,13 @@ entries:
   source: Le Temps
   EID: 104
 - title: Moscou sermonne le Conseil fédéral et s’immisce dans la campagne sur la neutralité
-  summary: La porte-parole du ministère russe des Affaires étrangères, Maria Zakharova,
+  summary: La porte-parole du Ministère russe des affaires étrangères, Maria Zakharova,
     publie sur Telegram un réquisitoire contre la conception de la neutralité d’Ignazio
     Cassis. Elle prend à témoin les auteurs de l’initiative sur la neutralité pour
     dénoncer son «abandon» par la Suisse officielle et tire un parallèle avec la période
     nazieVoilà une ingérence inédite dans l’histoire récente de la démocratie directe.
-    Vendredi dernier, la veille de la fête nationale, la porte-parole du ministère
-    russe des Affaires étrangères, Maria Zakharova, publiait sur son compte Telegram
+    Vendredi dernier, la veille de la Fête nationale, la porte-parole du Ministère
+    russe des affaires étrangères, Maria Zakharova, publiait sur son compte Telegram
     un texte fustigeant la neutralité «à géométrie variable» qu’appliquerait Ignazio
     Cassis tout en apportant son soutien à l’initiative de Christoph Blocher pour
     une neutralité «intégrale». Le jour même, son propos est repris en résumé par
@@ -1185,7 +1181,7 @@ entries:
     lors placée sur la liste des pays «inamicaux». Ses représentants, y compris en
     Suisse, répètent depuis quatre ans que la Suisse n’est plus neutre. C’est d’ailleurs
     en réaction aux affirmations de Moscou que Christoph Blocher s’est décidé à l’été
-    2022 à rédiger le texte de son initiative, au nom du comité Pro Suisse, avec le
+    2022 à rédiger le texte de son initiative, au nom du comité Pro Suisse, avec le
     soutien de l’UDC.Voir plus
   media: null
   url: https://www.letemps.ch/articles/moscou-sermonne-le-conseil-federal-et-s-immisce-dans-la-campagne-sur-la-neutralite
@@ -1247,12 +1243,12 @@ entries:
     destinés à adapter les forêtsCanicule, sécheresse, forêts fragilisées: l’été 2026
     donne un avant-goût des défis climatiques auxquels la Suisse doit se confronter.
     Pour Albert Rösti, il faut désormais renforcer les moyens consacrés à l’adaptation,
-    sans réduire ceux destinés à la baisse des émissions. Le conseiller fédéral prépare
-    une nouvelle loi CO₂ pour la période 2030-2040. Il annonce aussi une stratégie
-    nationale pour mieux coordonner l’utilisation de l’eau en période de pénurie.
-    Sur les 25 millions de francs annuels auxquels la Confédération a renoncé pour
-    rendre les forêts plus résistantes au changement climatique, il reconnaît une
-    situation inconfortable. Entretien.
+    sans réduire ceux destinés à la baisse des émissions de gaz à effet de serre.
+    Le conseiller fédéral prépare une nouvelle loi CO₂ pour la période 2030-2040.
+    Il annonce aussi une stratégie nationale pour mieux coordonner l’utilisation de
+    l’eau en période de pénurie. Sur les 25 millions de francs annuels auxquels la
+    Confédération a renoncé pour rendre les forêts plus résistantes au changement
+    climatique, il reconnaît une situation inconfortable. Entretien.
 
     Le Temps: L’été 2026 fait tomber des records de températures. La Suisse doit-elle
     désormais changer sa manière de se préparer aux épisodes de chaleur extrême?
@@ -1464,29 +1460,6 @@ entries:
   author: Yan Pauchard
   source: Le Temps
   EID: 113
-- title: '«Sans lui, il aurait pu y avoir des morts»: un policier vaudois jugé pour
-    une intervention tendue sur son jour de congé'
-  summary: S’est-il pris pour un sherif, ou a-t-il simplement fait son devoir? Un
-    agent vaudois, alors instructeur à l’Académie de police, comparaissait ce mardi
-    pour abus d’autorité après avoir interpellé en civil des chauffards à l’aide de
-    son chien. L’intervention s’était finie par un échange de coups et une morsure«J’ai
-    fait mon travail, c’est tout. Les rodéos routiers tuent, j’ai protégé la population,
-    c’est mon devoir.» Droit dans ses bottes, bien qu’ébranlé, Didier* a assuré devant
-    le Tribunal de Nyon, ce mardi matin, avoir agi au plus près de sa conscience et
-    de la doctrine policière, ce dimanche de décembre 2023, lors d’une intervention
-    en civil qui a mal tourné.Le Ministère public vaudois, lui, estime au contraire
-    qu’il s’est rendu coupable d’abus d’autorité et de contravention à la loi vaudoise
-    sur la police des chiens. Il avait condamné l’agent à 20 jours-amende avec sursis,
-    dans une ordonnance pénale à laquelle celui-ci s’est opposé. «Ce n’est pas la
-    sanction qui compte. Si cette ordonnance absurde est maintenue, sa carrière s’écroule»,
-    a rappelé son avocat Me Raphaël Mahaim.Voir plus
-  media: null
-  url: https://www.letemps.ch/articles/sans-lui-il-aurait-pu-y-avoir-des-morts-un-policier-vaudois-juge-pour-une-intervention-tendue-sur-son-jour-de-conge
-  date: '2026-08-04T17:51:15+00:00'
-  lang: FR
-  author: Pauline Rumpf
-  source: Le Temps
-  EID: 114
 - title: Nobody Asked for AI
   summary: We tend to think that markets reflect consumer choice. But the artificial-intelligence
     boom has been powered by the investment decisions of concentrated capital rather
@@ -1497,7 +1470,7 @@ entries:
   lang: EN
   author: Grace Blakeley
   source: Jacobin
-  EID: 115
+  EID: 114
 - title: No, Americans Aren’t Better Off Than Western Europeans
   summary: You were born on the wrong continent. Yes, the United States has a greater
     GDP per capita than Western Europe. But that GDP has not translated into broader
@@ -1508,7 +1481,7 @@ entries:
   lang: EN
   author: Matt Bruenig
   source: Jacobin
-  EID: 116
+  EID: 115
 - title: The Marxist Case for the Technofeudal Hypothesis
   summary: Yanis Varoufakis has called Big Tech’s overweening power to shape the modern
     economy “technofeudalism.” Writing for Jacobin, he argues that this isn’t a moral
@@ -1519,7 +1492,7 @@ entries:
   lang: EN
   author: Yanis Varoufakis
   source: Jacobin
-  EID: 117
+  EID: 116
 - title: L’attentat de Berlin et le tournant sahélien du djihad européen
   summary: 'De nouveaux documents sur le terroriste de la Marche des Fiertés pourraient
     signaler une nouvelle phase de l''État islamique.
@@ -1532,7 +1505,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 118
+  EID: 117
 - title: Trump peut encore gagner les élections de mi-mandat
   summary: 'Les sondages erronés et les divisions démocrates pourraient offrir une
     victoire inattendue en novembre au parti républicain.
@@ -1545,7 +1518,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 119
+  EID: 118
 - title: Avec V4-Flash, DeepSeek mise sur l’IA à faible coût plutôt que sur la course
     à la puissance
   summary: "Fin juillet, le Chinois DeepSeek, leader de l'IA à bas coût, a publié\
@@ -1560,7 +1533,7 @@ entries:
   lang: FR
   author: Ramona Bloj
   source: Le Grand Continent
-  EID: 120
+  EID: 119
 - title: Pourquoi le Maroc n’a pas pu orchestrer la crise de Ceuta
   summary: 'Attribuer la crise à Rabat revient à méconnaître la dynamique sociale
     marocaine et la singularité de l’exclave.
@@ -1573,20 +1546,20 @@ entries:
   lang: FR
   author: Louis Puel
   source: Le Grand Continent
-  EID: 121
-- title: Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ?
-  summary: 'Une enquête OSINT reconstitue le passage de 50 000 migrants dans l’exclave
-    espagnole.
-
-    L’article Les réseaux sociaux ont-ils organisé la ruée vers Ceuta ? est apparu
-    en premier sur Le Grand Continent.'
+  EID: 120
+- title: 'Philippe, Attal et Glucksmann ciblés par des ingérences russes0160: la campagne
+    présidentielle dans les enfumages du Kremlin'
+  summary: Les trois prétendants à l’Elysée ont été victimes ces derniers jours d’opérations
+    russes de désinformation sur les réseaux sociaux. A gauche comme à droite, la
+    menace inquiète, alors qu’un projet de loi censé être plus dissuasif a été déposé
+    en juillet au Sénat.
   media: null
-  url: https://legrandcontinent.eu/fr/2026/08/04/les-reseaux-sociaux-ont-ils-organise-la-ruee-vers-ceuta/
-  date: '2026-08-04T17:44:09+00:00'
+  url: https://www.liberation.fr/politique/philippe-attal-et-glucksmann-cibles-par-des-ingerences-russes0160-la-campagne-presidentielle-dans-les-enfumages-du-kremlin-20260805_PGG5P5HT2FBJ3NP7OEHHYLOL74/
+  date: '2026-08-05T18:01:50+00:00'
   lang: FR
-  author: Ramona Bloj
-  source: Le Grand Continent
-  EID: 122
+  author: Arthur Louis
+  source: Libération
+  EID: 121
 - title: '«Quinze euros c’est trop cher» : le prix de la primaire socialiste sème
     la discorde'
   summary: Après Ségolène Royal lundi, le député socialiste de l’Eure, Philippe Brun
@@ -1598,7 +1571,7 @@ entries:
   lang: FR
   author: Vincent Martins
   source: Libération
-  EID: 123
+  EID: 122
 - title: 'Ingérences étrangères : Marine Tondelier demande l’interdiction de X, «source
     de fake news» à «l’algorithme pipé»'
   summary: La secrétaire nationale des Ecologistes estime qu’au-delà des attaques
@@ -1610,7 +1583,7 @@ entries:
   lang: FR
   author: Lilian Alemagna
   source: Libération
-  EID: 124
+  EID: 123
 - title: 'Présidentielle 2027 : Gabriel Attal visé à son tour par «une ingérence en
     provenance de Russie»'
   summary: Des faux reportages usurpant l’identité de plusieurs médias dont «Libération»
@@ -1623,7 +1596,7 @@ entries:
   lang: FR
   author: Libération ., AFP .
   source: Libération
-  EID: 125
+  EID: 124
 - title: 'Suicides et tentatives à Matignon : mis en cause, les services du Premier
     ministre donnent leur version des faits'
   summary: L’administration a réagi ce mercredi 5 août aux révélations, lundi, de
@@ -1635,7 +1608,7 @@ entries:
   lang: FR
   author: Libération ., AFP .
   source: Libération
-  EID: 126
+  EID: 125
 - title: 'Affaire de la tête de cochon à Nice : Eric Ciotti veut se porter partie
     civile'
   summary: Après de nouvelles révélations dans «Nice-Matin» sur les méthodes «border»
@@ -1648,7 +1621,7 @@ entries:
   lang: FR
   author: Nicolas Massol
   source: Libération
-  EID: 127
+  EID: 126
 - title: 'Ingérences : Raphaël Glucksmann appelle les autorités à ne pas avoir «la
     main qui tremble» face à TikTok et X'
   summary: Après avoir été visé par une campagne de désinformation, le prétendant
@@ -1660,7 +1633,7 @@ entries:
   lang: FR
   author: Libération ., AFP .
   source: Libération
-  EID: 128
+  EID: 127
 - title: Le nouveau coup de main d’Elon Musk aux influenceurs d’extrême droite français
   summary: Interpellé par une militante identitaire française, Elon Musk est intervenu
     samedi pour réactiver des comptes d’extrême droite suspendus sur X. Si l’épisode
@@ -1672,7 +1645,7 @@ entries:
   lang: FR
   author: Maxime Macé, Pierre Plottu
   source: Libération
-  EID: 129
+  EID: 128
 - title: Comment «l’arc républicain» pave la voie de Marine Le Pen au pouvoir, par
     Michel Feher
   summary: Politique migratoire, retour des pesticides, présomption de légitime défense
@@ -1685,7 +1658,7 @@ entries:
   lang: FR
   author: Michel Feher
   source: Libération
-  EID: 130
+  EID: 129
 - title: 'Quiz : quand les vacances présidentielles prennent l’eau'
   summary: (16/30) Du fort de Brégançon aux virées moins officielles, partez en vacances
     avec nos présidents.
@@ -1695,7 +1668,7 @@ entries:
   lang: FR
   author: Laure Equy
   source: Libération
-  EID: 131
+  EID: 130
 - title: A Besançon, le musée de la Résistance et de la Déportation face à une recrudescence
     de saluts nazis
   summary: Deux personnes ont été interpellées et placées en garde à vue, lundi 3 août,
@@ -1707,7 +1680,7 @@ entries:
   lang: FR
   author: Arthur Louis
   source: Libération
-  EID: 132
+  EID: 131
 - title: 'Présidentielle 2027 : cet été, Gabriel Attal passe son rattrapage'
   summary: Pour combler son retard sur Edouard Philippe, son grand concurrent du centre
     droit, l’ex-Premier ministre profite de l’espace médiatique laissé libre par la
@@ -1718,31 +1691,7 @@ entries:
   lang: FR
   author: Lilian Alemagna
   source: Libération
-  EID: 133
-- title: 'Présidentielle 2027 : Gabriel Attal l’aoûtsider'
-  summary: En retard dans les sondages par rapport à son concurrent Edouard Philippe,
-    le Parisien se rêve en Macron 2.0, prônant dix ans après son mentor le «dépassement»
-    des clivages. Mais les Français le veulent-ils vraiment ?
-  media: null
-  url: https://www.liberation.fr/idees-et-debats/editorial/presidentielle-2027-gabriel-attal-laoutsider-20260804_JXKGZ6PSKNGWDHTDP4H7YMEONA/
-  date: '2026-08-04T18:10:10+00:00'
-  lang: FR
-  author: Alexandra Schwartzbrod
-  source: Libération
-  EID: 134
-- title: '«C’est pas chez vous ici, monsieur» : en Vendée, Gabriel Attal dénonce les
-    occupations illégales des gens du voyage'
-  summary: Poursuivant sa tournée d’été, l’ex-Premier ministre a réaffirmé ce mardi
-    4 août sa volonté de lutter contre les installations illégales d’une partie des
-    membres de la communauté. Une offensive soutenue par certains, face à une population
-    qui se dit inquiète de sa «mise à l’écart de la société».
-  media: null
-  url: https://www.liberation.fr/politique/cest-pas-chez-vous-ici-monsieur-en-vendee-gabriel-attal-denonce-les-occupations-illegales-des-gens-du-voyage-20260804_5YYSPSQ47JAYVII7QB5SKXQZJE/
-  date: '2026-08-04T17:52:36+00:00'
-  lang: FR
-  author: Chloé Dasquet
-  source: Libération
-  EID: 135
+  EID: 132
 - title: 'Ayuso defiende que el ático comprado por la Comunidad de Madrid no era para
     uso personal: "Sería muy poco inteligente"'
   summary: "La presidenta regional carga contra quienes intentan \"mezclar\" la compra\
@@ -1800,7 +1749,7 @@ entries:
   lang: ES
   author: África Gelardo Arrebola
   source: El Diario (España)
-  EID: 136
+  EID: 133
 - title: El Gobierno de Ayuso compró el ático de Chamberí por 6,3 millones de euros
   summary: "El Ejecutivo madrileño dijo inicialmente que adquirió el inmueble de 485\
     \ metros cuadrados y una amplia terraza para emplearlo como \"oficinas\" pese\
@@ -1863,7 +1812,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 137
+  EID: 134
 - title: 'Ayuso contra Ayuso: cómo ha cambiado su discurso sobre el ático de la Comunidad
     de Madrid en una semana'
   summary: "La líder madrileña justificó la necesidad del inmueble para llevar a cabo\
@@ -1932,7 +1881,7 @@ entries:
   lang: ES
   author: Marta Barandela
   source: El Diario (España)
-  EID: 138
+  EID: 135
 - title: 'El PP se enreda con la acogida de menores: dice ahora que "cumplirán la
     ley" mientras varias comunidades en las que gobiernan con Vox se oponen'
   summary: "Alma Ezcurra matiza que el reparto en caso de producirse tendrá que ser\
@@ -2019,7 +1968,7 @@ entries:
   lang: ES
   author: Marta Barandela, Marta Marbán Eguinoa, Daniel Ríos
   source: El Diario (España)
-  EID: 139
+  EID: 136
 - title: El Gobierno vasco pide que "se agoten todas las vías para que vuelvan con
     sus familias" los menores llegados a Ceuta
   summary: "La consejera Nerea Melgosa reclama que \"cualquier derivación debe acordarse\"\
@@ -2069,7 +2018,7 @@ entries:
   lang: ES
   author: elDiario.es Euskadi
   source: El Diario (España)
-  EID: 140
+  EID: 137
 - title: 'El vicepresidente andaluz de Vox rechaza acoger a niños migrantes de Ceuta
     ante el silencio de Moreno: "Así lo pactamos"'
   summary: "Ni el presidente andaluz, de vacaciones, ni la consejería de Presidencia\
@@ -2156,7 +2105,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 141
+  EID: 138
 - title: La Audiencia Nacional pregunta a la Guardia Civil si recibió alguna alerta
     previa sobre la posible llegada de miles de personas a Ceuta
   summary: "La jueza también solicita que se le informe del dispositivo desplegado\
@@ -2192,7 +2141,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 142
+  EID: 139
 - title: Un guardia civil asesina a su expareja, también agente y registrada en VioGén,
     en el cuartel de Llanes
   summary: "El agresor, que estaba divorciado de la víctima con la que tenía tres\
@@ -2296,7 +2245,7 @@ entries:
   lang: ES
   author: Pilar Campo
   source: El Diario (España)
-  EID: 143
+  EID: 140
 - title: 'El sueño de Faten, la futbolista marroquí que perdió la vida en el cruce
     a Ceuta: "Quería ir a Europa"'
   summary: "La joven, que jugaba en el club Maghreb Atlético Tetuán, murió cuando\
@@ -2462,7 +2411,7 @@ entries:
   lang: ES
   author: Soraya Aybar Laafou
   source: El Diario (España)
-  EID: 144
+  EID: 141
 - title: Al menos 141 personas han muerto en el intento de entrada a Ceuta, según
     la ONG Caminando Fronteras
   summary: "Desde la organización apuntan que las personas fallecidas no solo son\
@@ -2515,7 +2464,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 145
+  EID: 142
 - title: Qué hay detrás de la embestida de Meloni contra España por la crisis de Ceuta
   summary: "Los acontecimientos de Ceuta han servido a la líder ultra para relanzar\
     \ propuestas contra la migración como su polémico 'Modelo Albania' y para recuperar\
@@ -2680,7 +2629,7 @@ entries:
   lang: ES
   author: Joan Mas Autonell
   source: El Diario (España)
-  EID: 146
+  EID: 143
 - title: Sumar plantea que España no comparta la organización del Mundial de fútbol
     de 2030 con Marruecos
   summary: "El ala minoritaria del Gobierno registra una proposición no de ley para\
@@ -2729,7 +2678,7 @@ entries:
   lang: ES
   author: Daniel Ríos
   source: El Diario (España)
-  EID: 147
+  EID: 144
 - title: Irán anuncia un acuerdo con Omán para una nueva ruta de navegación por el
     estrecho de Ormuz
   summary: "Ambos países ribereños del estrecho han mantenido negociaciones en los\
@@ -2781,7 +2730,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 148
+  EID: 145
 - title: 'Trump encuentra (para su sorpresa) la horma de su zapato en Irán: unos líderes
     tan tozudos como él'
   summary: "El presidente de EEUU se limita a lamentar lo que considera una \"increíble\
@@ -2867,7 +2816,7 @@ entries:
   lang: ES
   author: Andrew Roth
   source: El Diario (España)
-  EID: 149
+  EID: 146
 - title: El Ejército de EEUU se queda sin ideas en la guerra contra Irán y pide propuestas
     "creativas para castigarlo"
   summary: "El Comando Central del Ejército de Estados Unidos, encargado de librar\
@@ -2903,7 +2852,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 150
+  EID: 147
 - title: 'El increíble acoso de eBay a un matrimonio: porno, cucarachas, fetos de
     cerdo y vigilancia por escribir sobre la compañía'
   summary: "La plataforma, su ex consejero delegado y otros dos altos directivos pagarán\
@@ -3052,7 +3001,7 @@ entries:
   lang: ES
   author: Carlos del Castillo
   source: El Diario (España)
-  EID: 151
+  EID: 148
 - title: La imagen más nítida de la superficie del Sol nos acerca como nunca a la
     predicción de las tormentas solares
   summary: "Los datos obtenidos por el telescopio solar más grande del mundo, en Hawái,\
@@ -3139,7 +3088,7 @@ entries:
   lang: ES
   author: Antonio Martínez Ron
   source: El Diario (España)
-  EID: 152
+  EID: 149
 - title: Abdul El-Sayed gana las primarias de Michigan en una victoria clave para
     el ala izquierdista del Partido Demócrata
   summary: "El candidato progresista desbanca a Haley Stevens, respaldada por el 'establishment'\
@@ -3241,7 +3190,7 @@ entries:
   lang: ES
   author: Juan Gabriel García
   source: El Diario (España)
-  EID: 153
+  EID: 150
 - title: La Audiencia rebaja las pretensiones del exjuez Alba de meter en la cárcel
     22 años al periodista Carlos Sosa
   summary: "Retira el delito de odio y la agravante de “ánimo de lucro” y devuelve\
@@ -3338,7 +3287,7 @@ entries:
   lang: ES
   author: Canarias Ahora
   source: El Diario (España)
-  EID: 154
+  EID: 151
 - title: Infantino ofrece a Marruecos la final del Mundial 2030 para ganarse su apoyo
     en plena crisis de la FIFA, según The Times
   summary: "El medio británico apunta a que el presidente de la FIFA buscaría ganarse\
@@ -3387,7 +3336,7 @@ entries:
   lang: ES
   author: elDiario.es Sociedad
   source: El Diario (España)
-  EID: 155
+  EID: 152
 - title: Jordania acusa a la FIFA de "chantaje" para forzar el apoyo a la reelección
     de Infantino como presidente
   summary: "El presidente de la Federación jordana de fútbol afirma que se le comunicó\
@@ -3475,7 +3424,7 @@ entries:
   lang: ES
   author: Nick Ames
   source: El Diario (España)
-  EID: 156
+  EID: 153
 - title: La familia de Robe Iniesta anuncia que la "pesadilla" de su relación con
     Live Nation está "encaminada a llegar pronto a su  final"
   summary: "El exlíder de Extremoduro comenzó antes de su muerte una batalla legal\
@@ -3543,7 +3492,7 @@ entries:
   lang: ES
   author: elDiarioes Cultura
   source: El Diario (España)
-  EID: 157
+  EID: 154
 - title: La Fiscalía pide investigar a Vito Quiles por presunta estafa al recaudar
     donaciones que irían a su cuenta personal
   summary: "La denuncia parte de la asociación Facua, que alerta sobre fondos en teoría\
@@ -3599,7 +3548,7 @@ entries:
   lang: ES
   author: SevillaelDiario.es
   source: El Diario (España)
-  EID: 158
+  EID: 155
 - title: Una asociación se querella contra Pérez Llorca y la Federación de Fútbol
     por el regalo de la entrada a la final del Mundial
   summary: "La asociación Transparencia en el Deporte, que ya denunció a Luis Rubiales,\
@@ -3684,7 +3633,7 @@ entries:
   lang: ES
   author: Laura Martínez
   source: El Diario (España)
-  EID: 159
+  EID: 156
 - title: 'El alcalde del PP íntimo de Pérez Llorca que vivió a todo trapo el Mundial:
     privilegio en la vacunación Covid, lazos con la Gürtel y una gran deuda municipal'
   summary: "Bernabé Cano, alcalde de La Nucía, acumula una serie de escándalos de\
@@ -3825,7 +3774,7 @@ entries:
   lang: ES
   author: Laura Martínez
   source: El Diario (España)
-  EID: 160
+  EID: 157
 - title: Brasil retira a su embajador de Argentina tras los insultos contra Lula por
     los que Milei no pedirá disculpas
   summary: "La decisión responde a los reiterados agravios del mandatario argentino\
@@ -3907,7 +3856,7 @@ entries:
   lang: ES
   author: Mercedes López San Miguel
   source: El Diario (España)
-  EID: 161
+  EID: 158
 - title: 'La última noche de las Trece Rosas antes de ser fusiladas: "Se vistieron
     ayudadas por las demás, nuestras manos temblaban"'
   summary: "Frente a los estereotipos y el 'mito martirial' sobre las jóvenes ejecutadas\
@@ -4067,7 +4016,7 @@ entries:
   lang: ES
   author: Marta Borraz
   source: El Diario (España)
-  EID: 162
+  EID: 159
 - title: 'La Bolsa, a récord por día: por qué el Ibex consolida los 20.000 puntos
     y prolonga su rally histórico'
   summary: "El selectivo cierra en 20.057 puntos impulsado por la banca y el buen\
@@ -4213,7 +4162,7 @@ entries:
   lang: ES
   author: Lucía Llargués
   source: El Diario (España)
-  EID: 163
+  EID: 160
 - title: 'El monstruo que se comió el sol: por qué culturas de todo el mundo inventaron
     el mismo mito sobre el eclipse'
   summary: "Bestias zooformes que engullen estrellas, jaguares hambrientos o la cabeza\
@@ -4328,7 +4277,7 @@ entries:
   lang: ES
   author: Andrea Benavent
   source: El Diario (España)
-  EID: 164
+  EID: 161
 - title: León es el destino final de un polémico festival de electrónica relacionado
     con el eclipse no autorizado en Segovia y Soria
   summary: "El Iberia Eclipse elige el Parque Natural de Babia, tras ser expulsado\
@@ -4479,7 +4428,7 @@ entries:
   lang: ES
   author: Javier Ayuso Santamaría, Alba Camazón
   source: El Diario (España)
-  EID: 165
+  EID: 162
 - title: La España progresista en una UE retrógrada
   summary: "El problema gravísimo es que, ante una acción exterior contra España,\
     \ las derechas europeas -con gran enfásis de las locales- han reaccionado contra\
@@ -4587,7 +4536,7 @@ entries:
   lang: ES
   author: Rosa María Artal
   source: El Diario (España)
-  EID: 166
+  EID: 163
 - title: ¿Cuándo nos cuentan toda la verdad del ático?
   summary: "La culpa de las suspicacias en torno a la compra del ático por la Comunidad\
     \ de Madrid no es de quienes pretenden “destruirla”, como dice Ayuso con su proverbial\
@@ -4668,7 +4617,7 @@ entries:
   lang: ES
   author: Marco Schwartz
   source: El Diario (España)
-  EID: 167
+  EID: 164
 - title: 'Ceuta: de zombis, invasiones y avalanchas'
   summary: "No vemos personas individuales con nombre e historia propia, sino “migrantes”\
     \ genéricos, miembros de un ser colectivo, anónimos, intercambiables, prescindibles.\
@@ -4718,7 +4667,7 @@ entries:
   lang: ES
   author: Isaac Rosa
   source: El Diario (España)
-  EID: 168
+  EID: 165
 - title: Yo soy más racista que tú
   summary: "Si el referente político de Vox es el modelo impulsado por Trump, basado\
     \ en deportaciones masivas, redadas y una exhibición constante de la fuerza frente\
@@ -4812,7 +4761,7 @@ entries:
   lang: ES
   author: Anna López
   source: El Diario (España)
-  EID: 169
+  EID: 166
 - title: Ceuta ha sido un carnaval de contenidos para los odiadores de la derecha...
     y una lección para la izquierda
   summary: "Si Ceuta fue un fallo de seguridad accidental o un evento planeado no\
@@ -4924,7 +4873,7 @@ entries:
   lang: ES
   author: Jonathan Liew
   source: El Diario (España)
-  EID: 170
+  EID: 167
 - title: Explicaciones oportunas
   summary: Ayuso responde a la petición de explicaciones por el ático con ataques
     al Gobierno por la crisis en Ceuta
@@ -4934,7 +4883,7 @@ entries:
   lang: ES
   author: Bernardo Vergara
   source: El Diario (España)
-  EID: 171
+  EID: 168
 - title: Un muerto y dos heridos de gravedad tras la explosión de un tanque de combustible
     en un polígono de Telde
   summary: "El Ayuntamiento de Telde ha pedido a la ciudadanía que evite desplazarse\
@@ -4987,7 +4936,7 @@ entries:
   lang: ES
   author: Canarias Ahora
   source: El Diario (España)
-  EID: 172
+  EID: 169
 - title: Las grandes petroleras obtienen 93.000 millones de dólares de beneficios
     en medio de la guerra de Irán
   summary: "Las ganancias extraordinarias durante tres meses gracias al conflicto\
@@ -5194,7 +5143,7 @@ entries:
   lang: ES
   author: Jillian Ambrose / Damian Carrington
   source: El Diario (España)
-  EID: 173
+  EID: 170
 - title: Por qué es una "buena noticia" el repunte inusual del paro este julio
   summary: "El auge es moderado y está vinculado principalmente al proceso de regularización\
     \ de migrantes, que está aflorando empleo sumergido y que da paso al mercado laboral\
@@ -5277,7 +5226,7 @@ entries:
   lang: ES
   author: Laura Olías, Yuly Jara
   source: El Diario (España)
-  EID: 174
+  EID: 171
 - title: Muere el guitarrista Pepe Habichuela, discreto revolucionario del flamenco,
     a los 82 años
   summary: "Nacido en Granada en 1944, fue una de las figuras más influyentes de la\
@@ -5382,7 +5331,7 @@ entries:
   lang: ES
   author: David Calzado
   source: El Diario (España)
-  EID: 175
+  EID: 172
 - title: Con doble línea de murallas y dos aljibes tallados en la roca, es uno de
     los castillos más impresionantes de Castilla-La Mancha
   summary: "En un lugar privilegiado de Atienza, en la provincia de Guadalajara, y\
@@ -5491,7 +5440,7 @@ entries:
   lang: ES
   author: Alberto Gómez
   source: El Diario (España)
-  EID: 176
+  EID: 173
 - title: El Gobierno de Almeida aprueba el plan para crear el mayor centro comercial
     de Madrid, que negoció Cospedal
   summary: "La última Junta de Gobierno da luz verde inicial al megaproyecto deValdebebas,\
@@ -5568,7 +5517,7 @@ entries:
   lang: ES
   author: Diego Casado
   source: El Diario (España)
-  EID: 177
+  EID: 174
 - title: PP y Vox quieren cambiar el nombre del auditorio Nelson Mandela de Sonseca
     para dedicarlo a los Reyes Católicos
   summary: "El PSOE anuncia que irá a los tribunales si no se revierte una decisión\
@@ -5675,7 +5624,7 @@ entries:
   lang: ES
   author: elDiarioclm.es
   source: El Diario (España)
-  EID: 178
+  EID: 175
 - title: ERC abre un expediente a su candidato en Girona por un audio filtrado en
     el que carga contra sus compañeros
   summary: "En una grabación publicada por una cuenta de extrema derecha, Marc Puigtió\
@@ -5729,7 +5678,7 @@ entries:
   lang: ES
   author: Arturo Puente
   source: El Diario (España)
-  EID: 179
+  EID: 176
 - title: Los heridos por las cargas policiales de la protesta contra la turistificación
     en Balears inician acciones legales contra los agentes
   summary: "Un total de 25 personas denuncian haber sufrido lesiones durante la intervención\
@@ -5800,7 +5749,7 @@ entries:
   lang: ES
   author: Esther Ballesteros
   source: El Diario (España)
-  EID: 180
+  EID: 177
 - title: Hallan una fosa común con restos de al menos cinco víctimas de la Guerra
     Civil entre Almoharín y Miajadas, en Cáceres
   summary: "Los trabajos para localizar y exhumar a 22 víctimas de la Guerra Civil\
@@ -5848,7 +5797,7 @@ entries:
   lang: ES
   author: elDiarioex
   source: El Diario (España)
-  EID: 181
+  EID: 178
 - title: Un hombre de 82 años de Dos Hermanas, primera víctima mortal por el virus
     del Nilo este año en Andalucía
   summary: "La víctima, con patologías previas, permanecía ingresado en el hospital\
@@ -5927,7 +5876,7 @@ entries:
   lang: ES
   author: SevillaelDiario.es
   source: El Diario (España)
-  EID: 182
+  EID: 179
 - title: La Junta de Castilla y León aprecia posibles incumplimientos en el matadero
     donde agonizaron más de 200 cervatillos
   summary: "La Dirección General de Salud Pública aprecia un posible incumplimiento\
@@ -6070,7 +6019,7 @@ entries:
   lang: ES
   author: Nicolás Ribas
   source: El Diario (España)
-  EID: 183
+  EID: 180
 - title: La Guardia Civil investiga por maltrato animal a dos hombres por disparar
     a un toro en Gátova durante los 'bous al carrer'
   summary: "El instituto armado investiga al director del festejo taurino en el municipio\
@@ -6118,7 +6067,7 @@ entries:
   lang: ES
   author: Laura Martínez
   source: El Diario (España)
-  EID: 184
+  EID: 181
 - title: Las tormentas vuelven a amenazar el noreste en una jornada con calor intenso
     en gran parte del país
   summary: "Canarias volverá a rozar los 40 grados mientras persisten las noches tropicales\
@@ -6173,7 +6122,7 @@ entries:
   lang: ES
   author: Gadea Plaza
   source: El Diario (España)
-  EID: 185
+  EID: 182
 - title: El exceso de calor y las lluvias de primavera fuerzan la vendimia de Rioja
     más adelantada de la historia
   summary: "El calor de verano y las lluvias de la primavera aceleran el ciclo del\
@@ -6310,7 +6259,7 @@ entries:
   lang: ES
   author: Ester Fernández García
   source: El Diario (España)
-  EID: 186
+  EID: 183
 - title: SpaceX pierde más de 5.000 millones mientras Elon Musk promete más gasto
     en IA y centros de datos espaciales
   summary: "La compañía supera las previsiones de ingresos de los analistas en sus\
@@ -6368,7 +6317,7 @@ entries:
   lang: ES
   author: Carlos del Castillo
   source: El Diario (España)
-  EID: 187
+  EID: 184
 - title: La Reserva Federal autoriza la compra de Webster Bank por parte de Banco
     Santander
   summary: "La previsión de Santander es que la adquisición se cierre el próximo 20\
@@ -6419,7 +6368,7 @@ entries:
   lang: ES
   author: Europa Press
   source: El Diario (España)
-  EID: 188
+  EID: 185
 - title: El Banco de España multa con 2,8 millones a BCC-Grupo Cajamar y varios directivos
     por su política de retribuciones
   summary: "La entidad bancaria indica que todos los miembros de su consejo de administración\
@@ -6466,7 +6415,7 @@ entries:
   lang: ES
   author: EFE
   source: El Diario (España)
-  EID: 189
+  EID: 186
 - title: España envió por primera vez más paquetes que cartas en 2025
   summary: "El informe anual del sector postal de Competencia (CNMC) recoge que solo\
     \ un 14% de ciudadanos mandó cartas, mientras que un 60% dice haber recibido al\
@@ -6510,7 +6459,7 @@ entries:
   lang: ES
   author: Europa Press
   source: El Diario (España)
-  EID: 190
+  EID: 187
 - title: El PSOE pide paralizar el proceso de selección de otro alto directivo en
     Cantur "a dedo y por la puerta de atrás"
   summary: "El Gobierno de Cantabria no da explicaciones pero el Partido Popular defiende\
@@ -6569,7 +6518,7 @@ entries:
   lang: ES
   author: Olga Agüero
   source: El Diario (España)
-  EID: 191
+  EID: 188
 - title: Al menos 17 muertos y 44 heridos en ataques nocturnos de Rusia sobre Kiev
   summary: "Esta ofensiva  se produce después de que el pasado martes el presidente\
     \ ucraniano, Volodímir Zelenski, anunciara nuevas operaciones contra territorio\
@@ -6614,7 +6563,7 @@ entries:
   lang: ES
   author: EFE
   source: El Diario (España)
-  EID: 192
+  EID: 189
 - title: 'No era vandalismo, era una chapuza: el desastre del estanque reflectante
     deja en evidencia las obsesiones de Trump'
   summary: "La fiscal general de Washington afirma que los daños del estanque son\
@@ -6696,7 +6645,7 @@ entries:
   lang: ES
   author: Juan Gabriel García
   source: El Diario (España)
-  EID: 193
+  EID: 190
 - title: 🎙 PODCAST | El arte que se llevaron los norteamericanos | La memoria en ruinas
   summary: "Escuchamos un episodio de un podcast que ha preparado durante esta temporada\
     \ elDiario.es: 'La memoria en ruinas' Un tema Al día, ¡en el teatro! Ven a verlo\
@@ -6744,7 +6693,7 @@ entries:
   lang: ES
   author: Juan Luis Sánchez
   source: El Diario (España)
-  EID: 194
+  EID: 191
 - title: Muere John Douglas, cantante de la banda escocesa Trashcan Sinatras, a los
     63 años
   summary: "El también guitarrista del grupo ha fallecido tras una breve enfermedad,\
@@ -6780,7 +6729,7 @@ entries:
   lang: ES
   author: Andrea Benavent
   source: El Diario (España)
-  EID: 195
+  EID: 192
 - title: La Sociedad Cántabra de Escritores nombra socia de honor a Matilde de la
     Torre cuyos restos mortales llegaron en marzo desde el exilio mexicano
   summary: "Un reconocimiento que reivindica la figura de una mujer de sólidas convicciones\
@@ -6840,7 +6789,7 @@ entries:
   lang: ES
   author: Olga Agüero
   source: El Diario (España)
-  EID: 196
+  EID: 193
 - title: Esto es lo que debes tener en cuenta si duermes con el ventilador o el aire
     acondicionado puesto
   summary: "La temperatura del dormitorio es el factor ambiental con mayor impacto\
@@ -6925,7 +6874,7 @@ entries:
   lang: ES
   author: Martín Frías
   source: El Diario (España)
-  EID: 197
+  EID: 194
 - title: El lugar único de Cádiz donde puedes elegir si bañarte en el Mediterráneo
     o en el Atlántico
   summary: "La Isla de las Palomas, el lugar donde chocan un océano y un mar y se\
@@ -7066,7 +7015,7 @@ entries:
   lang: ES
   author: Andrés Maza
   source: El Diario (España)
-  EID: 198
+  EID: 195
 - title: 'El verano de los "iPad kids": cuando los niños se quedan solos en casa y
     la única alternativa es la pantalla'
   summary: "La falta de conciliación y la escasez de recursos hacen que muchos niños,\
@@ -7193,7 +7142,7 @@ entries:
   lang: ES
   author: Lucía M. Quiroga
   source: El Diario (España)
-  EID: 199
+  EID: 196
 - title: 'Ni el ajo ni la guindilla: el método para que las gambas al ajillo mantengan
     todo su sabor'
   summary: "En la aparente simplicidad de esta propuesta culinaria se esconden varios\
@@ -7298,7 +7247,7 @@ entries:
   lang: ES
   author: Olga Verdú
   source: El Diario (España)
-  EID: 200
+  EID: 197
 - title: 'A menos de dos horas de Barcelona: el pueblo de alta montaña que parece
     haberse detenido en el tiempo en plenos Pirineos'
   summary: "Las calles empinadas y las casas de piedra definen el casco histórico,\
@@ -7404,7 +7353,7 @@ entries:
   lang: ES
   author: Edu Molina
   source: El Diario (España)
-  EID: 201
+  EID: 198
 - title: La excepcional escultura de Miguel Ángel que no se encuentra en Italia y
     que fue robada por Napoleón y Hitler
   summary: "Tanto Napoleón como Hitler la quisieron para sus proyectos truncados de\
@@ -7451,7 +7400,7 @@ entries:
   lang: ES
   author: Andrea Blez
   source: El Diario (España)
-  EID: 202
+  EID: 199
 - title: Un memorando oculto revela el plan de la Marina británica para convertir
     barcos en armas químicas durante la Guerra de 1812
   summary: "Conflictos navales - El temor de que el enemigo copiara el arma pesó tanto\
@@ -7535,7 +7484,7 @@ entries:
   lang: ES
   author: Héctor Farrés
   source: El Diario (España)
-  EID: 203
+  EID: 200
 - title: 'El nuevo gran proyecto de Henry Cavill: protagonizará y producirá adaptaciones
     de una famosa franquicia de ciencia ficción'
   summary: "El actor ha mencionado en varias ocasiones ser fan del juego y que ya\
@@ -7584,7 +7533,7 @@ entries:
   lang: ES
   author: Andrea Blez
   source: El Diario (España)
-  EID: 204
+  EID: 201
 - title: El pez más grande del mundo deja de esconder su forma de alimentarse gracias
     a cámaras instaladas sobre su cuerpo
   summary: "Alimentación oceánica - Los registros mostraron descensos, ascensos y\
@@ -7652,7 +7601,65 @@ entries:
   lang: ES
   author: Héctor Farrés
   source: El Diario (España)
-  EID: 205
+  EID: 202
+- title: 'Refugios climáticos en ciudades europeas: los parques urbanos más grandes
+    para escapar del calor y disfrutar en verano'
+  summary: "Siendo uno de los más veranos más cálidos de los últimos años en Europa,\
+    \ merece la pena conocer los lugares donde pasar tiempo y protegerse al mismo\
+    \ tiempo del calorRefugios climáticos: diez pueblos de España que permiten huir\
+    \ del calor y abrigarse por la noche\n\n        Las altas temperaturas no solo\
+    \ están sacudiendo a España este verano, sino que está siendo uno de los más cálidos\
+    \ de los últimos años en Europa, con máximas inusuales para algunas capitales\
+    \ europeas. Por eso, en caso de visitar algunas de ellas, merece la pena conocer\
+    \ los lugares donde pasar tiempo y protegerse al mismo tiempo del calor.\n   \
+    \ Roma (Italia): Parque de la Vía Appia y Villa Borghese\n        La capital de\
+    \ Italia es una de las que más viajeros recibe en verano, y si bien tiene zonas\
+    \ donde es complicado encontrar sombra, la ciudad tiene varios pulmones verdes\
+    \ integrados en su territorio urbano. De hecho, Roma tiene el segundo parque más\
+    \ grande de Europa, el de más hectáreas de la Unión Europa, el Parque Natural\
+    \ Regional de la Vía Appia, con 4.570 hectáreas totales, y que además protege\
+    \ la calzada romana e integra sus ruinas arqueológicas, siendo un lugar único\
+    \ a pocos minutos del centro histórico y fácil de llegar desde zonas como el Coliseo.\
+    \ \n    \n        Además, en Roma hay también otro parque urbano grande como es\
+    \ Villa Borghese, de 80 hectáreas, y que tiene sitios tan interesantes como el\
+    \ museo de la Galleria Borghese y el cine más pequeño del mundo.\n    Londres\
+    \ (Reino Unido): Lee Valley Park y Richmond Park\n        Londres es también una\
+    \ de las ciudades más visitadas por turistas en Europa y está pasando por temperaturas\
+    \ más altas de lo habitual este verano, con lo que es útil encontrar parques donde\
+    \ poder encontrar lugares con sombra, además de que ofrecen un ambiente amable\
+    \ en la capital. Los dos más grandes son Lee Valley Regional con más de 4.000\
+    \ hectáreas siguiendo el curso del río Lea, con reservas naturales, instalaciones\
+    \ deportivas y zonas de recreo, siendo el tercero más grande de Europa.\n    \n\
+    \        Otro de grandes dimensiones, y al que se puede llegar con transporte\
+    \ público desde las principales zonas de Londres es el parque de Richmond, con\
+    \ 955 hectáreas, que destaca por su paisaje de praderas silvestres, por tener\
+    \ población de ciervos y gamos en libertad y por sus robles centenarios.\n   \
+    \ Lisboa (Portugal): Parque de Monsanto\n        El cuarto parque urbano más grande\
+    \ de Europa, el segundo de la Unión Europea, se encuentra en Lisboa, Portugal,\
+    \ y es el Parque Forestal del Monsanto, con más de 1.000 hectáreas y que ocupa\
+    \ una gran sierra boscosa dentro de la ciudad, con vistas al río Tajo, zonas de\
+    \ senderismo y recreativas.\n    París (Francia): Bois de Vincennes y Bois de\
+    \ Boulogne\n        En la ciudad de París encontramos el quinto parque más grande\
+    \ de Europa y el séptimo, que son el Bois de Vincennes y el Bois de Boulogne,\
+    \ de 995 y 846 hectáreas respectivamente. El primero era antiguamente un coto\
+    \ de caza real, que alberga un castillo medieval, lagos artificiales y un jardín\
+    \ botánico. El segundo se sitúa al oeste de la capital francesa y es conocido\
+    \ por albergar en su interior el completo tenístico de Roland Garros, así como\
+    \ varios lagos navegables.\n    Dublín (Irlanda): Phoenix Park\n        A tres\
+    \ kilómetros del centro de Dublín se ubica el que es uno de los parques más grandes\
+    \ de Europa en una ciudad, al que se puede acceder con varias opciones de transporte\
+    \ público. Este enclave tiene ciervos salvajes, el zoológico de la ciudad, la\
+    \ casa residencial del presidente, una torre medieval restaurada o una enorme\
+    \ cruz blanca de acero que se erigió exclusivamente para una misa multitudinaria\
+    \ que llevó a cabo el papa Juan Pablo II en 1979 y que ofrece destacadas vistas\
+    \ panorámicas."
+  media: https://static.eldiario.es/clip/6fed80c3-c4eb-49e6-a861-f58ef66df007_16-9-discover-aspect-ratio_default_0.jpg
+  url: https://www.eldiario.es/viajes/refugios-climaticos-ciudades-europeas-parques-urbanos-grandes-escapar-calor-disfrutar-verano-pm_1_13430750.html
+  date: '2026-08-05T18:00:54+00:00'
+  lang: ES
+  author: Andrea Blez
+  source: El Diario (España)
+  EID: 203
 - title: 'A hora y media de València: el mirador elevado sobre el mar que ofrecerá
     una de las mejores vistas del eclipse del 12 de agosto'
   summary: "Alcossebre se prepara para el hito solar del 12 de agosto desde la ermita\
@@ -7766,7 +7773,7 @@ entries:
   lang: ES
   author: Marina Manzanares
   source: El Diario (España)
-  EID: 206
+  EID: 204
 - title: El gran acantilado de más de 600 metros de altura sobre uno de los arenales
     más icónicos de Lanzarote
   summary: "La marea cambia el aspecto de la playa, mientras las zonas altas del Risco\
@@ -7860,7 +7867,7 @@ entries:
   lang: ES
   author: Edu Molina
   source: El Diario (España)
-  EID: 207
+  EID: 205
 - title: 'Dónde ver el eclipse solar del 12 de agosto: cinco escapadas de ida y vuelta
     con vistas privilegiadas'
   summary: "Desde un cabo frente al mar hasta un puerto de montaña o un paisaje casi\
@@ -8021,7 +8028,7 @@ entries:
   lang: ES
   author: Roberto Ruiz
   source: El Diario (España)
-  EID: 208
+  EID: 206
 - title: 'General Motors apuesta por China: alarga 20 años su alianza con SAIC'
   summary: "La compañía estadounidense desafía el veto de Trump con una ampliación\
     \ del acuerdo con la china SAIC hasta 2047 para lanzar modelos en el país asiático\
@@ -8098,7 +8105,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 209
+  EID: 207
 - title: 'El yen da alas a Honda: dispara un 129% su beneficio pese a vender menos
     coches'
   summary: "El fabricante deja atrás las pérdidas por el ajuste de sus planes en vehículos\
@@ -8159,7 +8166,7 @@ entries:
   lang: ES
   author: elDiario.es
   source: El Diario (España)
-  EID: 210
+  EID: 208
 - title: El Plan Auto+ arranca con incidencias técnicas que bloquean solicitudes de
     ayudas a coches eléctricos
   summary: "El Ministerio de Industria afirma que trabaja para solucionar los fallos\
@@ -8238,80 +8245,4 @@ entries:
   lang: ES
   author: Toni Fuentes
   source: El Diario (España)
-  EID: 211
-- title: La F1 llega al parón con igualdad en pista y una preocupante idea de espectáculo
-  summary: "Cuatro equipos han entrado ya en la lucha por las victorias con varios\
-    \ pilotos capaces de ganar, aunque el espectáculo se aleja de la tradición. Lo\
-    \ analiza el Podcast Técnica Fórmula 1\n        La Fórmula 1 se ha ido al parón\
-    \ de verano con una paradoja difícil de ignorar. Deportivamente, la temporada\
-    \ tiene muchos más argumentos de los que parecía al principio: cuatro equipos\
-    \ han entrado ya en la lucha por poles y victorias, hay varios pilotos capaces\
-    \ de ganar y el campeonato mantiene frentes abiertos. Pero, al mismo tiempo, la\
-    \ propia categoría insiste en vender una idea de espectáculo cada vez más alejada\
-    \ de lo que muchos aficionados entendemos por automovilismo. Y eso lo debatimos\
-    \ en el primer episodio de la semana del Podcast Técnica Fórmula 1.\n    Lo que\
-    \ vemos de forma objetiva\n        El Gran Premio de Hungría dejó una carrera\
-    \ buena, probablemente la mejor forma posible de llegar al descanso. Sin el clipping\
-    \ como protagonista absoluto, vimos luchas, estrategias distintas, tensión y una\
-    \ victoria de Lando Norris que confirma el salto de McLaren. El equipo británico\
-    \ ya no parece un invitado ocasional en la parte alta. Se ha metido de lleno en\
-    \ la conversación junto a Mercedes, Ferrari y Red Bull.\n    \n    \n        \
-    \    \n    \n        Ese es el mejor resumen deportivo de la primera mitad del\
-    \ año: la F1 2026 tiene igualdad. Mercedes sigue siendo la referencia, con Andrea\
-    \ Kimi Antonelli cada vez más fuerte en el campeonato. Ferrari ha encontrado victorias\
-    \ y ritmo con Hamilton y Leclerc, aunque todavía desperdicia demasiados puntos.\
-    \ \n    \n        Red Bull ya no domina, pero Verstappen sigue sacando resultados\
-    \ enormes y Hadjar está aportando mucho más de lo que algunos esperaban. Y McLaren\
-    \ ha llegado justo a tiempo para convertir la lucha en algo más amplio.\n    Y\
-    \ entonces, ¿cuál es el problema de la F1?\n        El problema es que esa igualdad\
-    \ no siempre se ve como debería. En circuitos como Hungría, la normativa puede\
-    \ funcionar porque el trazado la protege: más frenadas, menos rectas interminables,\
-    \ menos exposición al agotamiento de la energía eléctrica. \n    \n        Pero\
-    \ en pistas como Spa o Silverstone, la imagen ha sido mucho más preocupante. Coches\
-    \ levantando antes de lo esperado, zonas míticas convertidas en otra cosa y adelantamientos\
-    \ que, en demasiadas ocasiones, parecen rebases por gestión de potencia más que\
-    \ maniobras de pilotaje.\n    Domenicali, para terminar de arreglarlo\n      \
-    \  Por eso resultan tan desafortunadas las declaraciones de Stefano Domenicali.\
-    \ El máximo responsable de la Fórmula 1 ha defendido que a la gran mayoría del\
-    \ público no le interesa cómo pilota un piloto, sino si adelanta o no. \n    \n\
-    \        Según esa visión, datos como la gestión de batería, el clipping o el\
-    \ modo en que se construye una maniobra serían casi asuntos de nicho, detalles\
-    \ para aficionados demasiado técnicos. La frase es grave no porque desprecie a\
-    \ cuatro puristas enfadados, sino porque reduce la Fórmula 1 a una sucesión de\
-    \ imágenes llamativas. \n    \n        Como si el automovilismo consistiera únicamente\
-    \ en ver coches rápidos, golpes de efecto y adelantamientos sin contexto. Como\
-    \ si diese igual por qué pasa un piloto a otro. Como si no hubiera diferencia\
-    \ entre una maniobra ganada frenando más tarde, una defensa al límite o un simple\
-    \ exceso momentáneo de potencia disponible.\n    \n        Ese es el fondo del\
-    \ debate. Nadie pide que cada retransmisión sea una clase de ingeniería. Pero\
-    \ ocultar información o considerar irrelevante la explicación técnica empobrece\
-    \ el producto. La Fórmula 1 siempre ha sido espectáculo, sí, pero también tecnología,\
-    \ estrategia, riesgo, precisión y lectura. Si se elimina todo eso para hacerlo\
-    \ más digerible a un público nuevo, quizá lo que queda ya no sea exactamente Fórmula\
-    \ 1.\n    Hungría demostró precisamente lo contrario\n        La carrera fue buena\
-    \ porque hubo capas: estrategias, tráfico, neumáticos, undercuts, errores, pilotos\
-    \ atrapados en aire sucio y equipos obligados a decidir. Norris ganó porque tuvo\
-    \ ritmo y porque McLaren ejecutó mejor una carrera compleja. \n    \n        Verstappen\
-    \ fue segundo porque convirtió un fin de semana difícil en un gran resultado.\
-    \ Antonelli volvió a sumar como líder. Ferrari perdió una oportunidad. Aston Martin,\
-    \ al menos, enseñó una evolución real después de meses en el fondo.\n    \n  \
-    \      Eso es lo que engancha al aficionado. No sólo el adelantamiento final,\
-    \ sino todo lo que lo hace posible. La Fórmula 1 se equivoca si piensa que simplificar\
-    \ significa tratar al público como si no quisiera entender. Hay nuevos seguidores\
-    \ que llegarán por el espectáculo inmediato, claro. Pero muchos se quedarán precisamente\
-    \ cuando descubran que detrás de cada maniobra hay mucho más que un coche pasando\
-    \ a otro.\n    \n        La primera mitad de la temporada deja una nota deportiva\
-    \ bastante mejor que la nota del producto. Hay campeonato, hay equipos acercándose\
-    \ y hay pilotos en gran forma. Pero también hay un reglamento que no funciona\
-    \ igual en todos los circuitos y una dirección comercial que parece demasiado\
-    \ cómoda despreciando lo que hizo grande a este deporte.\n    \n        La Fórmula\
-    \ 1 puede cambiar, como ha cambiado siempre. Lo preocupante no es la evolución.\
-    \ Lo preocupante es que quienes la dirigen parezcan creer que entender el automovilismo\
-    \ es un problema."
-  media: https://static.eldiario.es/clip/f2829979-e516-45f7-bc72-30720cbaf4d4_16-9-discover-aspect-ratio_default_0.jpg
-  url: https://www.eldiario.es/motor/competicion-y-estilo/f1-llega-paron-igualdad-pista-preocupante-idea-espectaculo_1_13428092.html
-  date: '2026-08-04T18:01:35+00:00'
-  lang: ES
-  author: Raúl Molina
-  source: El Diario (España)
-  EID: 212
+  EID: 209

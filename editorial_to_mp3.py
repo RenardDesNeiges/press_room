@@ -10,11 +10,12 @@ import re
 import requests
 import yaml
 
-from config import API_KEY, DEFAULT_MP3_PATH, DEFAULT_PARSED_ENTRIES_PATH
+from key import API_KEY
+from config import DEFAULT_MP3_PATH, DEFAULT_PARSED_ENTRIES_PATH
 
 
 DEFAULT_OUTPUT_PATH = DEFAULT_MP3_PATH
-DEFAULT_MODEL = "mistralai/voxtral-mini-tts-2603"
+DEFAULT_MODEL = "mistralai/voxtral-mini-tts-2603:nitro"
 DEFAULT_VOICE = "fr_marie_curious"  # French female voice for Mistral TTS
 DEFAULT_ENDPOINT = "https://openrouter.ai/api/v1/audio/speech"
 DEFAULT_HTTP_REFERER = "https://pressroom.local"

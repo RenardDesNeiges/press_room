@@ -9,6 +9,7 @@ from typing import Any
 
 from openrouter import OpenRouter
 
+from key import API_KEY
 from config import *
 from rank_entries import load_interests
 

@@ -16,6 +16,7 @@ from config import (
     DEFAULT_CANDIDATES_COUNT,
     DEFAULT_ENTRIES_PATH,
     DEFAULT_FINAL_COUNT,
+    DEFAULT_MAX_PER_SOURCE,
     DEFAULT_MODEL,
     DEFAULT_INTERESTS_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
@@ -38,13 +39,16 @@ def load_entries(path: Path = DEFAULT_ENTRIES_PATH) -> list[dict[str, Any]]:
 def export_entries_yaml(
     entries: list[dict[str, Any]],
     editorial: str | None = None,
+    title: str | None = None,
     path: Path = DEFAULT_PARSED_ENTRIES_PATH,
 ) -> None:
-    """Export entries and an optional editorial to a YAML file."""
+    """Export entries, an optional editorial, and an optional title to a YAML file."""
     path.parent.mkdir(parents=True, exist_ok=True)
     payload: dict[str, Any] = {"entries": entries}
     if editorial is not None:
         payload["editorial"] = editorial
+    if title is not None:
+        payload["title"] = title
     with open(path, "w", encoding="utf-8") as fh:
         yaml.safe_dump(
             payload,
@@ -160,20 +164,62 @@ def generate_editorial(
     return editorial.strip()
 
 
+def extract_editorial_title(
+    editorial: str,
+    model_name: str = DEFAULT_MODEL,
+) -> str:
+    """Extract a short headline from the editorial using a cheap LLM."""
+    prompt = (
+        "À partir de l'éditorial suivant, extrais un titre de journal percutant "
+        "(maximum 10 mots) qui résume le thème principal. "
+        "Ne renvoie que le titre, sans guillemets ni explication.\n\n"
+        f"Éditorial :\n{editorial}"
+    )
+    print(f"Extracting editorial title with {model_name}...")
+    title = query_model(prompt, model_name=model_name, temperature=0.3)
+    return title.strip().strip('"').strip("'")
+
+
+def diversify_by_source(
+    ranked_entries: list[dict[str, Any]],
+    target_count: int,
+    max_per_source: int = DEFAULT_MAX_PER_SOURCE,
+) -> list[dict[str, Any]]:
+    """Select candidates from a ranked list while capping entries per source.
+
+    This guarantees source diversity before the LLM reranking step.
+    """
+    selected: list[dict[str, Any]] = []
+    source_counts: dict[str, int] = {}
+
+    for entry in ranked_entries:
+        source = entry.get("source") or "Unknown"
+        if source_counts.get(source, 0) >= max_per_source:
+            continue
+        selected.append(entry)
+        source_counts[source] = source_counts.get(source, 0) + 1
+        if len(selected) >= target_count:
+            break
+
+    return selected
+
+
 def parse_feed(
     entries: list[dict[str, Any]] | None = None,
     candidates_count: int = DEFAULT_CANDIDATES_COUNT,
     final_count: int = DEFAULT_FINAL_COUNT,
+    max_per_source: int = DEFAULT_MAX_PER_SOURCE,
     model_name: str = DEFAULT_MODEL,
     translate: bool = True,
 ) -> list[dict[str, Any]]:
     """Select, rerank, and optionally translate entries.
 
     1. Rank all entries by WordLlama similarity to readers_interests.md.
-    2. Keep the top `candidates_count` candidates.
-    3. Rerank those candidates with an LLM to select the `final_count` most
+    2. Diversify candidates by source (max `max_per_source` per newspaper).
+    3. Keep the top `candidates_count` diversified candidates.
+    4. Rerank those candidates with an LLM to select the `final_count` most
        important articles, ensuring diversity across countries and topics.
-    4. Translate the selected articles' text fields into French.
+    5. Translate the selected articles' text fields into French.
 
     Returns the final selected entries in order of importance.
     """
@@ -182,11 +228,20 @@ def parse_feed(
 
     print(f"Ranking {len(entries)} entries by semantic similarity...")
     ranked = rank_entries(entries)
-    candidates = ranked[:candidates_count]
-    print(f"Selected top {len(candidates)} candidates for LLM reranking.")
+
+    print(
+        f"Diversifying by source (max {max_per_source} per source) "
+        f"before selecting {candidates_count} candidates..."
+    )
+    candidates = diversify_by_source(
+        ranked, target_count=candidates_count, max_per_source=max_per_source
+    )
+    print(f"Selected {len(candidates)} diversified candidates for LLM reranking.")
 
     print(f"Reranking with LLM ({model_name}) to select {final_count} articles...")
-    selected = rerank_with_llm(candidates, final_count=final_count, model_name=model_name)
+    selected = rerank_with_llm(
+        candidates, final_count=final_count, model_name=model_name
+    )
     print(f"LLM selected {len(selected)} articles.")
 
     if translate:
@@ -196,19 +251,20 @@ def parse_feed(
     return selected
 
 
-def parse_and_export() -> tuple[list[dict[str, Any]], str]:
+def parse_and_export() -> tuple[list[dict[str, Any]], str, str]:
     """Run the full parsing step and export the result.
 
-    Returns the selected entries and the generated editorial.
+    Returns the selected entries, the generated editorial, and the extracted title.
     """
     selected = parse_feed()
     editorial = generate_editorial(selected)
-    export_entries_yaml(selected, editorial=editorial)
+    title = extract_editorial_title(editorial)
+    export_entries_yaml(selected, editorial=editorial, title=title)
     print(
-        f"Exported {len(selected)} parsed entries and editorial to "
+        f"Exported {len(selected)} parsed entries, editorial, and title to "
         f"{DEFAULT_PARSED_ENTRIES_PATH}"
     )
-    return selected, editorial
+    return selected, editorial, title
 
 
 def main() -> None:

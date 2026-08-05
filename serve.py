@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import http.server
 import socketserver
-import sys
 from pathlib import Path
 
 from config import SERVE_PORT
@@ -44,10 +43,35 @@ class PressRoomHandler(http.server.SimpleHTTPRequestHandler):
         print(f"[{self.log_date_time_string()}] {args[0]} {args[1]} {args[2]}")
 
 
-def serve(port: int = SERVE_PORT) -> None:
+class ReusableTCPServer(socketserver.TCPServer):
+    """TCP server that allows the address to be reused immediately."""
+
+    allow_reuse_address = True
+
+
+def get_local_ips() -> list[str]:
+    """Return a list of non-localhost IPv4 addresses for this machine."""
+    import socket
+
+    ips: list[str] = []
+    try:
+        hostname = socket.gethostname()
+        for addr in socket.getaddrinfo(hostname, None, socket.AF_INET):
+            ip = addr[4][0]
+            if not ip.startswith("127.") and ip not in ips:
+                ips.append(ip)
+    except OSError:
+        pass
+    return ips
+
+
+def serve(host: str = "0.0.0.0", port: int = SERVE_PORT) -> None:
     """Start the static file server."""
-    with socketserver.TCPServer(("", port), PressRoomHandler) as httpd:
-        print(f"Serving press-room at http://localhost:{port}/")
+    with ReusableTCPServer((host, port), PressRoomHandler) as httpd:
+        print(f"Serving press-room on {host}:{port}")
+        print(f"Local URL: http://localhost:{port}/")
+        for ip in get_local_ips():
+            print(f"Network URL: http://{ip}:{port}/")
         print("Press Ctrl+C to stop.")
         try:
             httpd.serve_forever()
@@ -60,13 +84,19 @@ def main() -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description="Serve the press-room static site.")
     parser.add_argument(
+        "--host",
+        type=str,
+        default="0.0.0.0",
+        help='Interface to bind to (default: 0.0.0.0, i.e. all interfaces)',
+    )
+    parser.add_argument(
         "--port",
         type=int,
         default=SERVE_PORT,
         help=f"Port to serve on (default: {SERVE_PORT})",
     )
     args = parser.parse_args()
-    serve(port=args.port)
+    serve(host=args.host, port=args.port)
 
 
 if __name__ == "__main__":

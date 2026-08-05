@@ -16,11 +16,29 @@ from config import DEFAULT_PARSED_ENTRIES_PATH, DEFAULT_TEMPLATE_DIR
 
 def load_parsed_data(
     path: str | Path = DEFAULT_PARSED_ENTRIES_PATH,
-) -> tuple[list[dict[str, Any]], str | None]:
-    """Load parsed entries and optional editorial from a YAML file."""
+) -> tuple[list[dict[str, Any]], str | None, str | None]:
+    """Load parsed entries, editorial, and title from a YAML file."""
     with open(path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
-    return data.get("entries", []), data.get("editorial")
+    return (
+        data.get("entries", []),
+        data.get("editorial"),
+        data.get("title"),
+    )
+
+
+def get_french_weekday() -> str:
+    """Return the current day of the week in French."""
+    weekdays = [
+        "lundi",
+        "mardi",
+        "mercredi",
+        "jeudi",
+        "vendredi",
+        "samedi",
+        "dimanche",
+    ]
+    return weekdays[datetime.now().weekday()]
 
 
 def format_inline(text: str) -> str:
@@ -162,6 +180,8 @@ def load_template(name: str, template_dir: Path = DEFAULT_TEMPLATE_DIR) -> Templ
 def build_html(
     entries: list[dict[str, Any]],
     editorial: str | None = None,
+    headline: str | None = None,
+    weekday: str | None = None,
     site_title: str = "press-room",
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
 ) -> str:
@@ -193,8 +213,18 @@ def build_html(
         )
         editorial_content_html = render_markdown(editorial)
 
+    headline_html = ""
+    if headline:
+        headline_html = (
+            f'<div class="headline">'
+            f'<p class="headline-day">{html.escape(weekday or "", quote=False)}</p>'
+            f'<h1 class="headline-title">{html.escape(headline, quote=False)}</h1>'
+            f'</div>'
+        )
+
     return page_template.substitute(
         site_title=html.escape(site_title, quote=False),
+        headline=headline_html,
         lead_articles=lead_articles_html,
         audio_player=audio_player_html,
         editorial_content=editorial_content_html,
@@ -211,8 +241,13 @@ def generate_page(
 
     Returns the path to the generated HTML file.
     """
-    entries, editorial = load_parsed_data(parsed_entries_path)
-    html_content = build_html(entries, editorial=editorial)
+    entries, editorial, title = load_parsed_data(parsed_entries_path)
+    html_content = build_html(
+        entries,
+        editorial=editorial,
+        headline=title,
+        weekday=get_french_weekday(),
+    )
 
     output_path.write_text(html_content, encoding="utf-8")
     print(f"Generated {output_path} with {len(entries)} articles.")
