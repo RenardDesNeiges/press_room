@@ -4,329 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>$site_title</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23F0F8FF' stroke='black' stroke-width='1'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #000000;
-      --rule: #000000;
-      --font-title: "Playfair Display", Georgia, "Times New Roman", serif;
-      --font-body: "GT Pressura Mono", "Courier New", Courier, "Lucida Console", monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--fg);
-      font-family: var(--font-body);
-      line-height: 1.55;
-    }
-
-    .top-bar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background-color: var(--bg);
-      border-bottom: 2px solid var(--rule);
-      padding: 0.75rem 0;
-      margin-bottom: 2rem;
-    }
-
-    .top-bar-title {
-      margin: 0;
-      font-family: var(--font-title);
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .headline {
-      text-align: center;
-      border-top: 4px solid var(--rule);
-      border-bottom: 2px solid var(--rule);
-      padding: 2rem 0;
-      margin-bottom: 2.5rem;
-    }
-
-    .headline-day {
-      margin: 0 0 0.5rem;
-      font-family: var(--font-body);
-      font-size: clamp(0.8rem, 2vw, 1rem);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-    }
-
-    .headline-title {
-      margin: 0;
-      font-family: var(--font-title);
-      font-size: clamp(2rem, 7vw, 4.5rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-
-    .page {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 5vw 4rem;
-    }
-
-    .lead-section {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 3rem;
-      margin-bottom: 3rem;
-    }
-
-    .lead-articles {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .lead-articles .article {
-      border-top: 2px solid var(--rule);
-      padding-top: 1rem;
-    }
-
-    .lead-articles .article-title {
-      font-size: 1.5rem;
-    }
-
-    .editorial {
-      border-left: 2px solid var(--rule);
-      border-top: 2px solid var(--rule);
-      border-bottom: 2px solid var(--rule);
-      padding: 1.5rem 2rem;
-    }
-
-    .editorial h1,
-    .editorial h2,
-    .editorial h3 {
-      font-family: var(--font-title);
-      margin: 0 0 1rem;
-    }
-
-    .editorial h1 {
-      font-size: 1.8rem;
-    }
-
-    .editorial h2 {
-      font-size: 1.3rem;
-    }
-
-    .editorial h3 {
-      font-size: 1.05rem;
-    }
-
-    .editorial p {
-      margin: 0 0 1rem;
-      font-size: 0.95rem;
-    }
-
-    .audio-player {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .audio-player audio {
-      display: none;
-    }
-
-    .audio-play-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      padding: 0.6rem 1.2rem;
-      background-color: var(--bg);
-      color: var(--fg);
-      border: 2px solid var(--rule);
-      font-family: var(--font-title);
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .audio-play-button:hover {
-      background-color: var(--fg);
-      color: var(--bg);
-    }
-
-    .audio-time {
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .article-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-    }
-
-    .grid-item {
-      min-width: 0;
-    }
-
-    .tag-section-title {
-      margin: 2rem 0 0;
-      padding: 0.5rem 0;
-      border-top: 3px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      font-family: var(--font-title);
-      font-size: 1.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .tag-section-title:first-child {
-      margin-top: 0;
-    }
-
-    .article {
-      border-top: 1px solid var(--rule);
-      padding-top: 1rem;
-    }
-
-    .article-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .article-link:hover .article-title {
-      text-decoration: underline;
-    }
-
-    .article img {
-      display: block;
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      margin-bottom: 1rem;
-      border: 1px solid var(--rule);
-      filter: grayscale(100%);
-    }
-
-    .article-title {
-      margin: 0 0 0.6rem;
-      font-family: var(--font-title);
-      font-size: 1.15rem;
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    .article-byline {
-      margin: 0 0 0.8rem;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .article-summary {
-      margin: 0;
-      font-size: 0.9rem;
-    }
-
-    .article-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin: 0 0 0.8rem;
-    }
-
-    .article-tag {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border: 1px solid var(--rule);
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    footer {
-      margin-top: 4rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--rule);
-      font-size: 0.75rem;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    @media (max-width: 1000px) {
-      .article-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 750px) {
-      .lead-section {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .editorial {
-        border-left: none;
-        border-top: 2px solid var(--rule);
-        border-bottom: 2px solid var(--rule);
-        padding: 1.5rem 0;
-      }
-
-      .article-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 500px) {
-      .page {
-        padding: 1.5rem 1.25rem 3rem;
-      }
-
-      .top-bar {
-        padding: 0.75rem 1.25rem;
-      }
-
-      .top-bar-title {
-        font-size: 1.3rem;
-      }
-
-      .lead-articles .article-title {
-        font-size: 1.25rem;
-      }
-
-      .article-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="page.css">
 </head>
 <body>
   <div class="page">
     <header class="top-bar">
-      <h1 class="top-bar-title">Pressroom</h1>
+      <div class="top-bar-inner">
+        <h1 class="top-bar-title">Pressroom</h1>
+        <span class="top-bar-date">$generated_at</span>
+      </div>
     </header>
     $headline
+    $feature_image
     <section class="lead-section">
-      <div class="lead-articles">
-        $lead_articles
-      </div>
-      <div class="editorial">
+      <div class="editorial" id="editorial">
         $audio_player
         $editorial_content
+      </div>
+      <div class="lead-articles">
+        $lead_articles
       </div>
     </section>
     <main class="article-grid">
@@ -368,13 +68,66 @@
         }
       });
 
+      function setPlaying(isPlaying) {
+        button.classList.toggle('is-playing', isPlaying);
+        button.textContent = isPlaying ? '❚❚ Pause' : '▶ Écouter l\'édito';
+      }
+
+      audio.addEventListener('play', function () { setPlaying(true); });
+      audio.addEventListener('pause', function () { setPlaying(false); });
+      audio.addEventListener('ended', function () { setPlaying(false); });
+
       audio.addEventListener('timeupdate', updateTime);
       audio.addEventListener('loadedmetadata', updateTime);
       audio.addEventListener('durationchange', updateTime);
-
-      audio.addEventListener('ended', function () {
-        button.textContent = '▶ Écouter l\'édito';
-        updateTime();
+    })();
+  </script>
+  <script>
+    (function () {
+      const fills = document.querySelectorAll('.stats-bar-fill.anim');
+      if (!fills.length || !('IntersectionObserver' in window)) return;
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.width = entry.target.getAttribute('data-width') + '%';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      fills.forEach(function (fill) { observer.observe(fill); });
+    })();
+  </script>
+  <script>
+    (function () {
+      const links = document.querySelectorAll('.stats-bar-link[data-scroll-source]');
+      const topBar = document.querySelector('.top-bar');
+      const offset = topBar ? topBar.offsetHeight + 16 : 0;
+      function scrollToEl(el) {
+        const target = el.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
+      links.forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+          const source = link.getAttribute('data-scroll-source');
+          const article = document.querySelector('.article[data-source="' + source + '"][data-source]');
+          if (article) scrollToEl(article);
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      const titleLink = document.querySelector('.headline-link');
+      const editorial = document.getElementById('editorial');
+      if (!titleLink || !editorial) return;
+      titleLink.addEventListener('click', function (event) {
+        event.preventDefault();
+        const topBar = document.querySelector('.top-bar');
+        const offset = topBar ? topBar.offsetHeight + 16 : 0;
+        const target = editorial.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+        history.replaceState(null, '', '#editorial');
       });
     })();
   </script>

@@ -29,6 +29,7 @@ publications:
     lang: "DE"
     feeds:
       - "https://www.srf.ch/news/bnf/rss/1890"
+      - "https://www.srf.ch/news/bnf/rss/1926"
   - name: "24 heures"
     lang: "FR"
     feeds:
@@ -106,3 +107,15 @@ publications:
     lang: "FR"
     feeds:
       - "https://www.lesoir.be/services/rss"
+  - name: "Heidi.news"
+    lang: "FR"
+    feeds:
+      - "https://www.heidi.news/articles.rss"
+  - name: "Republik"
+    lang: "FR"
+    feeds:
+      - "https://www.heidi.news/articles.rss"
+  - name: "Orient XXI"
+    lang: "FR"
+    feeds:
+      - "https://orientxxi.info/?page=backend&lang=fr"

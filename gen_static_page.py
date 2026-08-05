@@ -42,6 +42,30 @@ def get_french_weekday() -> str:
     return weekdays[datetime.now().weekday()]
 
 
+def get_generated_at() -> str:
+    """Return the current date and time in French."""
+    months = [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre",
+    ]
+    now = datetime.now()
+    month = months[now.month - 1]
+    return (
+        f"{get_french_weekday()} {now.day} {month} {now.year} "
+        f"à {now.hour:02d}h{now.minute:02d}"
+    )
+
+
 def format_inline(text: str) -> str:
     """Escape HTML entities and convert Markdown inline formatting to HTML."""
     # Protect Markdown links by replacing them with placeholders.
@@ -136,6 +160,14 @@ def shorten_summary(text: str | None, max_length: int = 280) -> str:
     return truncated + "…"
 
 
+def pick_feature_image(entries: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Pick the article with a media image and the highest similarity_score."""
+    candidates = [e for e in entries if e.get("media")]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda e: e.get("similarity_score") or 0)
+
+
 def format_date(date_value: str | None) -> str:
     """Format an ISO date string for display."""
     if not date_value:
@@ -171,7 +203,7 @@ def render_article(entry: dict[str, Any], article_template: Template) -> str:
             tags.append(f'<span class="article-tag">{html.escape(str(value), quote=False)}</span>')
     tags_html = f'<div class="article-tags">{" ".join(tags)}</div>' if tags else ""
 
-    return article_template.substitute(
+    article_html = article_template.substitute(
         title=title,
         summary=summary,
         byline_html=byline_html,
@@ -179,10 +211,121 @@ def render_article(entry: dict[str, Any], article_template: Template) -> str:
         article_url=article_url,
         tags_html=tags_html,
     )
+    source_key = re.sub(r"[\s]+", "-", (entry.get("source") or "").strip().lower())
+    source_key = re.sub(r"[^a-z0-9\-]", "", source_key)
+    if source_key:
+        article_html = article_html.replace(
+            '<article class="article">',
+            f'<article class="article" data-source="{source_key}">',
+            1,
+        )
+    return article_html
+
+
+def top_counts(
+    entries: list[dict[str, Any]], key: str, limit: int = 5
+) -> list[tuple[str, int]]:
+    """Return the top `limit` (label, count) pairs for a given entry field.
+
+    All entries are considered (not just the remainder). Empty/None values are
+    skipped. Ties are broken by raw value for deterministic ordering.
+    """
+    counts: dict[str, int] = {}
+    for entry in entries:
+        value = str(entry.get(key) or "").strip().lower()
+        if not value:
+            continue
+        counts[value] = counts.get(value, 0) + 1
+    ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    return ranked[:limit]
+
+
+def render_stats_widget(entries: list[dict[str, Any]], limit: int = 8) -> str:
+    """Render a headline-style widget with bar graphs.
+
+    Shows the top journals by number of cited articles, and the top countries.
+    Uses plain inline blocks sized via style width so no JS is required.
+    """
+    sources = top_counts(entries, "source", limit)
+    countries = top_counts(entries, "country", limit)
+
+    kept_countries = {
+        label for label, _ in group_entries_by_country(entries) if label != "Autres"
+    }
+    kept_countries = {
+        re.sub(r"[^a-z0-9\-]+", "-", label.lower()).strip("-")
+        for label in kept_countries
+    }
+
+    distinct_sources = len({str(e.get("source") or "").strip().lower() for e in entries if (e.get("source") or "").strip()})
+    distinct_themes = len({str(e.get("theme") or "").strip().lower() for e in entries if (e.get("theme") or "").strip()})
+    distinct_countries = len(top_counts(entries, "country", limit=None))
+
+    def bars(items: list[tuple[str, int]], kind: str) -> str:
+        lines: list[str] = []
+        if not items:
+            return ""
+        max_count = items[0][1]
+        for label, count in items:
+            width = 100.0 * count / max_count if max_count else 0.0
+            label_clean = html.escape(label.capitalize(), quote=False)
+            if kind == "source":
+                key = re.sub(r"[\s]+", "-", label.strip().lower())
+                key = re.sub(r"[^a-z0-9\-]", "", key)
+                label_html = (
+                    f'<span class="stats-bar-label">'
+                    f'<a class="stats-bar-link" href="#" data-scroll-source="{key}">'
+                    f"{label_clean}"
+                    f"</a></span>"
+                )
+            else:
+                key = normalize_country(label)
+                section_id = re.sub(r"[^a-z0-9\-]+", "-", key.lower()).strip("-")
+                if section_id not in kept_countries:
+                    section_id = "autres"
+                label_html = (
+                    f'<span class="stats-bar-label">'
+                    f'<a class="stats-bar-link" href="#section-{section_id}">'
+                    f"{label_clean}"
+                    f"</a></span>"
+                )
+            lines.append(
+                '<div class="stats-bar-row">'
+                f"{label_html}"
+                '<div class="stats-bar-track">'
+                f'<div class="stats-bar-fill anim" data-width="{width:.1f}" style="width: 0%"></div>'
+                "</div>"
+                f'<span class="stats-bar-value">{count}</span>'
+                "</div>"
+            )
+        return "\n".join(lines)
+
+    sources_html = bars(sources, "source")
+    countries_html = bars(countries, "country")
+
+    return (
+        '<article class="article stats-widget">'
+        '<h2 class="stats-widget-title">Édition en chiffres</h2>'
+        '<h3 class="stats-widget-label">Journaux les plus cités</h3>'
+        '<div class="stats-bars">'
+        f"{sources_html}"
+        "</div>"
+        '<h3 class="stats-widget-label">Pays les plus cités</h3>'
+        '<div class="stats-bars">'
+        f"{countries_html}"
+        "</div>"
+        '<div class="stats-totals">'
+        f"<span><strong>{len(entries)}</strong> articles</span>"
+        f"<span><strong>{distinct_sources}</strong> sources</span>"
+        f"<span><strong>{distinct_countries}</strong> pays</span>"
+        f"<span><strong>{distinct_themes}</strong> thèmes</span>"
+        "</div>"
+        "</article>"
+    )
 
 
 def select_distinct_theme_leads(
-    entries: list[dict[str, Any]], count: int = 4
+    entries: list[dict[str, Any]], count: int = 2
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Pick up to `count` lead articles with distinct theme tags.
 
@@ -252,11 +395,23 @@ def group_entries_by_country(entries: list[dict[str, Any]]) -> list[tuple[str, l
         country = normalize_country(entry.get("country"))
         groups.setdefault(country, []).append(entry)
 
-    return sorted(
+    grouped = sorted(
         groups.items(),
         key=lambda item: len(item[1]),
         reverse=True,
     )
+
+    keep: list[tuple[str, list[dict[str, Any]]]] = []
+    others: list[dict[str, Any]] = []
+    for label, country_entries in grouped:
+        if len(country_entries) <= 2:
+            others.extend(country_entries)
+        else:
+            keep.append((label, country_entries))
+
+    if others:
+        keep.append(("Autres", others))
+    return keep
 
 
 def load_template(name: str, template_dir: Path = DEFAULT_TEMPLATE_DIR) -> Template:
@@ -292,9 +447,10 @@ def build_country_flow(
     for theme_title, theme_entries in groups:
         col_index = 0
         title = html.escape(theme_title, quote=False)
+        section_id = re.sub(r"[^a-z0-9\-]+", "-", theme_title.lower()).strip("-")
         items.append(
             place(
-                f'<h2 class="tag-section-title">{title}</h2>',
+                f'<h2 class="tag-section-title" id="section-{section_id}">{title}</h2>',
                 col_index + 1,
                 col_index + 2,
             )
@@ -317,6 +473,7 @@ def build_html(
     editorial: str | None = None,
     headline: str | None = None,
     weekday: str | None = None,
+    generated_at: str | None = None,
     site_title: str = "Pressroom",
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
 ) -> str:
@@ -324,11 +481,11 @@ def build_html(
     article_template = load_template("article.html", template_dir)
     page_template = load_template("page.html", template_dir)
 
-    lead_entries, remainder = select_distinct_theme_leads(entries, count=4)
+    lead_entries, remainder = select_distinct_theme_leads(entries, count=2)
 
     lead_articles_html = "\n".join(
         render_article(entry, article_template) for entry in lead_entries
-    )
+    ) + "\n" + render_stats_widget(entries)
 
     groups = group_entries_by_country(remainder)
     articles_html = build_country_flow(groups, article_template)
@@ -347,18 +504,42 @@ def build_html(
         )
         editorial_content_html = render_markdown(editorial)
 
+    feature_image_html = ""
+    featured = pick_feature_image(entries)
+    if featured:
+        image_url = html.escape(str(featured.get("media") or ""), quote=True)
+        article_url = html.escape(str(featured.get("url") or "#"), quote=True)
+        title = html.escape(str(featured.get("title") or "Untitled"), quote=False)
+        source = html.escape(str(featured.get("source") or ""), quote=False)
+        feature_image_html = (
+            f'<figure class="feature-image">'
+            f'<a href="{article_url}" target="_blank" rel="noopener noreferrer">'
+            f'<img src="{image_url}" alt="{title}" loading="lazy">'
+            f'</a>'
+            f'<figcaption class="feature-caption">'
+            f'<a href="{article_url}" target="_blank" rel="noopener noreferrer">'
+            f"{title} · {source}"
+            f"</a>"
+            f"</figcaption>"
+            f"</figure>"
+        )
+
     headline_html = ""
     if headline:
         headline_html = (
             f'<div class="headline">'
-            f'<p class="headline-day">{html.escape(weekday or "", quote=False)}</p>'
+            f'<p class="headline-day">{html.escape("Aggrégateur d'informations" or "", quote=False)}</p>'
+            f'<a class="headline-link" href="#editorial">'
             f'<h1 class="headline-title">{html.escape(headline, quote=False)}</h1>'
+            f'</a>'
             f'</div>'
         )
 
     return page_template.substitute(
         site_title=html.escape(site_title, quote=False),
+        generated_at=html.escape(generated_at or "", quote=False),
         headline=headline_html,
+        feature_image=feature_image_html,
         lead_articles=lead_articles_html,
         audio_player=audio_player_html,
         editorial_content=editorial_content_html,
@@ -373,14 +554,21 @@ def generate_page(
 ) -> Path:
     """Generate the static page from parsed entries.
 
-    Returns the path to the generated HTML file.
+    Copies the stylesheet alongside the generated HTML so relative references
+    to ``page.css`` resolve. Returns the path to the generated HTML file.
     """
+    css_src = DEFAULT_TEMPLATE_DIR / "page.css"
+    if css_src.exists():
+        css_dest = output_path.parent / "page.css"
+        css_dest.write_text(css_src.read_text(encoding="utf-8"), encoding="utf-8")
+
     entries, editorial, title = load_parsed_data(parsed_entries_path)
     html_content = build_html(
         entries,
         editorial=editorial,
         headline=title,
         weekday=get_french_weekday(),
+        generated_at=get_generated_at(),
     )
 
     output_path.write_text(html_content, encoding="utf-8")

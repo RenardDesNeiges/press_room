@@ -28,7 +28,7 @@ Style et format :
 - La revue de presse mêle harmonieusement les citations de sources et la narration. Elle doit pouvoir être lue comme un panorama critique de la couverture médiatique du jour. 
 - La revue de presse doit être structurée en paragraphes soit par pays, soit par thême si et seulement si il y a des thêmes qui transcendent un seul pays. 
 - Il doit toujours y avoir une couverture de la France et de la Suisse. Et d'autres pays selon l'actualité.
-- Longueur totale : entre 600 et 1000 mots. Vérifie le nombre de mots après rédaction.
+- Longueur totale : entre 900 et 1300 mots. Vérifie le nombre de mots après rédaction.
 
 Structure invisible (elle guide la rédaction mais n’apparaît pas) :
 1. Une première phrase qui donne le fait dominant du jour.

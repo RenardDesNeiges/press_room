@@ -76,7 +76,7 @@ Return ONLY a JSON array of exactly {final_count} objects, ordered from most to 
 - "EID": the integer EID of the selected article
 - "reason": a one-sentence explanation of why it was selected
 - "theme": exactly one theme tag in French describing the article's main topic (e.g., "politique", "économie", "société", "environnement", "géopolitique", "droits humains", "médias", "culture", "technologie")
-- "country": exactly one country tag in French indicating the primary country or region concerned. Use "international" if the article concerns multiple countries at once.
+- "country": exactly one country tag in French indicating the primary country or region concerned. Use "international" if the article concerns diplomacy or other interactions between countries.
 
 Example output format:
 [

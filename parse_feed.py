@@ -147,7 +147,7 @@ def build_edito_prompt(
 
     return (
         prompt_template.replace("{ rss_feed_yaml }", rss_feed_yaml)
-        .replace("{ user_preferences.md }", user_preferences)
+        .replace("{ user_preferences.md }", user_preferences.split('-----')[1])
     )
 
 
