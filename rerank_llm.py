@@ -87,33 +87,66 @@ Example output format:
 """
 
 
-def parse_eids_from_response(response_text: str) -> list[int]:
-    """Extract an ordered list of EIDs from the LLM response."""
-    # Try to parse as JSON first.
+def extract_json_list(response_text: str) -> list[Any] | None:
+    """Extract a JSON array from an LLM response, tolerating code fences and prose.
+
+    Returns the parsed list, or None if no valid JSON array can be found.
+    """
+    text = response_text.strip()
+
+    # Trim surrounding Markdown code fences (e.g. ```json ... ```).
+    text = re.sub(r"^```(?:json)?\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+
+    # Try the whole text as JSON.
     try:
-        data = json.loads(response_text)
+        data = json.loads(text)
         if isinstance(data, list):
-            return [int(item["EID"]) for item in data if isinstance(item, dict) and "EID" in item]
+            return data
     except (json.JSONDecodeError, ValueError, TypeError):
         pass
 
+    # Fallback: locate the outermost [...] array and parse it.
+    start = text.find("[")
+    if start != -1:
+        end = text.rfind("]")
+        if end > start:
+            try:
+                data = json.loads(text[start : end + 1])
+                if isinstance(data, list):
+                    return data
+            except (json.JSONDecodeError, ValueError, TypeError):
+                pass
+
+    return None
+
+
+def parse_eids_from_response(response_text: str) -> list[int]:
+    """Extract an ordered list of EIDs from the LLM response."""
+    data = extract_json_list(response_text)
+    if data is not None:
+        return [int(item["EID"]) for item in data if isinstance(item, dict) and "EID" in item]
+
     # Fallback: look for EID numbers in the text.
-    eids = [int(m) for m in re.findall(r"\bEID\D+(\d+)", response_text, re.IGNORECASE)]
-    return eids
+    return [int(m) for m in re.findall(r"\bEID\D+(\d+)", response_text, re.IGNORECASE)]
 
 
 def query_model(
     prompt: str,
     model_name: str = DEFAULT_MODEL,
     temperature: float = 0.3,
+    max_tokens: int | None = None,
 ) -> str:
     """Query an LLM via OpenRouter."""
     with OpenRouter(api_key=API_KEY) as client:
-        response = client.chat.send(
-            model=model_name,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=temperature,
-        )
+        kwargs: dict[str, Any] = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+        }
+        if max_tokens is not None:
+            kwargs["max_tokens"] = max_tokens
+        response = client.chat.send(**kwargs)
         return response.choices[0].message.content
 
 
@@ -141,29 +174,26 @@ def rerank_with_llm(
         return []
 
     prompt = build_rerank_prompt(entries, final_count=final_count, interests_path=interests_path)
-    response_text = query_model(prompt, model_name=model_name)
+    response_text = query_model(prompt, model_name=model_name, max_tokens=12000)
 
     eids = parse_eids_from_response(response_text)
 
     # Build a lookup by EID.
     entry_by_eid = {entry.get("EID"): entry for entry in entries}
 
-    # Try to attach reasons and tags if JSON parsing succeeded.
+    # Attach reasons and tags from the parsed JSON (if any).
     reasons: dict[int, str] = {}
     tags: dict[int, dict[str, str]] = {}
-    try:
-        data = json.loads(response_text)
-        if isinstance(data, list):
-            for item in data:
-                if isinstance(item, dict) and "EID" in item:
-                    eid = int(item["EID"])
-                    reasons[eid] = _clean_tag(item.get("reason", ""))
-                    tags[eid] = {
-                        "theme": _clean_tag(item.get("theme", "")),
-                        "country": _clean_tag(item.get("country", "")),
-                    }
-    except (json.JSONDecodeError, ValueError, TypeError):
-        pass
+    data = extract_json_list(response_text)
+    if data is not None:
+        for item in data:
+            if isinstance(item, dict) and "EID" in item:
+                eid = int(item["EID"])
+                reasons[eid] = _clean_tag(item.get("reason", ""))
+                tags[eid] = {
+                    "theme": _clean_tag(item.get("theme", "")),
+                    "country": _clean_tag(item.get("country", "")),
+                }
 
     selected = []
     for eid in eids:

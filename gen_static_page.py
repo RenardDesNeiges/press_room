@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import html
+import difflib
 from datetime import datetime
 from pathlib import Path
 from string import Template
@@ -49,7 +50,9 @@ def format_inline(text: str) -> str:
     def save_link(match: re.Match) -> str:
         link_text = html.escape(match.group(1), quote=False)
         url = html.escape(match.group(2), quote=True)
-        links.append(f'<a href="{url}">{link_text}</a>')
+        links.append(
+            f'<a href="{url}" target="_blank" rel="noopener noreferrer">{link_text}</a>'
+        )
         return f"\x00LINK{len(links) - 1}\x00"
 
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", save_link, text)
@@ -214,15 +217,39 @@ def select_distinct_theme_leads(
     return leads, remainder
 
 
+CANONICAL_COUNTRIES = [
+    "france", "suisse", "allemagne", "espagne", "italie", "royaume-uni",
+    "etats-unis", "usa", "chine", "russie", "ukraine", "belgique", "luxembourg",
+    "canada", "japon", "inde", "bresil", "argentine", "mexique", "cuba",
+    "israel", "palestine", "maroc", "algerie", "tunisie", "turquie", "iran",
+    "syrie", "afghanistan", "congo", "somalie", "autriche", "norvege",
+    "suede", "finlande", "pologne", "portugal", "grece", "pays-bas",
+    "allemand", "canadien",
+]
+
+
+def normalize_country(tag: str, cutoff: float = 0.78) -> str:
+    """Fuzzy-match a country tag to a canonical name using difflib."""
+    cleaned = (tag or "").strip().lower()
+    if not cleaned:
+        return "Divers"
+    try:
+        matches = difflib.get_close_matches(cleaned, CANONICAL_COUNTRIES, n=1, cutoff=cutoff)
+    except TypeError:
+        matches = []
+    return matches[0] if matches else cleaned.capitalize()
+
+
 def group_entries_by_country(entries: list[dict[str, Any]]) -> list[tuple[str, list[dict[str, Any]]]]:
     """Group entries into sections by country tag, ordered by descending count.
 
+    Country tags are fuzzy-normalized to canonical names before grouping.
     Sections with the most articles are listed first. Entries without a country
     are grouped under "Divers".
     """
     groups: dict[str, list[dict[str, Any]]] = {}
     for entry in entries:
-        country = str(entry.get("country") or "").strip() or "Divers"
+        country = normalize_country(entry.get("country"))
         groups.setdefault(country, []).append(entry)
 
     return sorted(
@@ -290,7 +317,7 @@ def build_html(
     editorial: str | None = None,
     headline: str | None = None,
     weekday: str | None = None,
-    site_title: str = "press-room",
+    site_title: str = "Pressroom",
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
 ) -> str:
     """Build a black-and-white newspaper-style HTML page from templates."""

@@ -12,10 +12,32 @@ publications:
     lang: "EN"
     feeds:
       - "https://www.ft.com/rss/"
+      - "https://www.ft.com/world?format=rss"
+      - "https://www.ft.com/technology?format=rss"
+      - "https://www.ft.com/opinion"
   - name: "Politico"
     lang: "EN"
     feeds:
       - "https://www.politico.eu/rss/feed"
+      - "https://rss.politico.com/politics-news.xml"
+      - "https://rss.politico.com/congress.xml"
+  - name: "RTS"
+    lang: "FR"
+    feeds:
+      - "https://www.rts.ch/info/suisse?format=rss/news"
+  - name: "SSR"
+    lang: "DE"
+    feeds:
+      - "https://www.srf.ch/news/bnf/rss/1890"
+  - name: "24 heures"
+    lang: "FR"
+    feeds:
+      - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/suisse"
+  - name: "El Pais"
+    lang: "ES"
+    feeds:
+      - "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"
+      - "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america/portada"
   - name: "NZZ (Neue Zürcher Zeitung)"
     lang: "DE"
     notes: "https://www.nzz.ch/startseite.rss"
@@ -54,10 +76,6 @@ publications:
     lang: "EN"
     feeds:
       - "https://www.chinadaily.com.cn/rss/china_rss.xml"
-  - name: "China Daily"
-    lang: "EN"
-    feeds:
-      - "https://www.chinadaily.com.cn/rss/china_rss.xml"
   - name: "Contretemps"
     lang: "FR"
     feeds:
@@ -74,3 +92,17 @@ publications:
     lang: "FR"
     feeds:
       - "https://www.jornada.com.mx/ultimas/news/RSS"
+  - name: "CGTN"
+    lang: "EN"
+    feeds:
+      - "https://www.cgtn.com/subscribe/rss/section/china.xml"
+      - "https://www.cgtn.com/subscribe/rss/section/politics.xml"
+      - "https://www.cgtn.com/subscribe/rss/section/world.xml"
+  - name: "Solidaires (BE)"
+    lang: "FR"
+    feeds:
+      - "http://www.solidaire.org/rss.xml"
+  - name: "Le Soir (BE)."
+    lang: "FR"
+    feeds:
+      - "https://www.lesoir.be/services/rss"
