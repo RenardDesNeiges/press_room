@@ -25,7 +25,8 @@ Traitement du flux RSS et rédaction de la revue de presse :
 Style et format :
 - **Densité maximale** : phrases courtes, précises. Pas de mots de liaison vides. Chaque phrase apporte une information sourcée ou met en relation plusieurs sources.
 - La revue de presse mêle harmonieusement les citations de sources et la narration. Elle doit pouvoir être lue comme un panorama critique de la couverture médiatique du jour. Elle doit être structurée soit par pays, soit par thême si et seulement si il y a des sujets internationaux.
-- Longueur totale : entre 450 et 750 mots. Vérifie le nombre de mots après rédaction.
+- Il doit toujours y avoir une couverture de la France et de la Suisse. Et d'autres pays selon l'actualité.
+- Longueur totale : entre 600 et 1000 mots. Vérifie le nombre de mots après rédaction.
 
 Structure invisible (elle guide la rédaction mais n’apparaît pas) :
 1. Une première phrase qui donne le fait dominant du jour.

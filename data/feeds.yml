@@ -12,7 +12,7 @@ publications:
     lang: "EN"
     feeds:
       - "https://www.ft.com/rss/"
-  - name: "Politico EU"
+  - name: "Politico"
     lang: "EN"
     feeds:
       - "https://www.politico.eu/rss/feed"
@@ -42,3 +42,31 @@ publications:
     lang: "ES"
     feeds:
       - "https://www.eldiario.es/rss/"
+  - name: "Cubadebate"
+    lang: "ES"
+    feeds:
+      - "http://www.cubadebate.cu/rss"
+  - name: "Granma"
+    lang: "ES"
+    feeds:
+      - "https://www.granma.cu/feed"
+  - name: "China Daily"
+    lang: "EN"
+    feeds:
+      - "https://www.chinadaily.com.cn/rss/china_rss.xml"
+  - name: "China Daily"
+    lang: "EN"
+    feeds:
+      - "https://www.chinadaily.com.cn/rss/china_rss.xml"
+  - name: "Contretemps"
+    lang: "FR"
+    feeds:
+      - "https://contretemps.eu/rss"
+  - name: "Le Vent se Lève"
+    lang: "FR"
+    feeds:
+      - "https://lvsl.fr/rss"
+  - name: "Les Jours"
+    lang: "FR"
+    feeds:
+      - "https://lesjours.fr/rss"

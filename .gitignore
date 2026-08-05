@@ -1,3 +1,7 @@
 __pycache__/
 config.py
 press_room.html
+data/*.mp3
+data/parsed_entries.yml
+.gitignore
+data/filtered_entries.yml
