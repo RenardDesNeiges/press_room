@@ -15,6 +15,53 @@ import yaml
 from config import DEFAULT_PARSED_ENTRIES_PATH, DEFAULT_TEMPLATE_DIR
 
 
+EXCLUDED_DOMAINS = {
+    "blog.mondediplo.net",
+    "politico.eu",
+    "politico.com",
+    "rts.ch",
+    "srf.ch",
+    "eldiario.es",
+    "elpais.com",
+    "lvsl.fr",
+    "contretemps.eu",
+    "chinadaily.com.cn",
+    "news.cgtn.com",
+    "granma.cu",
+    "cubadebate.cu",
+    "jornada.com",
+    "solidaire.org",
+    "orientxxi.info",
+}
+
+
+def _domain_of(url: str) -> str:
+    """Return the lowercase, www-stripped hostname of a URL, or ""."""
+    netloc = url.split("://", 1)[-1]
+    netloc = netloc.split("/", 1)[0]
+    netloc = netloc.split("@", 1)[-1]
+    netloc = netloc.split(":", 1)[0].lower()
+    if netloc.startswith("www."):
+        netloc = netloc[4:]
+    return netloc
+
+
+def archive_url(url: str) -> str:
+    """Wrap an article URL through archive.ph so it remains readable.
+
+    The scheme prefix (https://) is stripped from the target before the
+    archive.ph prefix is added. Domains listed in EXCLUDED_DOMAINS are left
+    untouched.
+    """
+    url = (url or "").strip()
+    if not url or url in ("#", ""):
+        return url
+    if _domain_of(url) in EXCLUDED_DOMAINS:
+        return url
+    stripped = re.sub(r"^https?://", "", url, flags=re.IGNORECASE)
+    return f"https://archive.ph/{stripped}"
+
+
 def load_parsed_data(
     path: str | Path = DEFAULT_PARSED_ENTRIES_PATH,
 ) -> tuple[list[dict[str, Any]], str | None, str | None]:
@@ -73,7 +120,7 @@ def format_inline(text: str) -> str:
 
     def save_link(match: re.Match) -> str:
         link_text = html.escape(match.group(1), quote=False)
-        url = html.escape(match.group(2), quote=True)
+        url = html.escape(archive_url(match.group(2)), quote=True)
         links.append(
             f'<a href="{url}" target="_blank" rel="noopener noreferrer">{link_text}</a>'
         )
@@ -187,7 +234,7 @@ def render_article(entry: dict[str, Any], article_template: Template) -> str:
     source = html.escape(entry.get("source") or "", quote=False)
     date = html.escape(format_date(entry.get("date")), quote=False)
     media_url = entry.get("media")
-    article_url = html.escape(entry.get("url") or "#")
+    article_url = html.escape(archive_url(entry.get("url") or "#"))
 
     media_html = ""
     if media_url:
@@ -508,7 +555,7 @@ def build_html(
     featured = pick_feature_image(entries)
     if featured:
         image_url = html.escape(str(featured.get("media") or ""), quote=True)
-        article_url = html.escape(str(featured.get("url") or "#"), quote=True)
+        article_url = html.escape(archive_url(str(featured.get("url") or "#")))
         title = html.escape(str(featured.get("title") or "Untitled"), quote=False)
         source = html.escape(str(featured.get("source") or ""), quote=False)
         feature_image_html = (

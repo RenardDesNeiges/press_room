@@ -20,6 +20,7 @@ from config import (
     DEFAULT_MODEL,
     DEFAULT_INTERESTS_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
+    DEFAULT_TITLE_GUIDE_PATH,
     FANCY_MODEL,
 )
 from rank_entries import rank_entries
@@ -167,11 +168,14 @@ def generate_editorial(
 def extract_editorial_title(
     editorial: str,
     model_name: str = DEFAULT_MODEL,
+    guide: str = DEFAULT_TITLE_GUIDE_PATH,
 ) -> str:
     """Extract a short headline from the editorial using a cheap LLM."""
     prompt = (
+        "Voici un guide d'écriture d'éditorial"
+        f"{guide}"
         "À partir de l'éditorial suivant, extrais un titre de journal percutant "
-        "(maximum 10 mots) qui résume le thème principal. "
+        "(maximum 10 mots) qui résume le thème principal."
         "Ne renvoie que le titre, sans guillemets ni explication.\n\n"
         f"Éditorial :\n{editorial}"
     )
@@ -241,9 +245,9 @@ def parse_feed(
     )
     print(f"Selected {len(candidates)} diversified candidates for LLM reranking.")
 
-    print(f"Reranking with LLM ({model_name}) to select {final_count} articles...")
+    print(f"Reranking with LLM ({FANCY_MODEL}) to select {final_count} articles...")
     selected = rerank_with_llm(
-        candidates, final_count=final_count, model_name=model_name
+        candidates, final_count=final_count, model_name=FANCY_MODEL
     )
     print(f"LLM selected {len(selected)} articles.")
 

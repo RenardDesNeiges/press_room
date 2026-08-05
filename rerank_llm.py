@@ -87,11 +87,13 @@ Example output format:
 """
 
 
-def extract_json_list(response_text: str) -> list[Any] | None:
+def extract_json_list(response_text: str | None) -> list[Any] | None:
     """Extract a JSON array from an LLM response, tolerating code fences and prose.
 
     Returns the parsed list, or None if no valid JSON array can be found.
     """
+    if not response_text or not response_text.strip():
+        return None
     text = response_text.strip()
 
     # Trim surrounding Markdown code fences (e.g. ```json ... ```).
@@ -121,8 +123,10 @@ def extract_json_list(response_text: str) -> list[Any] | None:
     return None
 
 
-def parse_eids_from_response(response_text: str) -> list[int]:
+def parse_eids_from_response(response_text: str | None) -> list[int]:
     """Extract an ordered list of EIDs from the LLM response."""
+    if not response_text:
+        return []
     data = extract_json_list(response_text)
     if data is not None:
         return [int(item["EID"]) for item in data if isinstance(item, dict) and "EID" in item]
@@ -147,7 +151,16 @@ def query_model(
         if max_tokens is not None:
             kwargs["max_tokens"] = max_tokens
         response = client.chat.send(**kwargs)
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if content is None:
+            content = (
+                getattr(response.choices[0].message, "reasoning", None)
+                or ""
+            )
+        if not content or not content.strip():
+            print(f"WARNING: model {model_name} returned empty content.")
+            return ""
+        return content
 
 
 def _clean_tag(value: Any) -> str:
@@ -174,7 +187,7 @@ def rerank_with_llm(
         return []
 
     prompt = build_rerank_prompt(entries, final_count=final_count, interests_path=interests_path)
-    response_text = query_model(prompt, model_name=model_name, max_tokens=12000)
+    response_text = query_model(prompt, model_name=model_name, max_tokens=32000)
 
     eids = parse_eids_from_response(response_text)
 

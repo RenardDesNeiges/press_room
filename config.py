@@ -8,6 +8,7 @@ DEFAULT_MP3_PATH = Path("data/editorial.mp3")
 DEFAULT_MODEL = "qwen/qwen-2.5-7b-instruct:nitro"
 FANCY_MODEL = "deepseek/deepseek-v4-flash-0731:nitro"
 DEFAULT_INTERESTS_PATH = Path("data/readers_interests.md")
+DEFAULT_TITLE_GUIDE_PATH = Path("data/readers_interests.md")
 DEFAULT_ARRANK_PROMPT_PATH = Path("data/additional_rerank_prompt.md")
 
 DEFAULT_CANDIDATES_COUNT = 120
