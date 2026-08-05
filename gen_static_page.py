@@ -161,12 +161,74 @@ def render_article(entry: dict[str, Any], article_template: Template) -> str:
     byline = " · ".join(part for part in [source, author, date] if part)
     byline_html = f'<p class="article-byline">{byline}</p>' if byline else ""
 
+    tags: list[str] = []
+    for tag in ["theme", "country"]:
+        value = entry.get(tag)
+        if value:
+            tags.append(f'<span class="article-tag">{html.escape(str(value), quote=False)}</span>')
+    tags_html = f'<div class="article-tags">{" ".join(tags)}</div>' if tags else ""
+
     return article_template.substitute(
         title=title,
         summary=summary,
         byline_html=byline_html,
         media_html=media_html,
         article_url=article_url,
+        tags_html=tags_html,
+    )
+
+
+def select_distinct_theme_leads(
+    entries: list[dict[str, Any]], count: int = 4
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Pick up to `count` lead articles with distinct theme tags.
+
+    Iterates over `entries` (already ordered by importance) and selects the
+    first article for each distinct theme. Returns the selected leads and the
+    remaining entries.
+    """
+    leads: list[dict[str, Any]] = []
+    remainder: list[dict[str, Any]] = []
+    seen_themes: set[str] = set()
+
+    for entry in entries:
+        theme = str(entry.get("theme") or "").strip().lower()
+        if not theme or theme in seen_themes:
+            remainder.append(entry)
+            continue
+        if len(leads) >= count:
+            remainder.append(entry)
+            continue
+        leads.append(entry)
+        seen_themes.add(theme)
+
+    remaining_needed = count - len(leads)
+    if remaining_needed > 0 and remainder:
+        for entry in list(remainder):
+            if remaining_needed <= 0:
+                break
+            leads.append(entry)
+            remainder.remove(entry)
+            remaining_needed -= 1
+
+    return leads, remainder
+
+
+def group_entries_by_country(entries: list[dict[str, Any]]) -> list[tuple[str, list[dict[str, Any]]]]:
+    """Group entries into sections by country tag, ordered by descending count.
+
+    Sections with the most articles are listed first. Entries without a country
+    are grouped under "Divers".
+    """
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for entry in entries:
+        country = str(entry.get("country") or "").strip() or "Divers"
+        groups.setdefault(country, []).append(entry)
+
+    return sorted(
+        groups.items(),
+        key=lambda item: len(item[1]),
+        reverse=True,
     )
 
 
@@ -175,6 +237,52 @@ def load_template(name: str, template_dir: Path = DEFAULT_TEMPLATE_DIR) -> Templ
     template_path = template_dir / name
     with open(template_path, "r", encoding="utf-8") as fh:
         return Template(fh.read())
+
+
+GRID_COLUMNS = 4
+
+
+def build_country_flow(
+    groups: list[tuple[str, list[dict[str, Any]]]],
+    article_template: Template,
+    columns: int = GRID_COLUMNS,
+) -> str:
+    """Render country groups as one continuous grid without breaking rows.
+
+    Each section starts a fresh row with its title in the left cell and its
+    articles flowing to the right, so the title always sits left of its own
+    articles. Sections are assumed ordered by descending article count.
+    """
+    items: list[str] = []
+    col_index = 0  # 0-based index of the next free cell in the current row
+
+    def place(content: str, start: int, end: int) -> str:
+        return (
+            f'<div class="grid-item" style="grid-column: {start} / {end}">'
+            f"{content}</div>"
+        )
+
+    for theme_title, theme_entries in groups:
+        col_index = 0
+        title = html.escape(theme_title, quote=False)
+        items.append(
+            place(
+                f'<h2 class="tag-section-title">{title}</h2>',
+                col_index + 1,
+                col_index + 2,
+            )
+        )
+        col_index = 1
+
+        for entry in theme_entries:
+            items.append(
+                place(render_article(entry, article_template), col_index + 1, col_index + 2)
+            )
+            col_index += 1
+            if col_index >= columns:
+                col_index = 0
+
+    return "\n".join(items)
 
 
 def build_html(
@@ -189,16 +297,14 @@ def build_html(
     article_template = load_template("article.html", template_dir)
     page_template = load_template("page.html", template_dir)
 
-    lead_entries = entries[:4]
-    grid_entries = entries[4:]
+    lead_entries, remainder = select_distinct_theme_leads(entries, count=4)
 
     lead_articles_html = "\n".join(
         render_article(entry, article_template) for entry in lead_entries
     )
 
-    articles_html = "\n".join(
-        render_article(entry, article_template) for entry in grid_entries
-    )
+    groups = group_entries_by_country(remainder)
+    articles_html = build_country_flow(groups, article_template)
 
     audio_player_html = ""
     editorial_content_html = ""
@@ -209,6 +315,7 @@ def build_html(
             '<source src="data/editorial.mp3" type="audio/mpeg">'
             "</audio>"
             '<button class="audio-play-button" type="button">▶ Écouter l\'édito</button>'
+            '<span class="audio-time">0:00 / 0:00</span>'
             "</div>"
         )
         editorial_content_html = render_markdown(editorial)

@@ -5,7 +5,7 @@ A small, automated pipeline that turns a curated list of RSS feeds into a daily 
 ## What it does
 
 1. **Scrape** – fetches the RSS feeds listed in `data/feeds.yml`, filters articles by publication date, and writes `data/filtered_entries.yml`.
-2. **Parse** – ranks articles by semantic similarity to the reader profile in `data/readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, translates non-French text to French, generates a French editorial, extracts a headline with a cheap LLM, and writes `data/parsed_entries.yml`.
+2. **Parse** – ranks articles by semantic similarity to the reader profile in `data/readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns exactly one theme tag and one country tag to each selected article ("international" if multiple countries are concerned), translates non-French text to French, generates a French editorial, extracts a headline with a cheap LLM, and writes `data/parsed_entries.yml`.
 3. **Speak** – synthesizes the editorial to `data/editorial.mp3` via OpenRouter's TTS API.
 4. **Render** – generates `press_room.html`, a responsive black-and-white newspaper page with the headline and current weekday at the top.
 

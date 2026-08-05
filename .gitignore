@@ -1,4 +1,5 @@
 __pycache__/
+key.py
 config.py
 press_room.html
 data/*.mp3

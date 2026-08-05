@@ -54,7 +54,7 @@ def build_rerank_prompt(
     additional_prompt = load_additional_prompt(additional_prompt_path)
     candidates_block = build_candidate_prompt_block(entries)
 
-    return f"""You are a careful editorial assistant selecting articles for a left-wing activist reader.
+    return f"""You are a careful editorial assistant selecting articles for a left-wing reader.
 
 READER PROFILE:
 {interests}
@@ -75,11 +75,14 @@ OUTPUT FORMAT:
 Return ONLY a JSON array of exactly {final_count} objects, ordered from most to least important. Each object must have:
 - "EID": the integer EID of the selected article
 - "reason": a one-sentence explanation of why it was selected
+- "theme": exactly one theme tag in French describing the article's main topic (e.g., "politique", "économie", "société", "environnement", "géopolitique", "droits humains", "médias", "culture", "technologie")
+- "country": exactly one country tag in French indicating the primary country or region concerned. Use "international" if the article concerns multiple countries at once.
 
 Example output format:
 [
-  {{"EID": 12, "reason": "Directly covers AfD gains in Germany, matching reader interest in far-right rise."}},
-  {{"EID": 5, "reason": "Major social movement in France with geopolitical implications."}}
+  {{"EID": 12, "reason": "Directly covers AfD gains in Germany, matching reader interest in far-right rise.", "theme": "politique", "country": "allemagne"}},
+  {{"EID": 5, "reason": "Major social movement in France with geopolitical implications.", "theme": "société", "country": "france"}},
+  {{"EID": 7, "reason": "Global climate summit commitments with geopolitical consequences.", "theme": "environnement", "country": "international"}}
 ]
 """
 
@@ -114,6 +117,13 @@ def query_model(
         return response.choices[0].message.content
 
 
+def _clean_tag(value: Any) -> str:
+    """Normalize a tag string: strip whitespace and surrounding quotes."""
+    if not isinstance(value, str):
+        return ""
+    return value.strip().strip('"').strip("'")
+
+
 def rerank_with_llm(
     entries: list[dict[str, Any]],
     final_count: int = 20,
@@ -122,9 +132,10 @@ def rerank_with_llm(
 ) -> list[dict[str, Any]]:
     """Rerank candidate entries into `final_count` articles using an LLM.
 
-    The LLM is asked to ensure diversity across countries and topics.
-    Returns the selected entries in the order chosen by the LLM, with a
-    "rerank_reason" field added.
+    The LLM is asked to ensure diversity across countries and topics, and to
+    assign exactly one theme tag and one country tag to each selected article.
+    Returns the selected entries in the order chosen by the LLM, with
+    "rerank_reason", "theme", and "country" fields added.
     """
     if not entries:
         return []
@@ -137,14 +148,20 @@ def rerank_with_llm(
     # Build a lookup by EID.
     entry_by_eid = {entry.get("EID"): entry for entry in entries}
 
-    # Try to attach reasons if JSON parsing succeeded.
+    # Try to attach reasons and tags if JSON parsing succeeded.
     reasons: dict[int, str] = {}
+    tags: dict[int, dict[str, str]] = {}
     try:
         data = json.loads(response_text)
         if isinstance(data, list):
             for item in data:
                 if isinstance(item, dict) and "EID" in item:
-                    reasons[int(item["EID"])] = item.get("reason", "")
+                    eid = int(item["EID"])
+                    reasons[eid] = _clean_tag(item.get("reason", ""))
+                    tags[eid] = {
+                        "theme": _clean_tag(item.get("theme", "")),
+                        "country": _clean_tag(item.get("country", "")),
+                    }
     except (json.JSONDecodeError, ValueError, TypeError):
         pass
 
@@ -155,6 +172,8 @@ def rerank_with_llm(
             continue
         enriched = dict(entry)
         enriched["rerank_reason"] = reasons.get(eid, "")
+        enriched["theme"] = tags.get(eid, {}).get("theme", "")
+        enriched["country"] = tags.get(eid, {}).get("country", "")
         selected.append(enriched)
 
     return selected[:final_count]

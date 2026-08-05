@@ -219,6 +219,9 @@ def parse_feed(
     3. Keep the top `candidates_count` diversified candidates.
     4. Rerank those candidates with an LLM to select the `final_count` most
        important articles, ensuring diversity across countries and topics.
+       The LLM also assigns exactly one "theme" tag and one "country" tag to
+       each selected article ("international" when multiple countries are
+       concerned).
     5. Translate the selected articles' text fields into French.
 
     Returns the final selected entries in order of importance.

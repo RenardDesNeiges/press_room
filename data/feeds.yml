@@ -70,3 +70,7 @@ publications:
     lang: "FR"
     feeds:
       - "https://lesjours.fr/rss"
+  - name: "La Jornada"
+    lang: "FR"
+    feeds:
+      - "https://www.jornada.com.mx/ultimas/news/RSS"

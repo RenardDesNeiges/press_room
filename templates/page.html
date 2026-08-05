@@ -132,7 +132,11 @@
     }
 
     .audio-player {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       margin-bottom: 1.5rem;
+      flex-wrap: wrap;
     }
 
     .audio-player audio {
@@ -159,10 +163,36 @@
       color: var(--bg);
     }
 
+    .audio-time {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
     .article-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 2rem;
+    }
+
+    .grid-item {
+      min-width: 0;
+    }
+
+    .tag-section-title {
+      margin: 2rem 0 0;
+      padding: 0.5rem 0;
+      border-top: 3px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--font-title);
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .tag-section-title:first-child {
+      margin-top: 0;
     }
 
     .article {
@@ -208,6 +238,22 @@
     .article-summary {
       margin: 0;
       font-size: 0.9rem;
+    }
+
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0 0 0.8rem;
+    }
+
+    .article-tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border: 1px solid var(--rule);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     footer {
@@ -286,7 +332,7 @@
       $articles
     </main>
     <footer>
-      Generated from filtered_entries.yml · $article_count articles selected
+      Généré a partir des flux RSS des médias en questions · $article_count articles sélectionés
     </footer>
   </div>
   <script>
@@ -295,7 +341,21 @@
       if (!player) return;
       const audio = player.querySelector('audio');
       const button = player.querySelector('.audio-play-button');
+      const timeDisplay = player.querySelector('.audio-time');
       if (!audio || !button) return;
+
+      function formatTime(seconds) {
+        if (!isFinite(seconds) || isNaN(seconds)) return '0:00';
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+      }
+
+      function updateTime() {
+        if (timeDisplay) {
+          timeDisplay.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration);
+        }
+      }
 
       button.addEventListener('click', function () {
         if (audio.paused) {
@@ -307,8 +367,13 @@
         }
       });
 
+      audio.addEventListener('timeupdate', updateTime);
+      audio.addEventListener('loadedmetadata', updateTime);
+      audio.addEventListener('durationchange', updateTime);
+
       audio.addEventListener('ended', function () {
         button.textContent = '▶ Écouter l\'édito';
+        updateTime();
       });
     })();
   </script>

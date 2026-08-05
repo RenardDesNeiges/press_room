@@ -24,13 +24,14 @@ Traitement du flux RSS et rédaction de la revue de presse :
 
 Style et format :
 - **Densité maximale** : phrases courtes, précises. Pas de mots de liaison vides. Chaque phrase apporte une information sourcée ou met en relation plusieurs sources.
-- La revue de presse mêle harmonieusement les citations de sources et la narration. Elle doit pouvoir être lue comme un panorama critique de la couverture médiatique du jour. Elle doit être structurée soit par pays, soit par thême si et seulement si il y a des sujets internationaux.
+- La revue de presse mêle harmonieusement les citations de sources et la narration. Elle doit pouvoir être lue comme un panorama critique de la couverture médiatique du jour. 
+- La revue de presse doit être structurée en paragraphes soit par pays, soit par thême si et seulement si il y a des thêmes qui transcendent un seul pays. 
 - Il doit toujours y avoir une couverture de la France et de la Suisse. Et d'autres pays selon l'actualité.
 - Longueur totale : entre 600 et 1000 mots. Vérifie le nombre de mots après rédaction.
 
 Structure invisible (elle guide la rédaction mais n’apparaît pas) :
 1. Une première phrase qui donne le fait dominant du jour.
 2. Deux à quatre paragraphes thématiques. Dans chacun, au moins deux sources différentes sont confrontées ou juxtaposées, toujours avec des liens markdown.
-3. Une phrase de clôture qui signale un point de vigilance ou une interrogation pour les heures à venir, toujours en s’appuyant sur une source.
+3. Une phrase de clôture qui relie les différents sujets traités dans les différents paragraphe, et s'il y a un point de vigilance en particulier pour les jours qui suivent, le rappel.
 
-Contrainte absolue : le texte final est un bloc continu, sans titres, sans listes, sans séparateurs. Il commence par une phrase d’accroche factuelle et s’achève sans formule de politesse ni signature. Chaque information provient d’un article du flux et sa source est citée en lien markdown dans le flux du texte.
+Contrainte absolue : le texte final consiste en quelques paragraphes, sans titres, sans listes, sans séparateurs. Il commence par une phrase d’accroche factuelle et s’achève sans formule de politesse ni signature. Chaque information provient d’un article du flux et sa source est citée en lien markdown dans le flux du texte.
