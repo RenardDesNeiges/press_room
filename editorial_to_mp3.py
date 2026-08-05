@@ -10,10 +10,10 @@ import re
 import requests
 import yaml
 
-from config import API_KEY, DEFAULT_PARSED_ENTRIES_PATH
+from config import API_KEY, DEFAULT_MP3_PATH, DEFAULT_PARSED_ENTRIES_PATH
 
 
-DEFAULT_OUTPUT_PATH = Path("data/editorial.mp3")
+DEFAULT_OUTPUT_PATH = DEFAULT_MP3_PATH
 DEFAULT_MODEL = "mistralai/voxtral-mini-tts-2603"
 DEFAULT_VOICE = "fr_marie_curious"  # French female voice for Mistral TTS
 DEFAULT_ENDPOINT = "https://openrouter.ai/api/v1/audio/speech"
@@ -94,17 +94,31 @@ def text_to_speech(
     return output_path
 
 
-def main() -> None:
-    """Generate an MP3 from the parsed editorial."""
-    editorial = load_editorial()
+def generate_editorial_mp3(
+    parsed_entries_path: Path = DEFAULT_PARSED_ENTRIES_PATH,
+    output_path: Path = DEFAULT_OUTPUT_PATH,
+) -> Path | None:
+    """Generate an MP3 from the parsed editorial.
+
+    Returns the path to the generated MP3, or None if no editorial exists.
+    """
+    editorial = load_editorial(parsed_entries_path)
     if not editorial:
         print("No editorial found in parsed entries.")
-        return
+        return None
 
     plain_text = strip_markdown(editorial)
-    print(f"Synthesizing editorial to MP3 using {DEFAULT_MODEL} (voice: {DEFAULT_VOICE})...")
-    output_path = text_to_speech(plain_text)
-    print(f"Saved MP3 to {output_path}")
+    print(
+        f"Synthesizing editorial to MP3 using {DEFAULT_MODEL} (voice: {DEFAULT_VOICE})..."
+    )
+    generated_path = text_to_speech(plain_text, output_path=output_path)
+    print(f"Saved MP3 to {generated_path}")
+    return generated_path
+
+
+def main() -> None:
+    """Generate an MP3 from the parsed editorial."""
+    generate_editorial_mp3()
 
 
 if __name__ == "__main__":

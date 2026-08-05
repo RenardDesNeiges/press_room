@@ -7,6 +7,7 @@ The rise of far-right/nationalists/right-populist politicians and parties. Espec
 The rise of the far-left, communist, anticapitalist, left-populist politicians. Especially La France Insoumise and Mélenchon (in France), Die Linke (in Germany).
 Any mention of POP, les Jeunes POP, Kommunistische Jugend PdA or Solidarités in Switzerland. 
 Their favorite read are the Financial Times, Le Monde Diplomatique, Jacobin and NZZ.
+Also they want, where possible to read articles from a newspaper that comes from the right country, or at least the right-language group. For instance NZZ about Switzerland, the Financial Times or Jacobin about the US and the UK, Mediapart about France etc.
 Any social movement, strike, protests, riots.
 Crises of capitalism, of the market, big firms being at a loss. Technological change, especially in its socio-economic implications.
 Any massive change in a big firm's profitability or in the competitive environment. 

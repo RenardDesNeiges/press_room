@@ -203,14 +203,25 @@ def build_html(
     )
 
 
-def main() -> None:
-    """Generate the static page from parsed entries."""
-    entries, editorial = load_parsed_data()
+def generate_page(
+    parsed_entries_path: Path = DEFAULT_PARSED_ENTRIES_PATH,
+    output_path: Path = Path("press_room.html"),
+) -> Path:
+    """Generate the static page from parsed entries.
+
+    Returns the path to the generated HTML file.
+    """
+    entries, editorial = load_parsed_data(parsed_entries_path)
     html_content = build_html(entries, editorial=editorial)
 
-    output_path = Path("press_room.html")
     output_path.write_text(html_content, encoding="utf-8")
     print(f"Generated {output_path} with {len(entries)} articles.")
+    return output_path
+
+
+def main() -> None:
+    """Generate the static page from parsed entries."""
+    generate_page()
 
 
 if __name__ == "__main__":

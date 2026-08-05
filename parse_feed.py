@@ -196,8 +196,11 @@ def parse_feed(
     return selected
 
 
-def main() -> None:
-    """Run the parsing step."""
+def parse_and_export() -> tuple[list[dict[str, Any]], str]:
+    """Run the full parsing step and export the result.
+
+    Returns the selected entries and the generated editorial.
+    """
     selected = parse_feed()
     editorial = generate_editorial(selected)
     export_entries_yaml(selected, editorial=editorial)
@@ -205,6 +208,12 @@ def main() -> None:
         f"Exported {len(selected)} parsed entries and editorial to "
         f"{DEFAULT_PARSED_ENTRIES_PATH}"
     )
+    return selected, editorial
+
+
+def main() -> None:
+    """Run the parsing step."""
+    parse_and_export()
 
 
 if __name__ == "__main__":

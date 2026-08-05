@@ -1,0 +1,47 @@
+"""Run the full press-room pipeline end-to-end.
+
+Steps:
+  1. Scrape RSS feeds and write data/filtered_entries.yml
+  2. Rank, rerank, translate and write data/parsed_entries.yml
+  3. Synthesize the editorial to data/editorial.mp3
+  4. Generate press_room.html
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from config import (
+    DEFAULT_ENTRIES_PATH,
+    DEFAULT_MP3_PATH,
+    DEFAULT_PARSED_ENTRIES_PATH,
+)
+from editorial_to_mp3 import generate_editorial_mp3
+from feed_reader import scrape_feeds
+from gen_static_page import generate_page
+from parse_feed import parse_and_export
+
+
+def main() -> None:
+    """Execute the complete pipeline."""
+    scrape_feeds()
+    parse_and_export()
+    generate_editorial_mp3(
+        parsed_entries_path=DEFAULT_PARSED_ENTRIES_PATH,
+        output_path=DEFAULT_MP3_PATH,
+    )
+    generate_page(
+        parsed_entries_path=DEFAULT_PARSED_ENTRIES_PATH,
+        output_path=Path("press_room.html"),
+    )
+
+    print("\n=== Pipeline complete ===")
+    print("Generated files:")
+    print(f"  - {DEFAULT_ENTRIES_PATH}")
+    print(f"  - {DEFAULT_PARSED_ENTRIES_PATH}")
+    print(f"  - {DEFAULT_MP3_PATH}")
+    print(f"  - {Path('press_room.html').resolve()}")
+
+
+if __name__ == "__main__":
+    main()

@@ -286,5 +286,28 @@
       });
     })();
   </script>
+  <script>
+    (function () {
+      // Lightweight live reload: reload the page if press_room.html changes.
+      let lastModified = null;
+      const checkInterval = 30000; // 30 seconds
+
+      async function checkForUpdate() {
+        try {
+          const response = await fetch("press_room.html", { method: "HEAD", cache: "no-store" });
+          const modified = response.headers.get("Last-Modified");
+          if (lastModified && modified && lastModified !== modified) {
+            location.reload();
+          }
+          lastModified = modified || lastModified;
+        } catch (err) {
+          // Ignore network errors; retry on the next interval.
+        }
+      }
+
+      checkForUpdate();
+      setInterval(checkForUpdate, checkInterval);
+    })();
+  </script>
 </body>
 </html>

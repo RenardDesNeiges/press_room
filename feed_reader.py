@@ -219,8 +219,11 @@ def export_entries_yaml(
         )
 
 
-def main() -> None:
-    """Provisional main: load all feeds and print summary information."""
+def scrape_feeds() -> list[dict[str, Any]]:
+    """Scrape all configured feeds and export the recent entries.
+
+    Returns the list of exported entries.
+    """
     feeds = collect_all_feeds()
 
     print("Successfully loaded feeds:")
@@ -232,6 +235,12 @@ def main() -> None:
     export_entries = flatten_filtered_entries(recent)
     export_entries_yaml(export_entries)
     print(f"\nExported {len(export_entries)} entries to {DEFAULT_ENTRIES_PATH}")
+    return export_entries
+
+
+def main() -> None:
+    """Provisional main: load all feeds and export recent entries."""
+    scrape_feeds()
 
 
 if __name__ == "__main__":
