@@ -11,7 +11,7 @@ import requests
 import yaml
 
 from key import API_KEY
-from config import DEFAULT_MP3_PATH, DEFAULT_PARSED_ENTRIES_PATH
+from config import DEFAULT_MP3_PATH, DEFAULT_PREPARED_ENTRIES_PATH
 
 
 DEFAULT_OUTPUT_PATH = DEFAULT_MP3_PATH
@@ -22,8 +22,8 @@ DEFAULT_HTTP_REFERER = "https://pressroom.local"
 DEFAULT_APP_TITLE = "Pressroom"
 
 
-def load_editorial(path: Path = DEFAULT_PARSED_ENTRIES_PATH) -> str | None:
-    """Load the editorial text from the parsed entries YAML file."""
+def load_editorial(path: Path = DEFAULT_PREPARED_ENTRIES_PATH) -> str | None:
+    """Load the editorial text from the prepared entries YAML file."""
     with open(path, "r", encoding="utf-8") as fh:
         data: dict[str, Any] = yaml.safe_load(fh)
     return data.get("editorial")
@@ -96,7 +96,7 @@ def text_to_speech(
 
 
 def generate_editorial_mp3(
-    parsed_entries_path: Path = DEFAULT_PARSED_ENTRIES_PATH,
+    parsed_entries_path: Path = DEFAULT_PREPARED_ENTRIES_PATH,
     output_path: Path = DEFAULT_OUTPUT_PATH,
 ) -> Path | None:
     """Generate an MP3 from the parsed editorial.

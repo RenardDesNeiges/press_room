@@ -46,7 +46,7 @@ def main() -> None:
         output_path=DEFAULT_PREPARED_ENTRIES_PATH,
     ))
     timed_step("Generate editorial audio", lambda: generate_editorial_mp3(
-        parsed_entries_path=DEFAULT_PARSED_ENTRIES_PATH,
+        parsed_entries_path=DEFAULT_PREPARED_ENTRIES_PATH,
         output_path=DEFAULT_MP3_PATH,
     ))
     timed_step("Generate static page", lambda: generate_page(

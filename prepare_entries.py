@@ -226,20 +226,28 @@ def prepare_and_export(
     output_path: Path = DEFAULT_PREPARED_ENTRIES_PATH,
     section_size: int = DEFAULT_SECTION_SIZE,
     model_name: str = DEFAULT_SECTION_MODEL,
-) -> tuple[list[dict[str, Any]], str | None, str | None]:
-    """Load parsed entries, classify into sections, and export prepared YAML."""
+) -> tuple[list[dict[str, Any]], str, str]:
+    """Load parsed entries, write the editorial + headline, classify into sections, and export.
+
+    Generates the editorial and headline from the parsed entries, then groups
+    them into sections. Returns the prepared entries, the editorial, and the
+    headline.
+    """
     with open(parsed_entries_path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
 
     entries = data.get("entries", [])
     prepared = prepare_entries(entries, section_size=section_size, model_name=model_name)
 
+    editorial = generate_editorial(entries)
+    title = extract_editorial_title(editorial)
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     payload: dict[str, Any] = {"entries": prepared}
-    if data.get("editorial") is not None:
-        payload["editorial"] = data["editorial"]
-    if data.get("title") is not None:
-        payload["title"] = data["title"]
+    if editorial is not None:
+        payload["editorial"] = editorial
+    if title is not None:
+        payload["title"] = title
     with open(output_path, "w", encoding="utf-8") as fh:
         yaml.safe_dump(
             payload,
@@ -249,7 +257,7 @@ def prepare_and_export(
             default_flow_style=False,
         )
     print(f"Exported {len(prepared)} prepared entries to {output_path}")
-    return prepared, payload.get("editorial"), payload.get("title")
+    return prepared, editorial, title
 
 
 def main() -> None:
