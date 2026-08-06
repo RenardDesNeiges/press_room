@@ -5,11 +5,12 @@
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
 ## To-be-added features
-    1. Ability to send the press briefings (especially the editorials) via a telegram bot.
-    2. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
-    3. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
-    4. Add a map widget, showing geographical coverage (puts the articles on a map).
-    5. Add an alert system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly.
+    1. Ability to send the press briefings (especially the editorials) via a telegram bot. Admin status for some users.
+    2. Ability for people to request signup, only allow if they have acess to a unique key sent to the admin's telegram account.
+    3. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
+    4. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
+    5. Add a map widget, showing geographical coverage (puts the articles on a map).
+    6. Add an alert system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly.
 
 ## Webapp
 
