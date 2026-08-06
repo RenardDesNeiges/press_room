@@ -1,6 +1,6 @@
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent
 DATA_DIR = PROJECT_ROOT / "data"
 
 DEFAULT_FEEDS_PATH = DATA_DIR / "feeds.yml"
@@ -23,9 +23,9 @@ DEFAULT_MAX_PER_SOURCE = 10
 DEFAULT_SECTION_SIZE = 5
 DEFAULT_SECTION_MODEL = FANCY_MODEL
 
-DEFAULT_TEMPLATE_DIR = Path(__file__).parent / "templates"
+DEFAULT_TEMPLATE_DIR = PROJECT_ROOT / "src" / "templates"
 
-DEFAULT_DB_PATH = PROJECT_ROOT / "pressroom.db"
+DEFAULT_DB_PATH = DATA_DIR / "pressroom.db"
 SECRET_KEY = "dev-secret-change-me"
 
 SERVE_PORT = 8080

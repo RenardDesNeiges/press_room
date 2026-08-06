@@ -21,11 +21,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-import db as database
-import editorial_to_mp3
-import feed_reader
-import parse_feed
-import prepare_entries
+from src import db as database
+from src import editorial_to_mp3, feed_reader, parse_feed, prepare_entries
 
 
 def _write(path: Path, content: str | bytes) -> None:

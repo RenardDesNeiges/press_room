@@ -10,7 +10,7 @@ import re
 import requests
 import yaml
 
-from key import API_KEY
+from src.key import API_KEY
 from config import DEFAULT_MP3_PATH, DEFAULT_PREPARED_ENTRIES_PATH
 
 

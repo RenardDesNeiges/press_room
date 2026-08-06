@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import html
 import io
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import yaml
@@ -24,13 +24,18 @@ from flask import (
     url_for,
 )
 
-import db as database
+from src import db as database
 from config import DEFAULT_TEMPLATE_DIR, SECRET_KEY
-from gen_static_page import build_html, format_datetime_fr, get_french_weekday
+from src.gen_static_page import (
+    build_html,
+    format_date_fr,
+    format_datetime_fr,
+    get_french_weekday,
+)
 
 
 def create_app() -> Flask:
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder=str(DEFAULT_TEMPLATE_DIR))
     app.secret_key = SECRET_KEY
 
     @app.route("/login", methods=["GET", "POST"])
@@ -117,6 +122,8 @@ def render_issue(username: str, day: str | None = None) -> str:
         f'<a class="top-bar-logout" href="{url_for("logout")}">Déconnexion</a>'
     )
 
+    day_menu = _build_day_menu(user["id"], current_day=issue["day"])
+
     html_content = build_html(
         entries,
         editorial=editorial,
@@ -124,6 +131,7 @@ def render_issue(username: str, day: str | None = None) -> str:
         weekday=get_french_weekday(),
         generated_at=generated_at,
         user_info=user_info,
+        day_menu=day_menu,
     )
 
     # Rewire asset and audio URLs to the Flask routes for this issue.
@@ -143,6 +151,27 @@ def _parse_run_at(issue) -> datetime:
         return datetime.fromisoformat(run_at)
     except ValueError:
         return datetime.now()
+
+
+def _build_day_menu(user_id: int, current_day: str) -> str:
+    """Build the dropdown menu listing issues from the last 7 days (at most).
+
+    Each item links to the issue for that day. The currently displayed day is
+    marked with the ``is-current`` class.
+    """
+    cutoff = (datetime.now() - timedelta(days=7)).date().isoformat()
+    items = []
+    for issue in database.list_issues(user_id):
+        if issue["day"] < cutoff:
+            continue
+        label = format_date_fr(datetime.fromisoformat(issue["day"]))
+        cls = "is-current" if issue["day"] == current_day else ""
+        items.append(
+            f'<a class="day-menu-item {cls}" href="/?day={issue["day"]}">{label}</a>'
+        )
+    if not items:
+        return ""
+    return '<span class="day-menu-heading">Éditions des 7 derniers jours</span>' + "".join(items)
 
 
 if __name__ == "__main__":

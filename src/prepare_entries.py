@@ -28,7 +28,7 @@ from config import (
     DEFAULT_TITLE_GUIDE_PATH,
     FANCY_MODEL,
 )
-from rerank_llm import extract_json_list, query_model
+from src.rerank_llm import extract_json_list, query_model
 
 
 DEFAULT_EDITO_PATH = DATA_DIR / "edito.md"

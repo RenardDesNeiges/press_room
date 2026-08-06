@@ -124,6 +124,11 @@ def format_datetime_fr(dt: datetime) -> str:
     )
 
 
+def format_date_fr(dt: datetime) -> str:
+    """Format a date in French without the time, e.g. 'mercredi 6 août 2026'."""
+    return f"{_WEEKDAYS[dt.weekday()]} {dt.day} {_MONTHS[dt.month - 1]} {dt.year}"
+
+
 def get_generated_at() -> str:
     """Return the current date and time in French."""
     return format_datetime_fr(datetime.now())
@@ -613,6 +618,7 @@ def build_html(
     site_title: str = "Pressroom",
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
     user_info: str = "",
+    day_menu: str = "",
 ) -> str:
     """Build a black-and-white newspaper-style HTML page from templates."""
     article_template = load_template("article.html", template_dir)
@@ -676,6 +682,7 @@ def build_html(
         site_title=html.escape(site_title, quote=False),
         generated_at=html.escape(generated_at or "", quote=False),
         user_info=user_info,
+        day_menu=day_menu,
         headline=headline_html,
         feature_image=feature_image_html,
         lead_articles=lead_articles_html,

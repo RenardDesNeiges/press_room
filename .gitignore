@@ -8,5 +8,5 @@ data/*.mp3
 data/parsed_entries.yml
 .gitignore
 data/filtered_entries.yml
-pressroom.db
+data/pressroom.db
 instance/

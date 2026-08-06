@@ -9,9 +9,9 @@ from typing import Any
 
 from openrouter import OpenRouter
 
-from key import API_KEY
+from src.key import API_KEY
 from config import *
-from rank_entries import load_interests
+from src.rank_entries import load_interests
 
 
 def build_candidate_prompt_block(
@@ -226,7 +226,7 @@ def main() -> None:
     """CLI smoke test: load filtered entries, get top candidates, rerank to final."""
     import yaml
     from config import DEFAULT_CANDIDATES_COUNT, DEFAULT_ENTRIES_PATH, DEFAULT_FINAL_COUNT
-    from rank_entries import rank_entries
+    from src.rank_entries import rank_entries
 
     with open(DEFAULT_ENTRIES_PATH, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)

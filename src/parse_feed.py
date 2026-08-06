@@ -22,8 +22,8 @@ from config import (
     DEFAULT_PARSED_ENTRIES_PATH,
     FANCY_MODEL,
 )
-from rank_entries import rank_entries
-from rerank_llm import query_model, rerank_with_llm
+from src.rank_entries import rank_entries
+from src.rerank_llm import query_model, rerank_with_llm
 
 
 def load_entries(path: Path = DEFAULT_ENTRIES_PATH) -> list[dict[str, Any]]:

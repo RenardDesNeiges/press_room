@@ -66,6 +66,60 @@ a {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.top-bar-date:hover {
+  background-color: var(--highlight);
+}
+
+.day-picker {
+  position: relative;
+}
+
+.day-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.6rem);
+  min-width: 16rem;
+  background-color: var(--bg);
+  border: 1px solid var(--rule);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  z-index: 200;
+  padding: 0.5rem 0;
+}
+
+.day-menu-heading {
+  display: block;
+  padding: 0.35rem 1rem 0.6rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #333;
+}
+
+.day-menu-item {
+  display: block;
+  padding: 0.4rem 1rem;
+  color: #001F3F;
+  text-decoration: none;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.day-menu-item:hover {
+  background-color: var(--highlight);
+}
+
+.day-menu-item.is-current {
+  font-weight: 700;
+  background-color: var(--highlight-mid);
 }
 
 .top-bar-right {

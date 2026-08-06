@@ -184,6 +184,32 @@
 })();
 
 (function () {
+  const picker = document.querySelector('.day-picker');
+  if (!picker) return;
+  const button = picker.querySelector('.top-bar-date');
+  const menu = picker.querySelector('.day-menu');
+  if (!button || !menu) return;
+
+  function setOpen(open) {
+    menu.hidden = !open;
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  button.addEventListener('click', function (event) {
+    event.stopPropagation();
+    setOpen(menu.hidden);
+  });
+
+  document.addEventListener('click', function () {
+    setOpen(false);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') setOpen(false);
+  });
+})();
+
+(function () {
   // Lightweight live reload: reload the page if press_room.html changes.
   let lastModified = null;
   const checkInterval = 30000; // 30 seconds

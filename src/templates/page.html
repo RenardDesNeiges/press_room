@@ -16,7 +16,12 @@
       <div class="top-bar-inner">
         <h1 class="top-bar-title">Pressroom</h1>
         <div class="top-bar-right">
-          <span class="top-bar-date">$generated_at</span>
+          <div class="day-picker">
+            <button type="button" class="top-bar-date" aria-haspopup="true" aria-expanded="false">$generated_at</button>
+            <div class="day-menu" hidden>
+              $day_menu
+            </div>
+          </div>
           $user_info
         </div>
       </div>
