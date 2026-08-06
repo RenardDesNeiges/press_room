@@ -13,31 +13,11 @@ from typing import Any
 import yaml
 
 from config import (
+    DEFAULT_EXCLUDED_DOMAINS,
     DEFAULT_PARSED_ENTRIES_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,
     DEFAULT_TEMPLATE_DIR,
 )
-
-
-EXCLUDED_DOMAINS = {
-    "blog.mondediplo.net",
-    "politico.eu",
-    "politico.com",
-    "rts.ch",
-    "srf.ch",
-    "eldiario.es",
-    "elpais.com",
-    "lvsl.fr",
-    "contretemps.eu",
-    "chinadaily.com.cn",
-    "mediapart.fr",
-    "news.cgtn.com",
-    "granma.cu",
-    "cubadebate.cu",
-    "jornada.com",
-    "solidaire.org",
-    "orientxxi.info",
-}
 
 
 def _domain_of(url: str) -> str:
@@ -51,17 +31,22 @@ def _domain_of(url: str) -> str:
     return netloc
 
 
-def archive_url(url: str) -> str:
+def archive_url(url: str, excluded_domains: set[str] | None = None) -> str:
     """Wrap an article URL through archive.ph so it remains readable.
 
     The scheme prefix (https://) is stripped from the target before the
-    archive.ph prefix is added. Domains listed in EXCLUDED_DOMAINS are left
-    untouched.
+    archive.ph prefix is added. Domains in ``excluded_domains`` are left
+    untouched (defaults to config.DEFAULT_EXCLUDED_DOMAINS).
     """
     url = (url or "").strip()
     if not url or url in ("#", ""):
         return url
-    if _domain_of(url) in EXCLUDED_DOMAINS:
+    blocked = (
+        set(excluded_domains)
+        if excluded_domains is not None
+        else DEFAULT_EXCLUDED_DOMAINS
+    )
+    if _domain_of(url) in blocked:
         return url
     stripped = re.sub(r"^https?://", "", url, flags=re.IGNORECASE)
     return f"https://archive.ph/{stripped}"
@@ -134,14 +119,17 @@ def get_generated_at() -> str:
     return format_datetime_fr(datetime.now())
 
 
-def format_inline(text: str) -> str:
+def format_inline(text: str, excluded_domains: set[str] | None = None) -> str:
     """Escape HTML entities and convert Markdown inline formatting to HTML."""
     # Protect Markdown links by replacing them with placeholders.
     links: list[str] = []
 
     def save_link(match: re.Match) -> str:
         link_text = html.escape(match.group(1), quote=False)
-        url = html.escape(archive_url(match.group(2)), quote=True)
+        url = html.escape(
+            archive_url(match.group(2), excluded_domains=excluded_domains),
+            quote=True,
+        )
         links.append(
             f'<a href="{url}" target="_blank" rel="noopener noreferrer">{link_text}</a>'
         )
@@ -183,7 +171,7 @@ def format_inline(text: str) -> str:
     return text
 
 
-def render_markdown(markdown_text: str) -> str:
+def render_markdown(markdown_text: str, excluded_domains: set[str] | None = None) -> str:
     """Convert simple Markdown to HTML (headers, paragraphs, bold, italic)."""
     lines = markdown_text.splitlines()
     html_lines: list[str] = []
@@ -193,7 +181,9 @@ def render_markdown(markdown_text: str) -> str:
         if paragraph_buffer:
             content = " ".join(paragraph_buffer).strip()
             if content:
-                html_lines.append(f"<p>{format_inline(content)}</p>")
+                html_lines.append(
+                    f"<p>{format_inline(content, excluded_domains=excluded_domains)}</p>"
+                )
             paragraph_buffer.clear()
 
     for line in lines:
@@ -204,13 +194,13 @@ def render_markdown(markdown_text: str) -> str:
 
         if stripped.startswith("# "):
             flush_paragraph()
-            html_lines.append(f"<h1>{format_inline(stripped[2:])}</h1>")
+            html_lines.append(f"<h1>{format_inline(stripped[2:], excluded_domains=excluded_domains)}</h1>")
         elif stripped.startswith("## "):
             flush_paragraph()
-            html_lines.append(f"<h2>{format_inline(stripped[3:])}</h2>")
+            html_lines.append(f"<h2>{format_inline(stripped[3:], excluded_domains=excluded_domains)}</h2>")
         elif stripped.startswith("### "):
             flush_paragraph()
-            html_lines.append(f"<h3>{format_inline(stripped[4:])}</h3>")
+            html_lines.append(f"<h3>{format_inline(stripped[4:], excluded_domains=excluded_domains)}</h3>")
         else:
             paragraph_buffer.append(stripped)
 
@@ -247,14 +237,20 @@ def format_date(date_value: str | None) -> str:
         return date_value
 
 
-def render_article(entry: dict[str, Any], article_template: Template) -> str:
+def render_article(
+    entry: dict[str, Any],
+    article_template: Template,
+    excluded_domains: set[str] | None = None,
+) -> str:
     """Render a single article using the article template."""
     title = html.escape(entry.get("title") or "Untitled", quote=False)
     summary = html.escape(shorten_summary(entry.get("summary")), quote=False)
     author = html.escape(entry.get("author") or "", quote=False)
     source = html.escape(entry.get("source") or "", quote=False)
     date = html.escape(format_date(entry.get("date")), quote=False)
-    article_url = html.escape(archive_url(entry.get("url") or "#"))
+    article_url = html.escape(
+        archive_url(entry.get("url") or "#", excluded_domains=excluded_domains)
+    )
 
     byline = " · ".join(part for part in [source, author, date] if part)
     byline_html = f'<p class="article-byline">{byline}</p>' if byline else ""
@@ -315,7 +311,9 @@ def entry_tag_values(entry: dict[str, Any]) -> list[str]:
     return values
 
 
-def render_media(entry: dict[str, Any]) -> str:
+def render_media(
+    entry: dict[str, Any], excluded_domains: set[str] | None = None
+) -> str:
     """Render an entry's media image as a standalone figure with a legend.
 
     Mirrors the feature image styling (grayscale, caption with title and
@@ -326,7 +324,9 @@ def render_media(entry: dict[str, Any]) -> str:
     media_url = entry.get("media")
     if not media_url:
         return ""
-    article_url = html.escape(archive_url(entry.get("url") or "#"))
+    article_url = html.escape(
+        archive_url(entry.get("url") or "#", excluded_domains=excluded_domains)
+    )
     title = html.escape(entry.get("title") or "Untitled", quote=False)
     source = html.escape(entry.get("source") or "", quote=False)
     author = html.escape(entry.get("author") or "", quote=False)
@@ -562,6 +562,7 @@ def build_country_flow(
     groups: list[tuple[str, list[dict[str, Any]]]],
     article_template: Template,
     columns: int = GRID_COLUMNS,
+    excluded_domains: set[str] | None = None,
 ) -> str:
     """Render country groups as one continuous grid without breaking rows.
 
@@ -593,13 +594,17 @@ def build_country_flow(
 
         for entry in theme_entries:
             items.append(
-                place(render_article(entry, article_template), col_index + 1, col_index + 2)
+                place(
+                    render_article(entry, article_template, excluded_domains=excluded_domains),
+                    col_index + 1,
+                    col_index + 2,
+                )
             )
             col_index += 1
             if col_index >= columns:
                 col_index = 0
 
-            media_html = render_media(entry)
+            media_html = render_media(entry, excluded_domains=excluded_domains)
             if media_html:
                 items.append(place(media_html, col_index + 1, col_index + 2))
                 col_index += 1
@@ -619,6 +624,7 @@ def build_html(
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
     user_info: str = "",
     day_menu: str = "",
+    excluded_domains: set[str] | None = None,
 ) -> str:
     """Build a black-and-white newspaper-style HTML page from templates."""
     article_template = load_template("article.html", template_dir)
@@ -627,11 +633,14 @@ def build_html(
     lead_entries, remainder = select_distinct_theme_leads(entries, count=2)
 
     lead_articles_html = "\n".join(
-        render_article(entry, article_template) for entry in lead_entries
+        render_article(entry, article_template, excluded_domains=excluded_domains)
+        for entry in lead_entries
     ) + "\n" + render_stats_widget(entries)
 
     groups = group_entries_by_section(entries)
-    articles_html = build_country_flow(groups, article_template)
+    articles_html = build_country_flow(
+        groups, article_template, excluded_domains=excluded_domains
+    )
 
     audio_player_html = ""
     editorial_content_html = ""
@@ -645,13 +654,17 @@ def build_html(
             '<span class="audio-time">0:00 / 0:00</span>'
             "</div>"
         )
-        editorial_content_html = render_markdown(editorial)
+        editorial_content_html = render_markdown(
+            editorial, excluded_domains=excluded_domains
+        )
 
     feature_image_html = ""
     featured = pick_feature_image(entries)
     if featured:
         image_url = html.escape(str(featured.get("media") or ""), quote=True)
-        article_url = html.escape(archive_url(str(featured.get("url") or "#")))
+        article_url = html.escape(
+            archive_url(str(featured.get("url") or "#"), excluded_domains=excluded_domains)
+        )
         title = html.escape(str(featured.get("title") or "Untitled"), quote=False)
         source = html.escape(str(featured.get("source") or ""), quote=False)
         feature_image_html = (

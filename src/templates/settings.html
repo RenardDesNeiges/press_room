@@ -57,6 +57,18 @@
       </section>
 
       <section class="settings-section">
+        <h2>Domaines exclus d'archive.ph</h2>
+        <p class="settings-hint">Un domaine par ligne. Les liens vers ces domaines ne seront pas redirigés via archive.ph (ils restent accessibles directement).</p>
+        <form method="post">
+          <input type="hidden" name="action" value="save_excluded_domains">
+          <textarea name="excluded_domains" rows="10" class="interests-input">{{ excluded_domains }}</textarea>
+          <div class="settings-actions">
+            <button type="submit">Enregistrer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
         <h2>Identifiants</h2>
         <form method="post" class="credentials-form">
           <input type="hidden" name="action" value="save_credentials">

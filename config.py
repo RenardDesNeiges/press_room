@@ -33,6 +33,28 @@ SECRET_KEY = "dev-secret-change-me"
 
 SERVE_PORT = 8080
 
+#: Domains excluded from the archive.ph wrapper by default (fallback for users
+#: who have not set their own list in the database).
+DEFAULT_EXCLUDED_DOMAINS = {
+    "blog.mondediplo.net",
+    "politico.eu",
+    "politico.com",
+    "rts.ch",
+    "srf.ch",
+    "eldiario.es",
+    "elpais.com",
+    "lvsl.fr",
+    "contretemps.eu",
+    "chinadaily.com.cn",
+    "mediapart.fr",
+    "news.cgtn.com",
+    "granma.cu",
+    "cubadebate.cu",
+    "jornada.com",
+    "solidaire.org",
+    "orientxxi.info",
+}
+
 
 def load_config(path: Path = CONFIG_PATH) -> dict:
     """Load config.yml; returns {} if the file is missing."""

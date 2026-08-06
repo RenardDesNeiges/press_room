@@ -15,7 +15,7 @@ from pathlib import Path
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from config import DEFAULT_DB_PATH, DATA_DIR
+from config import DEFAULT_DB_PATH, DATA_DIR, DEFAULT_EXCLUDED_DOMAINS
 
 
 SCHEMA = """
@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
+    excluded_domains TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -79,6 +80,10 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
             conn.execute(
                 "ALTER TABLE users ADD COLUMN editorial_minutes "
                 "INTEGER NOT NULL DEFAULT 5"
+            )
+        if "excluded_domains" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN excluded_domains TEXT"
             )
 
 
@@ -175,6 +180,39 @@ def set_editorial_minutes(user_id: int, minutes: int, db_path: Path = DEFAULT_DB
         conn.execute(
             "UPDATE users SET editorial_minutes = ? WHERE id = ?",
             (max(2, min(10, int(minutes))), user_id),
+        )
+
+
+def get_excluded_domains(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> list[str]:
+    """Return the user's archive.ph-excluded domains.
+
+    Falls back to the built-in default list when the user has never set their
+    own (retroactive compatibility for pre-existing accounts).
+    """
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT excluded_domains FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+    if row is None or row["excluded_domains"] is None:
+        return sorted(DEFAULT_EXCLUDED_DOMAINS)
+    domains = [
+        d.strip()
+        for d in row["excluded_domains"].splitlines()
+        if d.strip()
+    ]
+    return domains
+
+
+def set_excluded_domains(user_id: int, domains: list[str], db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Store the user's archive.ph-excluded domains (one per line).
+
+    Passing an empty list clears the exclusions entirely (nothing is excluded).
+    """
+    cleaned = [d.strip() for d in domains if d.strip()]
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET excluded_domains = ? WHERE id = ?",
+            ("\n".join(cleaned), user_id),
         )
 
 

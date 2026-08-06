@@ -153,11 +153,18 @@ def create_app() -> Flask:
                     minutes = 5
                 database.set_editorial_minutes(user["id"], minutes)
                 flash("Durée de l'éditorial enregistrée.")
+            elif action == "save_excluded_domains":
+                domains = request.form.get("excluded_domains", "")
+                database.set_excluded_domains(
+                    user["id"], [d for d in domains.splitlines() if d.strip()]
+                )
+                flash("Domaines exclus enregistrés.")
             return redirect(url_for("settings"))
 
         publications = _load_feeds(user["id"])
         interests = database.get_user_file(user["id"], "readers_interests.md") or ""
         editorial_minutes = database.get_editorial_minutes(user["id"])
+        excluded_domains = "\n".join(database.get_excluded_domains(user["id"]))
         runs = []
         for issue in database.list_issues(user["id"]):
             try:
@@ -171,6 +178,7 @@ def create_app() -> Flask:
             publications=publications,
             interests=interests,
             editorial_minutes=editorial_minutes,
+            excluded_domains=excluded_domains,
             runs=runs,
         )
 
@@ -236,6 +244,7 @@ def render_issue(username: str, day: str | None = None) -> str:
         generated_at=generated_at,
         user_info=user_info,
         day_menu=day_menu,
+        excluded_domains=set(database.get_excluded_domains(user["id"])),
     )
 
     # Rewire asset and audio URLs to the Flask routes for this issue.

@@ -14,11 +14,12 @@ A small, automated pipeline that turns a curated list of RSS feeds into a daily 
 The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 
 - **Login** — connecting to the site redirects to `/login`. Credentials: demo user `titou` / `titou` (seeded from the `data/` folder). The login page shows a random photo (with caption) from any user's stored issue on the right, and a sign-up button on the left. New accounts are created at `/signup` and are seeded with the demo `feeds.yml` and `readers_interests.md`.
-- **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes).
+- **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes) and an `excluded_domains` list (domains left out of the archive.ph link wrapper).
 - **Per-user per-day issues** — each pipeline stage's output (`filtered_entries`, `parsed_entries`, `prepared_entries`, `editorial.mp3`) is stored in `issue_artifacts`, keyed by `(user, day)` in `issues`. History of editorials, one per day.
 - **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time.
 - **Report picker** — clicking the date in the top bar opens a dropdown listing the last 7 days' issues (at most); clicking an entry regenerates the page from that report. The currently displayed day is highlighted.
-- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language), edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
+- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language), edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), set the list of domains excluded from the archive.ph link wrapper, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
+- **Archive.ph links** — article links are wrapped through `archive.ph` unless their domain is in the user's `excluded_domains` list (one per line in settings). Users who have never set the list fall back to the built-in `DEFAULT_EXCLUDED_DOMAINS` in `config.py`.
 - **Daily schedule** — the webapp runs the pipeline once per day at a configured local time (default 06:00) for the configured users. See `config.yml` (`schedule.time`, `schedule.users`, `schedule.enabled`). The scheduling thread starts with the app (a daemon thread in `src/scheduler.py`).
 - **Page generation on login** — after login, the latest (or a historical) issue is rendered from the database.
 
@@ -48,11 +49,14 @@ The database is a single SQLite file `data/pressroom.db`, created on first run a
 -- One row per user account. Passwords are stored as werkzeug password hashes.
 -- editorial_minutes = target editorial read time (2-10 min); the LLM word range
 -- is derived as 200 * minutes ± 150 words.
+-- excluded_domains = user's archive.ph-excluded domains, one per line
+-- (NULL/absent means "use the default list in config.py").
 CREATE TABLE users (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     username          TEXT NOT NULL UNIQUE,
     password_hash     TEXT NOT NULL,
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
+    excluded_domains  TEXT,
     created_at        TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -98,6 +102,7 @@ All functions live in `src/db.py` and accept an optional `db_path` argument (def
 | `get_user(username)` / `verify_user(username, password)` | Look up / authenticate a user. |
 | `update_username(user_id, username)` / `update_password(user_id, password)` | Change a user's name (raises if taken) / password. |
 | `get_editorial_minutes(user_id)` / `set_editorial_minutes(user_id, minutes)` | Read / write the target editorial read time (clamped 2-10). |
+| `get_excluded_domains(user_id)` / `set_excluded_domains(user_id, domains)` | Read / write the user's archive.ph-excluded domains (falls back to `DEFAULT_EXCLUDED_DOMAINS` when never set; an empty list excludes nothing). |
 | `list_users()` | All users. |
 | `seed_default_files(user_id)` | Copy `data/feeds.yml` + `data/readers_interests.md` into a user's config files. |
 | `set_user_file(user_id, name, content)` / `get_user_file(user_id, name)` / `list_user_files(user_id)` | Read/write the user's config files. |
