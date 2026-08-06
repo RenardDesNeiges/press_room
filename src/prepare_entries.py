@@ -19,6 +19,7 @@ from typing import Any
 import yaml
 
 from config import (
+    DATA_DIR,
     DEFAULT_INTERESTS_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,
@@ -30,7 +31,7 @@ from config import (
 from rerank_llm import extract_json_list, query_model
 
 
-DEFAULT_EDITO_PATH = Path("data/edito.md")
+DEFAULT_EDITO_PATH = DATA_DIR / "edito.md"
 
 
 def load_edito_prompt(
@@ -226,6 +227,8 @@ def prepare_and_export(
     output_path: Path = DEFAULT_PREPARED_ENTRIES_PATH,
     section_size: int = DEFAULT_SECTION_SIZE,
     model_name: str = DEFAULT_SECTION_MODEL,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    edito_path: Path = DEFAULT_EDITO_PATH,
 ) -> tuple[list[dict[str, Any]], str, str]:
     """Load parsed entries, write the editorial + headline, classify into sections, and export.
 
@@ -239,7 +242,7 @@ def prepare_and_export(
     entries = data.get("entries", [])
     prepared = prepare_entries(entries, section_size=section_size, model_name=model_name)
 
-    editorial = generate_editorial(entries)
+    editorial = generate_editorial(entries, edito_path=edito_path, interests_path=interests_path)
     title = extract_editorial_title(editorial)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

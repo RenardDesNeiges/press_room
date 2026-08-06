@@ -219,12 +219,15 @@ def export_entries_yaml(
         )
 
 
-def scrape_feeds() -> list[dict[str, Any]]:
+def scrape_feeds(
+    feeds_path: str | Path = DEFAULT_FEEDS_PATH,
+    output_path: str | Path = DEFAULT_ENTRIES_PATH,
+) -> list[dict[str, Any]]:
     """Scrape all configured feeds and export the recent entries.
 
     Returns the list of exported entries.
     """
-    feeds = collect_all_feeds()
+    feeds = collect_all_feeds(read_feeds_yaml(feeds_path))
 
     print("Successfully loaded feeds:")
     for url in feeds:
@@ -233,8 +236,8 @@ def scrape_feeds() -> list[dict[str, Any]]:
     recent = filter_feeds_by_date(feeds, max_age=timedelta(days=1))
 
     export_entries = flatten_filtered_entries(recent)
-    export_entries_yaml(export_entries)
-    print(f"\nExported {len(export_entries)} entries to {DEFAULT_ENTRIES_PATH}")
+    export_entries_yaml(export_entries, path=output_path)
+    print(f"\nExported {len(export_entries)} entries to {output_path}")
     return export_entries
 
 

@@ -16,6 +16,7 @@ from config import (
     DEFAULT_CANDIDATES_COUNT,
     DEFAULT_ENTRIES_PATH,
     DEFAULT_FINAL_COUNT,
+    DEFAULT_INTERESTS_PATH,
     DEFAULT_MAX_PER_SOURCE,
     DEFAULT_MODEL,
     DEFAULT_PARSED_ENTRIES_PATH,
@@ -145,6 +146,7 @@ def parse_feed(
     max_per_source: int = DEFAULT_MAX_PER_SOURCE,
     model_name: str = DEFAULT_MODEL,
     translate: bool = True,
+    interests_path: str | Path = DEFAULT_INTERESTS_PATH,
 ) -> list[dict[str, Any]]:
     """Select, rerank, and optionally translate entries.
 
@@ -164,7 +166,7 @@ def parse_feed(
         entries = load_entries()
 
     print(f"Ranking {len(entries)} entries by semantic similarity...")
-    ranked = rank_entries(entries)
+    ranked = rank_entries(entries, interests_path=interests_path)
 
     print(
         f"Diversifying by source (max {max_per_source} per source) "
@@ -177,7 +179,10 @@ def parse_feed(
 
     print(f"Reranking with LLM ({FANCY_MODEL}) to select {final_count} articles...")
     selected = rerank_with_llm(
-        candidates, final_count=final_count, model_name=FANCY_MODEL
+        candidates,
+        final_count=final_count,
+        model_name=FANCY_MODEL,
+        interests_path=interests_path,
     )
     print(f"LLM selected {len(selected)} articles.")
 
@@ -188,17 +193,21 @@ def parse_feed(
     return selected
 
 
-def parse_and_export() -> list[dict[str, Any]]:
+def parse_and_export(
+    entries_path: str | Path = DEFAULT_ENTRIES_PATH,
+    output_path: str | Path = DEFAULT_PARSED_ENTRIES_PATH,
+    interests_path: str | Path = DEFAULT_INTERESTS_PATH,
+) -> list[dict[str, Any]]:
     """Run the full parsing step and export the result.
 
     Returns the selected entries. The editorial and headline are now generated
     by the section-classification step (see prepare_entries.py).
     """
-    selected = parse_feed()
-    export_entries_yaml(selected)
+    selected = parse_feed(entries=load_entries(entries_path), interests_path=interests_path)
+    export_entries_yaml(selected, path=output_path)
     print(
         f"Exported {len(selected)} parsed entries to "
-        f"{DEFAULT_PARSED_ENTRIES_PATH}"
+        f"{output_path}"
     )
     return selected
 

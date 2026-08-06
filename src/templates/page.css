@@ -66,7 +66,30 @@ a {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-left: auto;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.top-bar-user {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.top-bar-logout {
+  color: #001F3F;
+  text-decoration: none;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.top-bar-logout:hover {
+  background-color: var(--highlight);
 }
 
 .headline-day {
@@ -656,4 +679,56 @@ footer {
   .article-grid .grid-item {
     grid-column: 1 / -1 !important;
   }
+}
+
+.login-form {
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+.login-form h2 {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.login-form label {
+  display: block;
+  margin: 1rem 0 0.35rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.login-form input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--rule);
+  background-color: var(--bg);
+  font: inherit;
+  color: inherit;
+}
+
+.login-form button {
+  margin-top: 1.2rem;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid #001F3F;
+  background: none;
+  font: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background-color: var(--highlight);
+}
+
+.login-error {
+  padding: 0.5rem;
+  border: 1px solid var(--rule);
+  background-color: var(--bg);
+  font-size: 0.85rem;
 }

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pressroom — Connexion</title>
+  <link rel="stylesheet" href="/page.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top-bar">
+      <div class="top-bar-inner">
+        <h1 class="top-bar-title">Pressroom</h1>
+        <span class="top-bar-date">Connexion</span>
+      </div>
+    </header>
+    <main class="login-form">
+      <h2>Se connecter</h2>
+      {% if error %}
+      <p class="login-error">{{ error }}</p>
+      {% endif %}
+      <form method="post">
+        <label>
+          Nom d'utilisateur
+          <input type="text" name="username" required autofocus>
+        </label>
+        <label>
+          Mot de passe
+          <input type="password" name="password" required>
+        </label>
+        <button type="submit">Entrer</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

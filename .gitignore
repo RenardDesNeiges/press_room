@@ -1,8 +1,12 @@
 __pycache__/
 key.py
+src/key.py
 press_room.html
-page.js
+/page.css
+/page.js
 data/*.mp3
 data/parsed_entries.yml
 .gitignore
 data/filtered_entries.yml
+pressroom.db
+instance/

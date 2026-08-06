@@ -85,42 +85,48 @@ def load_parsed_data(
     )
 
 
+_WEEKDAYS = [
+    "lundi",
+    "mardi",
+    "mercredi",
+    "jeudi",
+    "vendredi",
+    "samedi",
+    "dimanche",
+]
+
+_MONTHS = [
+    "janvier",
+    "février",
+    "mars",
+    "avril",
+    "mai",
+    "juin",
+    "juillet",
+    "août",
+    "septembre",
+    "octobre",
+    "novembre",
+    "décembre",
+]
+
+
 def get_french_weekday() -> str:
     """Return the current day of the week in French."""
-    weekdays = [
-        "lundi",
-        "mardi",
-        "mercredi",
-        "jeudi",
-        "vendredi",
-        "samedi",
-        "dimanche",
-    ]
-    return weekdays[datetime.now().weekday()]
+    return _WEEKDAYS[datetime.now().weekday()]
+
+
+def format_datetime_fr(dt: datetime) -> str:
+    """Format a datetime in French, e.g. 'mercredi 6 août 2026 à 14h03'."""
+    return (
+        f"{_WEEKDAYS[dt.weekday()]} {dt.day} {_MONTHS[dt.month - 1]} {dt.year} "
+        f"à {dt.hour:02d}h{dt.minute:02d}"
+    )
 
 
 def get_generated_at() -> str:
     """Return the current date and time in French."""
-    months = [
-        "janvier",
-        "février",
-        "mars",
-        "avril",
-        "mai",
-        "juin",
-        "juillet",
-        "août",
-        "septembre",
-        "octobre",
-        "novembre",
-        "décembre",
-    ]
-    now = datetime.now()
-    month = months[now.month - 1]
-    return (
-        f"{get_french_weekday()} {now.day} {month} {now.year} "
-        f"à {now.hour:02d}h{now.minute:02d}"
-    )
+    return format_datetime_fr(datetime.now())
 
 
 def format_inline(text: str) -> str:
@@ -606,6 +612,7 @@ def build_html(
     generated_at: str | None = None,
     site_title: str = "Pressroom",
     template_dir: Path = DEFAULT_TEMPLATE_DIR,
+    user_info: str = "",
 ) -> str:
     """Build a black-and-white newspaper-style HTML page from templates."""
     article_template = load_template("article.html", template_dir)
@@ -668,6 +675,7 @@ def build_html(
     return page_template.substitute(
         site_title=html.escape(site_title, quote=False),
         generated_at=html.escape(generated_at or "", quote=False),
+        user_info=user_info,
         headline=headline_html,
         feature_image=feature_image_html,
         lead_articles=lead_articles_html,
