@@ -1,23 +1,36 @@
-# Guide éclair – Titre d'édito « style Libé » (synthèse du jour)
+# Guide d'écriture : Le titre « à la Libé »
 
-## Le principe
-Un édito ne résume pas l'actu, il en capture **l'esprit** : l'absurde, la tension ou le paradoxe du moment.
+## Principes fondamentaux
 
-## Les 3 ressorts indispensables
-1. **Le décalage ironique** – Oppose le discours officiel à la réalité vécue.
-2. **Le détournement culturel** – Pompez une chanson, un film ou un proverbe connu pour le coller à la journée.
-3. **Le double-sens percutant** – Un mot qui fonctionne au 1er degré (sur un fait) et au 2nd (sur l'ambiance générale).
+- **Règle: Précision**:
+  - Le titre doit éviter au maximum d'être général. Par exemple "la question des ingérences" à la une régulièrement. Elle est donc trop générale pour décrire les nouvelles du jour. Il faut donc que le titre soit précis. Soit en parlant d'un lieu, d'un moment, de quelque chose qui ne se passe que rarement, soit en mettant en lien deux éléments qui ont lieu simultanément.
 
-## Méthode en 4 étapes (2 min)
-1. **Sentez** l'émotion dominante de la journée (sidération, colère, soulagement, cacophonie).
-2. **Épinglez** l'expression toute faite associée à cette émotion.
-3. **Tordez-la** en y glissant un mot-clé de l'actu (guerre, climat, politique, etc.).
-4. **Racourcissez** jusqu'à la respiration (5 à 6 mots max).
+- **Règle: style** : Le titre doit être irrévérentieux et surprenant, voir bousculer.
+- **Questions** : 
+    - Qu'est-ce qui serait décalé, irrévérencieux, surprenant ?
+    - Qu'est-ce qui pourrait déranger sans être offensant ?
+    - Quel angle est contre-intuitif ?
+    - Quelle émotion le titre va-t-il déclencher ?
+- **Attention** : L'insolence doit servir le propos, pas le trahir.
+  - **Exemple 1** : « Claude François : a volté »
+      - **Sujet** : Mort par électrocution
+      - **Mécanisme** : Homophonie « a volté » / « s'est envolé »
+      - **Efficacité** : 3 mots, deux sens, une information complète
+  - **Exemple 2** : « Calme-toi, on est en grève »
+      - **Sujet** : Chute du mur de Berlin
+      - **Mécanisme** : Décalage ironique (événement mondial / problème interne)
+      - **Efficacité** : Phrase du quotidien, proximité avec le lecteur
+  - **Exemple 3** : « Charlie Hebdo refuse de se laisser abattre »
+    - **Sujet** : Attentat
+    - **Mécanisme** : Double sens du verbe « abattre »
+    - **Efficacité** : Force et résilience en 6 mots
 
-## La règle d'or pour un édito
-> Le titre doit dire **"Nous sommes là"** – il pose le regard du journal sur le monde, pas l'inverse.
+- **Règle: titre conscis** : Le titre doit tenir en une ligne (5 à 10 mots maximum).
+- **Méthode** :
+  - Supprime les mots non essentiels
+  - Privilégie les verbes d'action
 
-## Exemple fictif pour une journée chaotique
-- Actu du jour : crises parallèles (sociale, climatique, politique).
-- Expression tordue : *"Le monde est petit"* → deviens *"Petit monde, gros soucis"*.
-- Ou : *"Tout va bien"* (si tout brûle) – l'ironie parfaite pour un édito.
+## Règle d'or
+> **Un bon titre ne se voit pas** – il frappe, il reste, il donne envie.
+
+Il doit être comme une évidence : une fois lu, on ne peut pas imaginer un autre titre pour ce sujet.

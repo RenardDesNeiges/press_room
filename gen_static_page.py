@@ -1,4 +1,4 @@
-"""Generate a static newspaper-style page from parsed_entries.yml."""
+"""Generate a static newspaper-style page from prepared entries."""
 
 from __future__ import annotations
 
@@ -12,7 +12,11 @@ from typing import Any
 
 import yaml
 
-from config import DEFAULT_PARSED_ENTRIES_PATH, DEFAULT_TEMPLATE_DIR
+from config import (
+    DEFAULT_PARSED_ENTRIES_PATH,
+    DEFAULT_PREPARED_ENTRIES_PATH,
+    DEFAULT_TEMPLATE_DIR,
+)
 
 
 EXCLUDED_DOMAINS = {
@@ -26,6 +30,7 @@ EXCLUDED_DOMAINS = {
     "lvsl.fr",
     "contretemps.eu",
     "chinadaily.com.cn",
+    "mediapart.fr",
     "news.cgtn.com",
     "granma.cu",
     "cubadebate.cu",
@@ -65,7 +70,12 @@ def archive_url(url: str) -> str:
 def load_parsed_data(
     path: str | Path = DEFAULT_PARSED_ENTRIES_PATH,
 ) -> tuple[list[dict[str, Any]], str | None, str | None]:
-    """Load parsed entries, editorial, and title from a YAML file."""
+    """Load parsed entries, editorial, and title from a YAML file.
+
+    If the given file does not exist, falls back to the prepared entries file.
+    """
+    if not Path(path).exists() and Path(DEFAULT_PREPARED_ENTRIES_PATH).exists():
+        path = DEFAULT_PREPARED_ENTRIES_PATH
     with open(path, "r", encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
     return (
@@ -233,12 +243,7 @@ def render_article(entry: dict[str, Any], article_template: Template) -> str:
     author = html.escape(entry.get("author") or "", quote=False)
     source = html.escape(entry.get("source") or "", quote=False)
     date = html.escape(format_date(entry.get("date")), quote=False)
-    media_url = entry.get("media")
     article_url = html.escape(archive_url(entry.get("url") or "#"))
-
-    media_html = ""
-    if media_url:
-        media_html = f'<img src="{html.escape(media_url)}" alt="" loading="lazy">'
 
     byline = " · ".join(part for part in [source, author, date] if part)
     byline_html = f'<p class="article-byline">{byline}</p>' if byline else ""
@@ -247,42 +252,108 @@ def render_article(entry: dict[str, Any], article_template: Template) -> str:
     for tag in ["theme", "country"]:
         value = entry.get(tag)
         if value:
-            tags.append(f'<span class="article-tag">{html.escape(str(value), quote=False)}</span>')
+            for part in str(value).split(","):
+                cleaned = part.strip()
+                if cleaned:
+                    escaped = html.escape(cleaned, quote=True)
+                    tags.append(
+                        f'<span class="article-tag" '
+                        f'data-tag-type="{tag}" data-tag-value="{escaped}">'
+                        f'{html.escape(cleaned, quote=False)}</span>'
+                    )
     tags_html = f'<div class="article-tags">{" ".join(tags)}</div>' if tags else ""
 
     article_html = article_template.substitute(
         title=title,
         summary=summary,
         byline_html=byline_html,
-        media_html=media_html,
         article_url=article_url,
         tags_html=tags_html,
     )
     source_key = re.sub(r"[\s]+", "-", (entry.get("source") or "").strip().lower())
     source_key = re.sub(r"[^a-z0-9\-]", "", source_key)
-    if source_key:
+    country_key = re.sub(r"[\s]+", "-", (entry.get("country") or "").strip().lower())
+    country_key = re.sub(r"[^a-z0-9\-]", "", country_key)
+    if source_key or country_key:
+        attrs = ' '.join(
+            part
+            for part in [
+                f'data-source="{source_key}"' if source_key else "",
+                f'data-country="{country_key}"' if country_key else "",
+            ]
+            if part
+        )
         article_html = article_html.replace(
             '<article class="article">',
-            f'<article class="article" data-source="{source_key}">',
+            f'<article class="article" {attrs}>',
             1,
         )
     return article_html
 
 
+def entry_tag_values(entry: dict[str, Any]) -> list[str]:
+    """Collect the (lowercased) theme/country tag values for an entry."""
+    values: list[str] = []
+    for tag in ["theme", "country"]:
+        value = entry.get(tag)
+        if value:
+            for part in str(value).split(","):
+                cleaned = part.strip().lower()
+                if cleaned:
+                    values.append(cleaned)
+    return values
+
+
+def render_media(entry: dict[str, Any]) -> str:
+    """Render an entry's media image as a standalone figure with a legend.
+
+    Mirrors the feature image styling (grayscale, caption with title and
+    source) but smaller. Returns "" when the entry has no media. Includes the
+    article's tag values as a ``data-tags`` attribute so the client-side filter
+    keeps the media cell in sync with its parent article.
+    """
+    media_url = entry.get("media")
+    if not media_url:
+        return ""
+    article_url = html.escape(archive_url(entry.get("url") or "#"))
+    title = html.escape(entry.get("title") or "Untitled", quote=False)
+    source = html.escape(entry.get("source") or "", quote=False)
+    author = html.escape(entry.get("author") or "", quote=False)
+    data_tags = " ".join(html.escape(v, quote=True) for v in entry_tag_values(entry))
+    return (
+        '<figure class="grid-media" data-tags="' + data_tags + '">'
+        f'<a href="{article_url}" target="_blank" rel="noopener noreferrer">'
+        f'<img src="{html.escape(media_url, quote=True)}" alt="{title}" loading="lazy">'
+        f'<span class="grid-media-overlay">'
+        f'<span class="grid-media-overlay-title">{title}</span>'
+        f'<span class="grid-media-overlay-author">{author}</span>'
+        f"</span>"
+        f"</a>"
+        f'<figcaption class="grid-media-caption">{source}</figcaption>'
+        f"</figure>"
+    )
+
+
 def top_counts(
-    entries: list[dict[str, Any]], key: str, limit: int = 5
+    entries: list[dict[str, Any]], key: str, limit: int = 5, split: bool = False
 ) -> list[tuple[str, int]]:
     """Return the top `limit` (label, count) pairs for a given entry field.
 
     All entries are considered (not just the remainder). Empty/None values are
-    skipped. Ties are broken by raw value for deterministic ordering.
+    skipped. When ``split`` is True, comma-separated values are counted
+    individually (e.g. "France, International" yields two categories). Ties are
+    broken by raw value for deterministic ordering.
     """
     counts: dict[str, int] = {}
     for entry in entries:
-        value = str(entry.get(key) or "").strip().lower()
-        if not value:
+        raw = str(entry.get(key) or "").strip().lower()
+        if not raw:
             continue
-        counts[value] = counts.get(value, 0) + 1
+        values = [part.strip() for part in raw.split(",")] if split else [raw]
+        for value in values:
+            if not value:
+                continue
+            counts[value] = counts.get(value, 0) + 1
     ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
     return ranked[:limit]
 
@@ -294,19 +365,11 @@ def render_stats_widget(entries: list[dict[str, Any]], limit: int = 8) -> str:
     Uses plain inline blocks sized via style width so no JS is required.
     """
     sources = top_counts(entries, "source", limit)
-    countries = top_counts(entries, "country", limit)
-
-    kept_countries = {
-        label for label, _ in group_entries_by_country(entries) if label != "Autres"
-    }
-    kept_countries = {
-        re.sub(r"[^a-z0-9\-]+", "-", label.lower()).strip("-")
-        for label in kept_countries
-    }
+    countries = top_counts(entries, "country", limit, split=True)
 
     distinct_sources = len({str(e.get("source") or "").strip().lower() for e in entries if (e.get("source") or "").strip()})
-    distinct_themes = len({str(e.get("theme") or "").strip().lower() for e in entries if (e.get("theme") or "").strip()})
-    distinct_countries = len(top_counts(entries, "country", limit=None))
+    distinct_themes = len(top_counts(entries, "theme", limit=None, split=True))
+    distinct_countries = len(top_counts(entries, "country", limit=None, split=True))
 
     def bars(items: list[tuple[str, int]], kind: str) -> str:
         lines: list[str] = []
@@ -326,13 +389,11 @@ def render_stats_widget(entries: list[dict[str, Any]], limit: int = 8) -> str:
                     f"</a></span>"
                 )
             else:
-                key = normalize_country(label)
-                section_id = re.sub(r"[^a-z0-9\-]+", "-", key.lower()).strip("-")
-                if section_id not in kept_countries:
-                    section_id = "autres"
+                key = re.sub(r"[\s]+", "-", label.strip().lower())
+                key = re.sub(r"[^a-z0-9\-]", "", key)
                 label_html = (
                     f'<span class="stats-bar-label">'
-                    f'<a class="stats-bar-link" href="#section-{section_id}">'
+                    f'<a class="stats-bar-link" href="#" data-scroll-country="{key}">'
                     f"{label_clean}"
                     f"</a></span>"
                 )
@@ -461,6 +522,21 @@ def group_entries_by_country(entries: list[dict[str, Any]]) -> list[tuple[str, l
     return keep
 
 
+def group_entries_by_section(entries: list[dict[str, Any]]) -> list[tuple[str, list[dict[str, Any]]]]:
+    """Group entries into sections by their "section" tag, in first-appearance order.
+
+    The LLM classifies articles into thematic sections (see prepare_entries.py).
+    Sections keep the order in which they first appear in the entry list, which
+    matches the LLM's importance ordering. Entries without a section are grouped
+    under "Autres".
+    """
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for entry in entries:
+        section = str(entry.get("section") or "").strip() or "Autres"
+        groups.setdefault(section, []).append(entry)
+    return list(groups.items())
+
+
 def load_template(name: str, template_dir: Path = DEFAULT_TEMPLATE_DIR) -> Template:
     """Load a string template from the templates directory."""
     template_path = template_dir / name
@@ -512,6 +588,13 @@ def build_country_flow(
             if col_index >= columns:
                 col_index = 0
 
+            media_html = render_media(entry)
+            if media_html:
+                items.append(place(media_html, col_index + 1, col_index + 2))
+                col_index += 1
+                if col_index >= columns:
+                    col_index = 0
+
     return "\n".join(items)
 
 
@@ -534,7 +617,7 @@ def build_html(
         render_article(entry, article_template) for entry in lead_entries
     ) + "\n" + render_stats_widget(entries)
 
-    groups = group_entries_by_country(remainder)
+    groups = group_entries_by_section(entries)
     articles_html = build_country_flow(groups, article_template)
 
     audio_player_html = ""
@@ -608,6 +691,11 @@ def generate_page(
     if css_src.exists():
         css_dest = output_path.parent / "page.css"
         css_dest.write_text(css_src.read_text(encoding="utf-8"), encoding="utf-8")
+
+    js_src = DEFAULT_TEMPLATE_DIR / "page.js"
+    if js_src.exists():
+        js_dest = output_path.parent / "page.js"
+        js_dest.write_text(js_src.read_text(encoding="utf-8"), encoding="utf-8")
 
     entries, editorial, title = load_parsed_data(parsed_entries_path)
     html_content = build_html(

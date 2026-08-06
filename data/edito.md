@@ -32,7 +32,7 @@ Style et format :
 
 Structure invisible (elle guide la rédaction mais n’apparaît pas) :
 1. Une première phrase qui donne le fait dominant du jour.
-2. Deux à quatre paragraphes thématiques. Dans chacun, au moins deux sources différentes sont confrontées ou juxtaposées, toujours avec des liens markdown.
+2. Deux à quatre paragraphes thématiques. Dans chacun, au moins deux sources différentes sont confrontées ou juxtaposées, toujours avec des liens markdown. Ces paragraphes thématiques ne doivent pas avoir de titre explicitement écrit au début du paragraphe.
 3. Une phrase de clôture qui relie les différents sujets traités dans les différents paragraphe, et s'il y a un point de vigilance en particulier pour les jours qui suivent, le rappel.
 
 Contrainte absolue : le texte final consiste en quelques paragraphes, sans titres, sans listes, sans séparateurs. Il commence par une phrase d’accroche factuelle et s’achève sans formule de politesse ni signature. Chaque information provient d’un article du flux et sa source est citée en lien markdown dans le flux du texte.

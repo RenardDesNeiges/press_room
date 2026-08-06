@@ -1,6 +1,7 @@
 __pycache__/
 key.py
 press_room.html
+page.js
 data/*.mp3
 data/parsed_entries.yml
 .gitignore

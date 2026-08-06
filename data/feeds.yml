@@ -14,7 +14,7 @@ publications:
       - "https://www.ft.com/rss/"
       - "https://www.ft.com/world?format=rss"
       - "https://www.ft.com/technology?format=rss"
-      - "https://www.ft.com/opinion"
+      - "https://www.ft.com/global-economy?format=rss"
   - name: "Politico"
     lang: "EN"
     feeds:
@@ -35,6 +35,8 @@ publications:
     lang: "FR"
     feeds:
       - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/suisse"
+      - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/suisse/elections"
+      - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/nl-vaud"
   - name: "El Pais"
     lang: "ES"
     feeds:
@@ -116,3 +118,22 @@ publications:
     lang: "FR"
     feeds:
       - "https://orientxxi.info/?page=backend&lang=fr"
+  - name: "Blast"
+    lang: "FR"
+    feeds:
+      - "https://api.blast-info.fr/rss.xml"
+  - name: "Axios"
+    lang: "EN"
+    feeds:
+      - "https://www.axios.com/feeds/feed.rss"
+  - name: "Republik"
+    lang: "DE"
+    feeds:
+      - "https://www.republik.ch/feed.xml"
+  - name: "Tribune de Genève"
+    lang: "FR"
+    feeds:
+      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/suisse/elections"
+      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/geneve/geneve-internationale"
+      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/economie"
+      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/suisse"
