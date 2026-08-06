@@ -18,16 +18,11 @@ from config import (
     DEFAULT_FINAL_COUNT,
     DEFAULT_MAX_PER_SOURCE,
     DEFAULT_MODEL,
-    DEFAULT_INTERESTS_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
-    DEFAULT_TITLE_GUIDE_PATH,
     FANCY_MODEL,
 )
 from rank_entries import rank_entries
 from rerank_llm import query_model, rerank_with_llm
-
-
-DEFAULT_EDITO_PATH = Path("data/edito.md")
 
 
 def load_entries(path: Path = DEFAULT_ENTRIES_PATH) -> list[dict[str, Any]]:
@@ -119,71 +114,6 @@ def translate_entries(
     return translated_entries
 
 
-def load_edito_prompt(
-    edito_path: Path = DEFAULT_EDITO_PATH,
-) -> str:
-    """Load the editorial prompt template from a Markdown file."""
-    with open(edito_path, "r", encoding="utf-8") as fh:
-        return fh.read()
-
-
-def build_edito_prompt(
-    entries: list[dict[str, Any]],
-    edito_path: Path = DEFAULT_EDITO_PATH,
-    interests_path: Path = DEFAULT_INTERESTS_PATH,
-) -> str:
-    """Fill the editorial prompt template with the RSS feed and user preferences."""
-    prompt_template = load_edito_prompt(edito_path)
-
-    # Convert the selected entries to a clean YAML string.
-    rss_feed_yaml = yaml.safe_dump(
-        {"entries": entries},
-        allow_unicode=True,
-        sort_keys=False,
-        default_flow_style=False,
-    )
-
-    with open(interests_path, "r", encoding="utf-8") as fh:
-        user_preferences = fh.read()
-
-    return (
-        prompt_template.replace("{ rss_feed_yaml }", rss_feed_yaml)
-        .replace("{ user_preferences.md }", user_preferences.split('-----')[1])
-    )
-
-
-def generate_editorial(
-    entries: list[dict[str, Any]],
-    edito_path: Path = DEFAULT_EDITO_PATH,
-    interests_path: Path = DEFAULT_INTERESTS_PATH,
-    model_name: str = FANCY_MODEL,
-) -> str:
-    """Generate an editorial from the selected entries using FANCY_MODEL."""
-    prompt = build_edito_prompt(entries, edito_path, interests_path)
-    print(f"Generating editorial with {model_name}...")
-    editorial = query_model(prompt, model_name=model_name, temperature=0.7)
-    return editorial.strip()
-
-
-def extract_editorial_title(
-    editorial: str,
-    model_name: str = DEFAULT_MODEL,
-    guide: str = DEFAULT_TITLE_GUIDE_PATH,
-) -> str:
-    """Extract a short headline from the editorial using a cheap LLM."""
-    prompt = (
-        "Voici un guide d'écriture d'éditorial"
-        f"{guide}"
-        "À partir de l'éditorial suivant, extrais un titre de journal percutant "
-        "(maximum 10 mots) qui résume le thème principal."
-        "Ne renvoie que le titre, sans guillemets ni explication.\n\n"
-        f"Éditorial :\n{editorial}"
-    )
-    print(f"Extracting editorial title with {model_name}...")
-    title = query_model(prompt, model_name=model_name, temperature=0.3)
-    return title.strip().strip('"').strip("'")
-
-
 def diversify_by_source(
     ranked_entries: list[dict[str, Any]],
     target_count: int,
@@ -258,20 +188,19 @@ def parse_feed(
     return selected
 
 
-def parse_and_export() -> tuple[list[dict[str, Any]], str, str]:
+def parse_and_export() -> list[dict[str, Any]]:
     """Run the full parsing step and export the result.
 
-    Returns the selected entries, the generated editorial, and the extracted title.
+    Returns the selected entries. The editorial and headline are now generated
+    by the section-classification step (see prepare_entries.py).
     """
     selected = parse_feed()
-    editorial = generate_editorial(selected)
-    title = extract_editorial_title(editorial)
-    export_entries_yaml(selected, editorial=editorial, title=title)
+    export_entries_yaml(selected)
     print(
-        f"Exported {len(selected)} parsed entries, editorial, and title to "
+        f"Exported {len(selected)} parsed entries to "
         f"{DEFAULT_PARSED_ENTRIES_PATH}"
     )
-    return selected, editorial, title
+    return selected
 
 
 def main() -> None:

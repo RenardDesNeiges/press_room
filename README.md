@@ -2,6 +2,25 @@
 
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial.
 
+## To-be-added features
+0. Refactor so that the writing of the editorial is moved into prepare_entries.py instead of parse_feed.py.
+1. Refactor the entire system so it becomes a webapp, hooked into a database, so it supports logging in as a user and can compute editorials for multiple users simultaneously, as well as a history of previous editorials (one per day) stored in time.
+    - The app should become a Flask webapp, hooked on SQLite.
+    - It should support multiple users with a login-page. 
+    - The db should be structured as follows:
+        - for each user, store 
+            - readers_interest.md
+            - feeds.md
+        - for each user store for each day each element in the pipeline: `filtered_entries -> parsed_entries -> prepared_entries -> editorial.mp3`
+        - for now running the pipeline should be triggered by running a python script
+        - then generate the webpage, **on login** (connecting to the website should bring your to a login page)
+
+2. Add a user settings panel to change the RSS feeds and reader preferences directly from the website.
+3. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
+4. Add calendar persistent variable, which feeds into a calendar widget which plots upcoming events.
+5. Add a map widget, showing geographical coverage.
+6. Add an alert system, where the user can setup alerts on specific topics/geographies/organization/people. 
+
 ## What it does
 
 1. **Scrape** – fetches the RSS feeds listed in `data/feeds.yml`, filters articles by publication date, and writes `data/filtered_entries.yml`.

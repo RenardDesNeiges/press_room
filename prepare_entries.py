@@ -1,9 +1,10 @@
-"""Classify parsed entries into editorial sections.
+"""Classify parsed entries into editorial sections and write the editorial.
 
-This is step 3 of the pipeline. It reads data/parsed_entries.yml and, using an
-LLM, groups the articles into "sections" of approximately `section_size`
-articles each. Sections are titled with 1-2 words. Only the title, themes, and
-countries are sent to the LLM (not the summaries) to keep costs low.
+This is step 3 of the pipeline. It reads data/parsed_entries.yml, writes the
+editorial (using FANCY_MODEL) and headline, then groups the articles into
+"sections" of approximately `section_size` articles each. Sections are titled
+with 1-2 words. Only the title, themes, and countries are sent to the section
+LLM (not the summaries) to keep costs low.
 
 The result is written to data/prepared_entries.yml with each entry carrying a
 "section" field.
@@ -18,12 +19,83 @@ from typing import Any
 import yaml
 
 from config import (
+    DEFAULT_INTERESTS_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,
     DEFAULT_SECTION_MODEL,
     DEFAULT_SECTION_SIZE,
+    DEFAULT_TITLE_GUIDE_PATH,
+    FANCY_MODEL,
 )
 from rerank_llm import extract_json_list, query_model
+
+
+DEFAULT_EDITO_PATH = Path("data/edito.md")
+
+
+def load_edito_prompt(
+    edito_path: Path = DEFAULT_EDITO_PATH,
+) -> str:
+    """Load the editorial prompt template from a Markdown file."""
+    with open(edito_path, "r", encoding="utf-8") as fh:
+        return fh.read()
+
+
+def build_edito_prompt(
+    entries: list[dict[str, Any]],
+    edito_path: Path = DEFAULT_EDITO_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+) -> str:
+    """Fill the editorial prompt template with the RSS feed and user preferences."""
+    prompt_template = load_edito_prompt(edito_path)
+
+    # Convert the selected entries to a clean YAML string.
+    rss_feed_yaml = yaml.safe_dump(
+        {"entries": entries},
+        allow_unicode=True,
+        sort_keys=False,
+        default_flow_style=False,
+    )
+
+    with open(interests_path, "r", encoding="utf-8") as fh:
+        user_preferences = fh.read()
+
+    return (
+        prompt_template.replace("{ rss_feed_yaml }", rss_feed_yaml)
+        .replace("{ user_preferences.md }", user_preferences.split('-----')[1])
+    )
+
+
+def generate_editorial(
+    entries: list[dict[str, Any]],
+    edito_path: Path = DEFAULT_EDITO_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    model_name: str = FANCY_MODEL,
+) -> str:
+    """Generate an editorial from the selected entries using FANCY_MODEL."""
+    prompt = build_edito_prompt(entries, edito_path, interests_path)
+    print(f"Generating editorial with {model_name}...")
+    editorial = query_model(prompt, model_name=model_name, temperature=0.7)
+    return editorial.strip()
+
+
+def extract_editorial_title(
+    editorial: str,
+    model_name: str = DEFAULT_SECTION_MODEL,
+    guide: str = DEFAULT_TITLE_GUIDE_PATH,
+) -> str:
+    """Extract a short headline from the editorial using a cheap LLM."""
+    prompt = (
+        "Voici un guide d'écriture d'éditorial"
+        f"{guide}"
+        "À partir de l'éditorial suivant, extrais un titre de journal percutant "
+        "(maximum 10 mots) qui résume le thème principal."
+        "Ne renvoie que le titre, sans guillemets ni explication.\n\n"
+        f"Éditorial :\n{editorial}"
+    )
+    print(f"Extracting editorial title with {model_name}...")
+    title = query_model(prompt, model_name=model_name, temperature=0.3)
+    return title.strip().strip('"').strip("'")
 
 
 def build_section_prompt(entries: list[dict[str, Any]], section_size: int = 5) -> str:
