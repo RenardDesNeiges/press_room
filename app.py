@@ -10,6 +10,8 @@ from __future__ import annotations
 import html
 import io
 import json
+import os
+import random
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -26,8 +28,15 @@ from flask import (
     url_for,
 )
 
+from config import (
+    DEFAULT_TEMPLATE_DIR,
+    SCHEDULE_ENABLED,
+    SCHEDULE_USERS,
+    SECRET_KEY,
+    schedule_clock,
+)
 from src import db as database
-from config import DEFAULT_TEMPLATE_DIR, SECRET_KEY
+from src.scheduler import start_daily
 from src.gen_static_page import (
     build_html,
     format_date_fr,
@@ -49,7 +58,31 @@ def create_app() -> Flask:
                 session["username"] = username
                 return redirect(url_for("index"))
             return render_template("login.html", error="Identifiants incorrects.")
-        return render_template("login.html")
+        return render_template("login.html", photo=random_feed_photo())
+
+    # @app.route("/signup", methods=["GET", "POST"])
+    # def signup():
+    #     if request.method == "POST":
+    #         username = request.form.get("username", "").strip()
+    #         password = request.form.get("password", "")
+    #         if not username or not password:
+    #             return render_template(
+    #                 "signup.html", error="Nom d'utilisateur et mot de passe requis."
+    #             )
+    #         if len(password) < 4:
+    #             return render_template(
+    #                 "signup.html", error="Mot de passe trop court (4 caractères minimum)."
+    #             )
+    #         if database.get_user(username):
+    #             return render_template(
+    #                 "signup.html", error="Ce nom d'utilisateur est déjà pris."
+    #             )
+    #         user_id = database.create_user(username, password)
+    #         database.seed_default_files(user_id)
+    #         session["username"] = username
+    #         flash("Compte créé. Bienvenue !")
+    #         return redirect(url_for("settings"))
+    #     return render_template("signup.html")
 
     @app.route("/logout")
     def logout():
@@ -113,10 +146,18 @@ def create_app() -> Flask:
                 flash("Préférences de lecture enregistrées.")
             elif action == "save_credentials":
                 flash(_save_credentials(user, session, request.form))
+            elif action == "save_editorial_minutes":
+                try:
+                    minutes = int(request.form.get("editorial_minutes", "5"))
+                except ValueError:
+                    minutes = 5
+                database.set_editorial_minutes(user["id"], minutes)
+                flash("Durée de l'éditorial enregistrée.")
             return redirect(url_for("settings"))
 
         publications = _load_feeds(user["id"])
         interests = database.get_user_file(user["id"], "readers_interests.md") or ""
+        editorial_minutes = database.get_editorial_minutes(user["id"])
         runs = []
         for issue in database.list_issues(user["id"]):
             try:
@@ -129,10 +170,27 @@ def create_app() -> Flask:
             username=username,
             publications=publications,
             interests=interests,
+            editorial_minutes=editorial_minutes,
             runs=runs,
         )
 
+    _maybe_start_scheduler(app)
+
     return app
+
+
+def _maybe_start_scheduler(app: Flask) -> None:
+    """Start the daily pipeline thread if config.yml enables it.
+
+    Under Flask's debug reloader the module is executed twice (watcher + child);
+    only the child (WERKZEUG_RUN_MAIN) should start the scheduler.
+    """
+    if not (SCHEDULE_ENABLED and SCHEDULE_USERS):
+        return
+    if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
+        return
+    hour, minute = schedule_clock()
+    start_daily(list(SCHEDULE_USERS), hour, minute)
 
 
 def render_issue(username: str, day: str | None = None) -> str:
@@ -197,6 +255,41 @@ def _parse_run_at(issue) -> datetime:
         return datetime.fromisoformat(run_at)
     except ValueError:
         return datetime.now()
+
+
+def random_feed_photo() -> dict | None:
+    """Return a random photo (with caption) from any user's stored issue, or None.
+
+    Scans the prepared (or parsed) entries stored for all users and picks one
+    entry with a media image at random.
+    """
+    photos = []
+    for user in database.list_users():
+        for issue in database.list_issues(user["id"]):
+            raw = database.get_artifact(issue["id"], "prepared_entries")
+            if raw is None:
+                raw = database.get_artifact(issue["id"], "parsed_entries")
+            if raw is None:
+                continue
+            try:
+                data = yaml.safe_load(raw)
+            except yaml.YAMLError:
+                continue
+            for entry in data.get("entries", []) or []:
+                media = entry.get("media")
+                if not media:
+                    continue
+                photos.append(
+                    {
+                        "image": media,
+                        "title": entry.get("title") or "",
+                        "subtitle": entry.get("summary") or entry.get("title") or "",
+                        "source": entry.get("source") or "",
+                    }
+                )
+    if not photos:
+        return None
+    return random.choice(photos)
 
 
 def _build_day_menu(user_id: int, current_day: str) -> str:

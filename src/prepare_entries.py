@@ -32,6 +32,17 @@ from src.rerank_llm import extract_json_list, query_model
 
 
 DEFAULT_EDITO_PATH = DATA_DIR / "edito.md"
+DEFAULT_EDITORIAL_MINUTES = 5
+
+
+def minutes_to_word_range(minutes: int) -> tuple[int, int]:
+    """Derive the editorial word range from the target read time in minutes.
+
+    word_min / word_max = 200 * minutes - 150 / + 150, clamped to 2-10 minutes.
+    """
+    minutes = max(2, min(10, int(minutes)))
+    center = 200 * minutes
+    return center - 150, center + 150
 
 
 def load_edito_prompt(
@@ -46,9 +57,18 @@ def build_edito_prompt(
     entries: list[dict[str, Any]],
     edito_path: Path = DEFAULT_EDITO_PATH,
     interests_path: Path = DEFAULT_INTERESTS_PATH,
+    word_min: int | None = None,
+    word_max: int | None = None,
 ) -> str:
-    """Fill the editorial prompt template with the RSS feed and user preferences."""
+    """Fill the editorial prompt template with the RSS feed and user preferences.
+
+    ``word_min``/``word_max`` bound the requested editorial length (in words) and
+    are substituted into the ``{ word_min }`` / ``{ word_max }`` placeholders.
+    """
     prompt_template = load_edito_prompt(edito_path)
+
+    if word_min is None or word_max is None:
+        word_min, word_max = minutes_to_word_range(DEFAULT_EDITORIAL_MINUTES)
 
     # Convert the selected entries to a clean YAML string.
     rss_feed_yaml = yaml.safe_dump(
@@ -64,6 +84,8 @@ def build_edito_prompt(
     return (
         prompt_template.replace("{ rss_feed_yaml }", rss_feed_yaml)
         .replace("{ user_preferences.md }", user_preferences.split('-----')[1])
+        .replace("{ word_min }", str(word_min))
+        .replace("{ word_max }", str(word_max))
     )
 
 
@@ -72,9 +94,11 @@ def generate_editorial(
     edito_path: Path = DEFAULT_EDITO_PATH,
     interests_path: Path = DEFAULT_INTERESTS_PATH,
     model_name: str = FANCY_MODEL,
+    word_min: int | None = None,
+    word_max: int | None = None,
 ) -> str:
     """Generate an editorial from the selected entries using FANCY_MODEL."""
-    prompt = build_edito_prompt(entries, edito_path, interests_path)
+    prompt = build_edito_prompt(entries, edito_path, interests_path, word_min, word_max)
     print(f"Generating editorial with {model_name}...")
     editorial = query_model(prompt, model_name=model_name, temperature=0.7)
     return editorial.strip()
@@ -229,6 +253,7 @@ def prepare_and_export(
     model_name: str = DEFAULT_SECTION_MODEL,
     interests_path: Path = DEFAULT_INTERESTS_PATH,
     edito_path: Path = DEFAULT_EDITO_PATH,
+    editorial_minutes: int | None = None,
 ) -> tuple[list[dict[str, Any]], str, str]:
     """Load parsed entries, write the editorial + headline, classify into sections, and export.
 
@@ -242,7 +267,17 @@ def prepare_and_export(
     entries = data.get("entries", [])
     prepared = prepare_entries(entries, section_size=section_size, model_name=model_name)
 
-    editorial = generate_editorial(entries, edito_path=edito_path, interests_path=interests_path)
+    word_min = word_max = None
+    if editorial_minutes is not None:
+        word_min, word_max = minutes_to_word_range(editorial_minutes)
+
+    editorial = generate_editorial(
+        entries,
+        edito_path=edito_path,
+        interests_path=interests_path,
+        word_min=word_min,
+        word_max=word_max,
+    )
     title = extract_editorial_title(editorial)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)

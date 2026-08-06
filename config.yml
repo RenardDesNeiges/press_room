@@ -1,0 +1,7 @@
+# Daily pipeline schedule for the webapp.
+# The app runs the pipeline once per day, at the given local time, for each user listed.
+schedule:
+  enabled: true
+  time: "06:00"
+  users:
+    - "titou"

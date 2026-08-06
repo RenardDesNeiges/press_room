@@ -30,46 +30,26 @@
       {% endwith %}
 
       <section class="settings-section">
-        <h2>Flux RSS</h2>
-        <p class="settings-hint">Liste des publications et de leurs flux. Nom, langue (FR/EN/DE/ES) et une ou plusieurs adresses de flux.</p>
-        <form method="post" id="feeds-form">
-          <input type="hidden" name="action" value="save_feeds">
-          <input type="hidden" name="feeds_json" id="feeds-json">
-          <div id="publications">
-            {% for pub in publications %}
-            <fieldset class="publication">
-              <div class="pub-fields">
-                <label>Nom <input type="text" class="pub-name" value="{{ pub.name }}"></label>
-                <label class="pub-lang-label">Langue <input type="text" class="pub-lang" value="{{ pub.lang }}"></label>
-              </div>
-              <div class="pub-feeds">
-                {% for url in pub.feeds %}
-                <div class="feed-row">
-                  <input type="url" class="feed-url" value="{{ url }}">
-                  <button type="button" class="feed-row-remove" aria-label="Retirer ce flux">×</button>
-                </div>
-                {% endfor %}
-              </div>
-              <div class="pub-actions">
-                <button type="button" class="add-feed">Ajouter un flux</button>
-                <button type="button" class="remove-pub">Supprimer</button>
-              </div>
-            </fieldset>
-            {% endfor %}
-          </div>
-          <div class="settings-actions">
-            <button type="button" id="add-pub">Ajouter une publication</button>
-            <button type="submit">Enregistrer les flux</button>
-          </div>
-        </form>
-      </section>
-
-      <section class="settings-section">
         <h2>Préférences de lecture</h2>
         <p class="settings-hint">Texte libre décrivant les goûts et intérêts du lecteur (utilisé par le pipeline pour sélectionner les articles).</p>
         <form method="post">
           <input type="hidden" name="action" value="save_interests">
           <textarea name="interests" rows="12" class="interests-input">{{ interests }}</textarea>
+          <div class="settings-actions">
+            <button type="submit">Enregistrer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
+        <h2>Durée de l'éditorial</h2>
+        <p class="settings-hint">Durée de lecture cible de l'éditorial (2 à 10 minutes). Le nombre de mots demandé à l'IA en est dérivé.</p>
+        <form method="post">
+          <input type="hidden" name="action" value="save_editorial_minutes">
+          <div class="slider-row">
+            <span id="editorial-minutes-value" class="slider-value">{{ editorial_minutes }} min</span>
+            <input type="range" id="editorial-minutes" name="editorial_minutes" min="2" max="10" step="1" value="{{ editorial_minutes }}">
+          </div>
           <div class="settings-actions">
             <button type="submit">Enregistrer</button>
           </div>
@@ -107,6 +87,44 @@
           </tbody>
         </table>
       </section>
+
+      <details class="settings-section settings-collapse">
+        <summary class="settings-collapse-summary">
+          <span class="settings-collapse-title">Flux RSS</span>
+          <span class="settings-collapse-hint">Cliquer pour afficher</span>
+        </summary>
+        <p class="settings-hint">Liste des publications et de leurs flux. Nom, langue (FR/EN/DE/ES) et une ou plusieurs adresses de flux.</p>
+        <form method="post" id="feeds-form">
+          <input type="hidden" name="action" value="save_feeds">
+          <input type="hidden" name="feeds_json" id="feeds-json">
+          <div id="publications">
+            {% for pub in publications %}
+            <fieldset class="publication">
+              <div class="pub-fields">
+                <label>Nom <input type="text" class="pub-name" value="{{ pub.name }}"></label>
+                <label class="pub-lang-label">Langue <input type="text" class="pub-lang" value="{{ pub.lang }}"></label>
+              </div>
+              <div class="pub-feeds">
+                {% for url in pub.feeds %}
+                <div class="feed-row">
+                  <input type="url" class="feed-url" value="{{ url }}">
+                  <button type="button" class="feed-row-remove" aria-label="Retirer ce flux">×</button>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="pub-actions">
+                <button type="button" class="add-feed">Ajouter un flux</button>
+                <button type="button" class="remove-pub">Supprimer</button>
+              </div>
+            </fieldset>
+            {% endfor %}
+          </div>
+          <div class="settings-actions">
+            <button type="button" id="add-pub">Ajouter une publication</button>
+            <button type="submit">Enregistrer les flux</button>
+          </div>
+        </form>
+      </details>
     </main>
   </div>
   <script src="/page.js"></script>

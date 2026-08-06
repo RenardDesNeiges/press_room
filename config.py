@@ -1,7 +1,10 @@
 from pathlib import Path
 
+import yaml
+
 PROJECT_ROOT = Path(__file__).resolve().parent
 DATA_DIR = PROJECT_ROOT / "data"
+CONFIG_PATH = PROJECT_ROOT / "config.yml"
 
 DEFAULT_FEEDS_PATH = DATA_DIR / "feeds.yml"
 DEFAULT_ENTRIES_PATH = DATA_DIR / "filtered_entries.yml"
@@ -29,3 +32,32 @@ DEFAULT_DB_PATH = DATA_DIR / "pressroom.db"
 SECRET_KEY = "dev-secret-change-me"
 
 SERVE_PORT = 8080
+
+
+def load_config(path: Path = CONFIG_PATH) -> dict:
+    """Load config.yml; returns {} if the file is missing."""
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        return yaml.safe_load(fh) or {}
+
+
+_schedule = load_config().get("schedule", {})
+
+#: Whether the webapp should run the pipeline on a daily schedule.
+SCHEDULE_ENABLED = bool(_schedule.get("enabled", True))
+
+#: Local clock time ("HH:MM") at which the daily pipeline run happens.
+SCHEDULE_TIME = str(_schedule.get("time", "06:00"))
+
+#: Usernames to run the pipeline for each day.
+SCHEDULE_USERS = [u for u in (_schedule.get("users") or ["titou"]) if u]
+
+
+def schedule_clock() -> tuple[int, int]:
+    """Return (hour, minute) parsed from SCHEDULE_TIME (fallback 06:00)."""
+    try:
+        hour, _, minute = SCHEDULE_TIME.partition(":")
+        return int(hour), int(minute)
+    except ValueError:
+        return 6, 0

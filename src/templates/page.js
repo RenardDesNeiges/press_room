@@ -315,6 +315,15 @@
 })();
 
 (function () {
+  const slider = document.getElementById('editorial-minutes');
+  const display = document.getElementById('editorial-minutes-value');
+  if (!slider || !display) return;
+  slider.addEventListener('input', function () {
+    display.textContent = slider.value + ' min';
+  });
+})();
+
+(function () {
   // Lightweight live reload: reload the page if press_room.html changes.
   let lastModified = null;
   const checkInterval = 30000; // 30 seconds

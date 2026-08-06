@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
+    editorial_minutes INTEGER NOT NULL DEFAULT 5,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -65,12 +66,20 @@ def connect(db_path: Path = DEFAULT_DB_PATH) -> sqlite3.Connection:
 def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
     with connect(db_path) as conn:
         conn.executescript(SCHEMA)
-        # Lightweight migration for DBs created before the run_at column.
-        cols = {
+        # Lightweight migrations for DBs created before a column existed.
+        issue_cols = {
             row["name"] for row in conn.execute("PRAGMA table_info(issues)").fetchall()
         }
-        if "run_at" not in cols:
+        if "run_at" not in issue_cols:
             conn.execute("ALTER TABLE issues ADD COLUMN run_at TEXT")
+        user_cols = {
+            row["name"] for row in conn.execute("PRAGMA table_info(users)").fetchall()
+        }
+        if "editorial_minutes" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN editorial_minutes "
+                "INTEGER NOT NULL DEFAULT 5"
+            )
 
 
 def create_user(username: str, password: str, db_path: Path = DEFAULT_DB_PATH) -> int:
@@ -144,6 +153,37 @@ def list_user_files(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> dict[str, 
             "SELECT name, content FROM user_files WHERE user_id = ?", (user_id,)
         ).fetchall()
         return {row["name"]: row["content"] for row in rows}
+
+
+def list_users(db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
+    with connect(db_path) as conn:
+        return conn.execute("SELECT * FROM users ORDER BY username").fetchall()
+
+
+def get_editorial_minutes(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> int:
+    """Return the target editorial read time (minutes, clamped 2-10)."""
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT editorial_minutes FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+    minutes = int(row["editorial_minutes"]) if row else 5
+    return max(2, min(10, minutes))
+
+
+def set_editorial_minutes(user_id: int, minutes: int, db_path: Path = DEFAULT_DB_PATH) -> None:
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET editorial_minutes = ? WHERE id = ?",
+            (max(2, min(10, int(minutes))), user_id),
+        )
+
+
+def seed_default_files(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Copy the demo feeds.yml and readers_interests.md into a user's config files."""
+    for name in ("feeds.yml", "readers_interests.md"):
+        path = DATA_DIR / name
+        if path.exists():
+            set_user_file(user_id, name, path.read_text(encoding="utf-8"), db_path)
 
 
 def get_or_create_issue(
@@ -223,12 +263,7 @@ def seed_demo_user(db_path: Path = DEFAULT_DB_PATH) -> None:
         )
         user_id = int(cursor.lastrowid)
 
-    files: dict[str, Path] = {
-        "readers_interests.md": data_dir / "readers_interests.md",
-        "feeds.yml": data_dir / "feeds.yml",
-    }
-    for name, path in files.items():
-        set_user_file(user_id, name, path.read_text(encoding="utf-8"), db_path)
+    seed_default_files(user_id, db_path)
 
     today = date.today().isoformat()
     issue_id = get_or_create_issue(user_id, today, db_path)

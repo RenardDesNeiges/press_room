@@ -785,6 +785,87 @@ footer {
   }
 }
 
+.login-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.login-left {
+  min-width: 0;
+}
+
+.signup-box {
+  margin-bottom: 2.5rem;
+}
+
+.signup-button {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #001F3F;
+  color: #001F3F;
+  text-decoration: none;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.signup-button:hover {
+  background-color: var(--highlight);
+}
+
+.login-right {
+  position: sticky;
+  top: 2rem;
+  min-width: 0;
+}
+
+.login-photo {
+  margin: 0;
+}
+
+.login-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  filter: grayscale(100%);
+}
+
+.login-photo-caption {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.login-photo-source {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.login-photo-empty {
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+@media (max-width: 750px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .login-right {
+    position: static;
+    order: -1;
+  }
+}
+
 .login-form {
   max-width: 24rem;
   margin: 0 auto;
@@ -835,6 +916,34 @@ footer {
   border: 1px solid var(--rule);
   background-color: var(--bg);
   font-size: 0.85rem;
+}
+
+.login-alt {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+}
+
+.login-alt a {
+  color: #001F3F;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  max-width: 28rem;
+}
+
+.slider-value {
+  flex: 0 0 3.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--fg);
 }
 
 .settings {
@@ -1019,4 +1128,60 @@ footer {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background-color: var(--highlight-mid);
+}
+
+.settings-collapse {
+  margin-top: 2.5rem;
+  border-top: 2px solid var(--rule);
+  padding-top: 0;
+}
+
+.settings-collapse-summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 0 0;
+}
+
+.settings-collapse-summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings-collapse-summary::before {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 0.6rem;
+  border-left: 0.45rem solid var(--fg);
+  border-top: 0.3rem solid transparent;
+  border-bottom: 0.3rem solid transparent;
+  transition: transform 0.15s ease;
+}
+
+.settings-collapse[open] .settings-collapse-summary::before {
+  transform: rotate(90deg);
+}
+
+.settings-collapse-title {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.settings-collapse-hint {
+  font-size: 0.75rem;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.settings-collapse > .settings-hint,
+.settings-collapse > form {
+  margin-top: 1rem;
 }

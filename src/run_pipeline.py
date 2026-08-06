@@ -41,6 +41,10 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
 
     user_id = user["id"]
     day = day or date.today().isoformat()
+    try:
+        editorial_minutes = user["editorial_minutes"]
+    except (KeyError, IndexError):
+        editorial_minutes = 5
 
     feeds = database.get_user_file(user_id, "feeds.yml")
     interests = database.get_user_file(user_id, "readers_interests.md")
@@ -72,6 +76,7 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
             parsed_entries_path=parsed_path,
             output_path=prepared_path,
             interests_path=interests_path,
+            editorial_minutes=editorial_minutes,
         )
         editorial_to_mp3.generate_editorial_mp3(
             parsed_entries_path=prepared_path, output_path=mp3_path
@@ -99,6 +104,7 @@ def main() -> None:
         help="ISO date for the issue (default: today).",
     )
     args = parser.parse_args()
+    database.init_db()
     run_for_user(username=args.user, day=args.day)
 
 

@@ -3,7 +3,7 @@
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
 ## To-be-added features
-    1. Update the code so it can load substacks and telegram channels as well as well as send messages via a telegram bot.
+    1. Update the code so it can send messages via a telegram bot.
     2. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
     3. Add calendar persistent variable, which feeds into a calendar widget which plots upcoming events.
     4. Add a map widget, showing geographical coverage.
@@ -13,12 +13,13 @@ A small, automated pipeline that turns a curated list of RSS feeds into a daily 
 
 The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 
-- **Login** — connecting to the site redirects to `/login`. Credentials: demo user `titou` / `titou` (seeded from the `data/` folder).
-- **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table.
+- **Login** — connecting to the site redirects to `/login`. Credentials: demo user `titou` / `titou` (seeded from the `data/` folder). The login page shows a random photo (with caption) from any user's stored issue on the right, and a sign-up button on the left. New accounts are created at `/signup` and are seeded with the demo `feeds.yml` and `readers_interests.md`.
+- **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes).
 - **Per-user per-day issues** — each pipeline stage's output (`filtered_entries`, `parsed_entries`, `prepared_entries`, `editorial.mp3`) is stored in `issue_artifacts`, keyed by `(user, day)` in `issues`. History of editorials, one per day.
 - **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time.
 - **Report picker** — clicking the date in the top bar opens a dropdown listing the last 7 days' issues (at most); clicking an entry regenerates the page from that report. The currently displayed day is highlighted.
-- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language), edit `readers_interests.md` as free text, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu.
+- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language), edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
+- **Daily schedule** — the webapp runs the pipeline once per day at a configured local time (default 06:00) for the configured users. See `config.yml` (`schedule.time`, `schedule.users`, `schedule.enabled`). The scheduling thread starts with the app (a daemon thread in `src/scheduler.py`).
 - **Page generation on login** — after login, the latest (or a historical) issue is rendered from the database.
 
 ### Running
@@ -45,11 +46,14 @@ The database is a single SQLite file `data/pressroom.db`, created on first run a
 
 ```sql
 -- One row per user account. Passwords are stored as werkzeug password hashes.
+-- editorial_minutes = target editorial read time (2-10 min); the LLM word range
+-- is derived as 200 * minutes ± 150 words.
 CREATE TABLE users (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    username      TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    username          TEXT NOT NULL UNIQUE,
+    password_hash     TEXT NOT NULL,
+    editorial_minutes INTEGER NOT NULL DEFAULT 5,
+    created_at        TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 -- Per-user configuration files: 'feeds.yml' and 'readers_interests.md'.
@@ -93,6 +97,9 @@ All functions live in `src/db.py` and accept an optional `db_path` argument (def
 | `create_user(username, password)` | Create a user; returns its id. |
 | `get_user(username)` / `verify_user(username, password)` | Look up / authenticate a user. |
 | `update_username(user_id, username)` / `update_password(user_id, password)` | Change a user's name (raises if taken) / password. |
+| `get_editorial_minutes(user_id)` / `set_editorial_minutes(user_id, minutes)` | Read / write the target editorial read time (clamped 2-10). |
+| `list_users()` | All users. |
+| `seed_default_files(user_id)` | Copy `data/feeds.yml` + `data/readers_interests.md` into a user's config files. |
 | `set_user_file(user_id, name, content)` / `get_user_file(user_id, name)` / `list_user_files(user_id)` | Read/write the user's config files. |
 | `get_or_create_issue(user_id, day)` | Return the issue id for a user/day, creating it and stamping `run_at` if needed. |
 | `set_artifact(issue_id, stage, content)` / `get_artifact(issue_id, stage)` | Store / fetch a pipeline stage output (bytes). |
@@ -105,7 +112,7 @@ All functions accept an optional `db_path` argument (defaults to `data/pressroom
 
 1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date, and writes `filtered_entries`.
 2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.
-3. **Prepare** – writes the French editorial and headline, classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and writes `prepared_entries`.
+3. **Prepare** – writes the French editorial and headline, classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and writes `prepared_entries`. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
 4. **Speak** – synthesizes the editorial to `editorial.mp3` via OpenRouter's TTS API.
 
 All four artifacts are stored per user/day in SQLite. The newspaper HTML is generated on login from the stored data.
@@ -114,8 +121,9 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 
 ```
 .
-├── app.py                    # Flask webapp (login, per-user page rendering, /settings)
-├── config.py                 # Paths, model names, serve port, diversity limits
+├── app.py                    # Flask webapp (login, per-user page rendering, /settings, daily scheduler)
+├── config.py                 # Paths, model names, serve port, diversity limits, config.yml loader
+├── config.yml                # Daily pipeline schedule (enabled / time / users)
 ├── data/                     # Source config + demo pipeline outputs (seeded for 'titou')
 │   ├── additional_rerank_prompt.md
 │   ├── edito.md              # Prompt for the editorial
@@ -139,6 +147,7 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
     ├── rank_entries.py       # WordLlama semantic ranking helper
     ├── rerank_llm.py         # LLM reranking helper
     ├── run_pipeline.py       # Per-user pipeline trigger (writes to SQLite)
+    ├── scheduler.py          # Daily pipeline scheduler thread
     ├── serve.py              # Legacy static file server
     └── templates/
         ├── article.html
@@ -147,7 +156,8 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
         ├── page.html
         ├── page.js
         ├── reader.html
-        └── settings.html       # User settings panel (feeds, preferences, credentials, run history)
+        ├── settings.html       # User settings panel (feeds, preferences, credentials, run history)
+        └── signup.html         # Account creation page
 ```
 
 ## Requirements
@@ -214,7 +224,12 @@ python app.py
 - Log in as `titou` / `titou` to see the latest issue.
 - Add `?day=YYYY-MM-DD` to view a historical issue stored in the database.
 
+The app starts a background thread (see `config.yml` → `schedule`) that runs the
+pipeline daily at the configured local time (default 06:00) for each listed user.
+
 ## Customization
+
+- **Daily run time / users:** edit `config.yml` (top-level `schedule:` block): `enabled`, `time` (`"HH:MM"`, local time), and the `users` list.
 
 - **Number of articles:** edit `DEFAULT_CANDIDATES_COUNT` and `DEFAULT_FINAL_COUNT` in `config.py`.
 - **Section size:** edit `DEFAULT_SECTION_SIZE` in `config.py` to control how many articles each thematic section groups.

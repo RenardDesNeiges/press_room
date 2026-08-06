@@ -14,22 +14,39 @@
         <span class="top-bar-date">Connexion</span>
       </div>
     </header>
-    <main class="login-form">
-      <h2>Se connecter</h2>
-      {% if error %}
-      <p class="login-error">{{ error }}</p>
-      {% endif %}
-      <form method="post">
-        <label>
-          Nom d'utilisateur
-          <input type="text" name="username" required autofocus>
-        </label>
-        <label>
-          Mot de passe
-          <input type="password" name="password" required>
-        </label>
-        <button type="submit">Entrer</button>
-      </form>
+    <main class="login-layout">
+      <div class="login-left">
+        <div class="signup-box">
+          <span class="signup-button" aria-disabled="true">Créer un compte</span>
+        </div>
+        <div class="login-form">
+          <h2>Se connecter</h2>
+          {% if error %}
+          <p class="login-error">{{ error }}</p>
+          {% endif %}
+          <form method="post">
+            <label>
+              Nom d'utilisateur
+              <input type="text" name="username" required autofocus>
+            </label>
+            <label>
+              Mot de passe
+              <input type="password" name="password" required>
+            </label>
+            <button type="submit">Entrer</button>
+          </form>
+        </div>
+      </div>
+      <div class="login-right">
+        {% if photo %}
+        <figure class="login-photo">
+          <img src="{{ photo.image }}" alt="{{ photo.title }}" onerror="this.closest('figure').style.display='none'">
+          <figcaption class="login-photo-caption">{{ photo.subtitle }}<span class="login-photo-source">{{ photo.source }}</span></figcaption>
+        </figure>
+        {% else %}
+        <p class="login-photo-empty">Aucune photo disponible pour le moment.</p>
+        {% endif %}
+      </div>
     </main>
   </div>
 </body>
