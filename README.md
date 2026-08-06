@@ -3,12 +3,11 @@
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
 ## To-be-added features
-    1. Add a user settings panel to change the RSS feeds and reader preferences directly from the website.
-    2. Update the code so it can load substacks and telegram channels as well as well as send messages via a telegram bot.
-    3. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
-    4. Add calendar persistent variable, which feeds into a calendar widget which plots upcoming events.
-    5. Add a map widget, showing geographical coverage.
-    6. Add an alert system, where the user can setup alerts on specific topics/geographies/organization/people. 
+    1. Update the code so it can load substacks and telegram channels as well as well as send messages via a telegram bot.
+    2. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
+    3. Add calendar persistent variable, which feeds into a calendar widget which plots upcoming events.
+    4. Add a map widget, showing geographical coverage.
+    5. Add an alert system, where the user can setup alerts on specific topics/geographies/organization/people. 
 
 ## Webapp
 
@@ -19,6 +18,7 @@ The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 - **Per-user per-day issues** — each pipeline stage's output (`filtered_entries`, `parsed_entries`, `prepared_entries`, `editorial.mp3`) is stored in `issue_artifacts`, keyed by `(user, day)` in `issues`. History of editorials, one per day.
 - **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time.
 - **Report picker** — clicking the date in the top bar opens a dropdown listing the last 7 days' issues (at most); clicking an entry regenerates the page from that report. The currently displayed day is highlighted.
+- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language), edit `readers_interests.md` as free text, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu.
 - **Page generation on login** — after login, the latest (or a historical) issue is rendered from the database.
 
 ### Running
@@ -92,6 +92,7 @@ All functions live in `src/db.py` and accept an optional `db_path` argument (def
 | `init_db()` | Create tables (and migrate older DBs that lack `issues.run_at`). |
 | `create_user(username, password)` | Create a user; returns its id. |
 | `get_user(username)` / `verify_user(username, password)` | Look up / authenticate a user. |
+| `update_username(user_id, username)` / `update_password(user_id, password)` | Change a user's name (raises if taken) / password. |
 | `set_user_file(user_id, name, content)` / `get_user_file(user_id, name)` / `list_user_files(user_id)` | Read/write the user's config files. |
 | `get_or_create_issue(user_id, day)` | Return the issue id for a user/day, creating it and stamping `run_at` if needed. |
 | `set_artifact(issue_id, stage, content)` / `get_artifact(issue_id, stage)` | Store / fetch a pipeline stage output (bytes). |
@@ -113,7 +114,7 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 
 ```
 .
-├── app.py                    # Flask webapp (login + per-user page rendering)
+├── app.py                    # Flask webapp (login, per-user page rendering, /settings)
 ├── config.py                 # Paths, model names, serve port, diversity limits
 ├── data/                     # Source config + demo pipeline outputs (seeded for 'titou')
 │   ├── additional_rerank_prompt.md
@@ -145,7 +146,8 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
         ├── page.css
         ├── page.html
         ├── page.js
-        └── reader.html
+        ├── reader.html
+        └── settings.html       # User settings panel (feeds, preferences, credentials, run history)
 ```
 
 ## Requirements

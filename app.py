@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import html
 import io
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -16,6 +17,7 @@ import yaml
 from flask import (
     Flask,
     abort,
+    flash,
     redirect,
     render_template,
     request,
@@ -87,6 +89,49 @@ def create_app() -> Flask:
     def page_js():
         return send_file(DEFAULT_TEMPLATE_DIR / "page.js", mimetype="text/javascript")
 
+    @app.route("/settings", methods=["GET", "POST"])
+    def settings():
+        username = session.get("username")
+        if not username:
+            return redirect(url_for("login"))
+        user = database.get_user(username)
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
+
+        if request.method == "POST":
+            action = request.form.get("action")
+            if action == "save_feeds":
+                if _save_feeds(user["id"], request.form.get("feeds_json", "")):
+                    flash("Flux RSS enregistrés.")
+                else:
+                    flash("Erreur lors de l'enregistrement des flux RSS.")
+            elif action == "save_interests":
+                database.set_user_file(
+                    user["id"], "readers_interests.md", request.form.get("interests", "")
+                )
+                flash("Préférences de lecture enregistrées.")
+            elif action == "save_credentials":
+                flash(_save_credentials(user, session, request.form))
+            return redirect(url_for("settings"))
+
+        publications = _load_feeds(user["id"])
+        interests = database.get_user_file(user["id"], "readers_interests.md") or ""
+        runs = []
+        for issue in database.list_issues(user["id"]):
+            try:
+                when = format_datetime_fr(_parse_run_at(issue))
+            except ValueError:
+                when = issue["run_at"]
+            runs.append({"day": issue["day"], "run_at": when})
+        return render_template(
+            "settings.html",
+            username=username,
+            publications=publications,
+            interests=interests,
+            runs=runs,
+        )
+
     return app
 
 
@@ -118,6 +163,7 @@ def render_issue(username: str, day: str | None = None) -> str:
     generated_at = format_datetime_fr(_parse_run_at(issue))
 
     user_info = (
+        f'<a class="top-bar-link" href="{url_for("settings")}">Paramètres</a>'
         f'<span class="top-bar-user">{html.escape(username)}</span>'
         f'<a class="top-bar-logout" href="{url_for("logout")}">Déconnexion</a>'
     )
@@ -172,6 +218,77 @@ def _build_day_menu(user_id: int, current_day: str) -> str:
     if not items:
         return ""
     return '<span class="day-menu-heading">Éditions des 7 derniers jours</span>' + "".join(items)
+
+
+def _load_feeds(user_id: int) -> list[dict]:
+    """Return the publications list from the user's feeds.yml, normalized for the editor.
+
+    A ``notes`` field that looks like a feed URL is treated as a single feed.
+    """
+    content = database.get_user_file(user_id, "feeds.yml")
+    if not content:
+        return []
+    data = yaml.safe_load(content) or {}
+    publications = []
+    for pub in data.get("publications", []) or []:
+        urls = [u for u in (pub.get("feeds") or []) if u]
+        if not urls:
+            note = pub.get("notes")
+            if isinstance(note, str) and note.startswith("http"):
+                urls = [note]
+        publications.append(
+            {
+                "name": pub.get("name") or "",
+                "lang": pub.get("lang") or "",
+                "feeds": urls,
+            }
+        )
+    return publications
+
+
+def _save_feeds(user_id: int, feeds_json: str) -> bool:
+    """Parse the editor's JSON payload and write it back as feeds.yml."""
+    try:
+        raw = json.loads(feeds_json)
+    except (ValueError, TypeError):
+        return False
+    publications = []
+    for pub in raw or []:
+        if not isinstance(pub, dict):
+            continue
+        name = str(pub.get("name") or "").strip()
+        if not name:
+            continue
+        entry = {"name": name}
+        lang = str(pub.get("lang") or "").strip()
+        if lang:
+            entry["lang"] = lang
+        urls = [str(u).strip() for u in (pub.get("feeds") or []) if str(u).strip()]
+        if urls:
+            entry["feeds"] = urls
+        publications.append(entry)
+    yaml_text = yaml.safe_dump(
+        {"publications": publications}, allow_unicode=True, sort_keys=False
+    )
+    database.set_user_file(user_id, "feeds.yml", yaml_text)
+    return True
+
+
+def _save_credentials(user, session, form) -> str:
+    """Change the username/password. Returns a user-facing message."""
+    new_username = str(form.get("new_username") or "").strip()
+    new_password = form.get("new_password") or ""
+    new_password2 = form.get("new_password2") or ""
+    if new_username != user["username"] and database.get_user(new_username):
+        return "Ce nom d'utilisateur est déjà pris."
+    if new_password and new_password != new_password2:
+        return "Les mots de passe ne correspondent pas."
+    if new_username != user["username"]:
+        database.update_username(user["id"], new_username)
+        session["username"] = new_username
+    if new_password:
+        database.update_password(user["id"], new_password)
+    return "Identifiants mis à jour."
 
 
 if __name__ == "__main__":

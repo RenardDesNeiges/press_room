@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pressroom — Paramètres</title>
+  <link rel="stylesheet" href="/page.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top-bar">
+      <div class="top-bar-inner">
+        <h1 class="top-bar-title">Pressroom</h1>
+        <div class="top-bar-right">
+          <a class="top-bar-link" href="/">Lire l'édition</a>
+          <span class="top-bar-user">{{ username }}</span>
+          <a class="top-bar-logout" href="/logout">Déconnexion</a>
+        </div>
+        <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <main class="settings">
+      <h1 class="settings-title">Paramètres</h1>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <p class="settings-flash">{{ messages[0] }}</p>
+        {% endif %}
+      {% endwith %}
+
+      <section class="settings-section">
+        <h2>Flux RSS</h2>
+        <p class="settings-hint">Liste des publications et de leurs flux. Nom, langue (FR/EN/DE/ES) et une ou plusieurs adresses de flux.</p>
+        <form method="post" id="feeds-form">
+          <input type="hidden" name="action" value="save_feeds">
+          <input type="hidden" name="feeds_json" id="feeds-json">
+          <div id="publications">
+            {% for pub in publications %}
+            <fieldset class="publication">
+              <div class="pub-fields">
+                <label>Nom <input type="text" class="pub-name" value="{{ pub.name }}"></label>
+                <label class="pub-lang-label">Langue <input type="text" class="pub-lang" value="{{ pub.lang }}"></label>
+              </div>
+              <div class="pub-feeds">
+                {% for url in pub.feeds %}
+                <div class="feed-row">
+                  <input type="url" class="feed-url" value="{{ url }}">
+                  <button type="button" class="feed-row-remove" aria-label="Retirer ce flux">×</button>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="pub-actions">
+                <button type="button" class="add-feed">Ajouter un flux</button>
+                <button type="button" class="remove-pub">Supprimer</button>
+              </div>
+            </fieldset>
+            {% endfor %}
+          </div>
+          <div class="settings-actions">
+            <button type="button" id="add-pub">Ajouter une publication</button>
+            <button type="submit">Enregistrer les flux</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
+        <h2>Préférences de lecture</h2>
+        <p class="settings-hint">Texte libre décrivant les goûts et intérêts du lecteur (utilisé par le pipeline pour sélectionner les articles).</p>
+        <form method="post">
+          <input type="hidden" name="action" value="save_interests">
+          <textarea name="interests" rows="12" class="interests-input">{{ interests }}</textarea>
+          <div class="settings-actions">
+            <button type="submit">Enregistrer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
+        <h2>Identifiants</h2>
+        <form method="post" class="credentials-form">
+          <input type="hidden" name="action" value="save_credentials">
+          <label>Nom d'utilisateur <input type="text" name="new_username" value="{{ username }}"></label>
+          <label>Nouveau mot de passe <input type="password" name="new_password" autocomplete="new-password"></label>
+          <label>Confirmer le mot de passe <input type="password" name="new_password2" autocomplete="new-password"></label>
+          <div class="settings-actions">
+            <button type="submit">Mettre à jour</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
+        <h2>Historique des pipelines</h2>
+        <table class="pipeline-history">
+          <thead>
+            <tr><th>Édition</th><th>Dernière exécution</th></tr>
+          </thead>
+          <tbody>
+            {% for run in runs %}
+            <tr>
+              <td>{{ run.day }}</td>
+              <td>{{ run.run_at }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2">Aucune exécution pour le moment.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+  <script src="/page.js"></script>
+</body>
+</html>

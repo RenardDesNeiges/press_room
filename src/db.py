@@ -97,6 +97,23 @@ def verify_user(username: str, password: str, db_path: Path = DEFAULT_DB_PATH) -
     return check_password_hash(user["password_hash"], password)
 
 
+def update_username(user_id: int, new_username: str, db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Rename a user. Raises IntegrityError if the new username already exists."""
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET username = ? WHERE id = ?", (new_username, user_id)
+        )
+
+
+def update_password(user_id: int, new_password: str, db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Set a new password hash for a user."""
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET password_hash = ? WHERE id = ?",
+            (generate_password_hash(new_password), user_id),
+        )
+
+
 def set_user_file(
     user_id: int, name: str, content: str, db_path: Path = DEFAULT_DB_PATH
 ) -> None:

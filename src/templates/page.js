@@ -210,6 +210,111 @@
 })();
 
 (function () {
+  const hamburger = document.querySelector('.hamburger');
+  const right = document.querySelector('.top-bar-right');
+  if (!hamburger || !right) return;
+
+  function setOpen(open) {
+    right.classList.toggle('is-open', open);
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  hamburger.addEventListener('click', function (event) {
+    event.stopPropagation();
+    setOpen(!right.classList.contains('is-open'));
+  });
+
+  document.addEventListener('click', function (event) {
+    if (!right.contains(event.target) && !hamburger.contains(event.target)) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') setOpen(false);
+  });
+})();
+
+(function () {
+  const form = document.getElementById('feeds-form');
+  if (!form) return;
+  const container = document.getElementById('publications');
+  const jsonField = document.getElementById('feeds-json');
+  const addPubButton = document.getElementById('add-pub');
+
+  function addFeedRow(feedsBlock, value) {
+    const row = document.createElement('div');
+    row.className = 'feed-row';
+    row.innerHTML =
+      '<input type="url" class="feed-url">' +
+      '<button type="button" class="feed-row-remove" aria-label="Retirer ce flux">×</button>';
+    if (value) row.querySelector('.feed-url').value = value;
+    feedsBlock.appendChild(row);
+  }
+
+  function addPublication(pub) {
+    pub = pub || {};
+    const fieldset = document.createElement('fieldset');
+    fieldset.className = 'publication';
+    fieldset.innerHTML =
+      '<div class="pub-fields">' +
+      '<label>Nom <input type="text" class="pub-name"></label>' +
+      '<label class="pub-lang-label">Langue <input type="text" class="pub-lang"></label>' +
+      '</div>' +
+      '<div class="pub-feeds"></div>' +
+      '<div class="pub-actions">' +
+      '<button type="button" class="add-feed">Ajouter un flux</button>' +
+      '<button type="button" class="remove-pub">Supprimer</button>' +
+      '</div>';
+    fieldset.querySelector('.pub-name').value = pub.name || '';
+    fieldset.querySelector('.pub-lang').value = pub.lang || '';
+    const feedsBlock = fieldset.querySelector('.pub-feeds');
+    (pub.feeds && pub.feeds.length ? pub.feeds : ['']).forEach(function (url) {
+      addFeedRow(feedsBlock, url);
+    });
+    container.appendChild(fieldset);
+  }
+
+  container.addEventListener('click', function (event) {
+    const target = event.target;
+    if (target.classList.contains('add-feed')) {
+      addFeedRow(target.closest('.publication').querySelector('.pub-feeds'), '');
+    } else if (target.classList.contains('remove-pub')) {
+      target.closest('.publication').remove();
+    } else if (target.classList.contains('feed-row-remove')) {
+      target.closest('.feed-row').remove();
+    }
+  });
+
+  if (addPubButton) {
+    addPubButton.addEventListener('click', function () {
+      addPublication();
+    });
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const publications = [];
+    container.querySelectorAll('.publication').forEach(function (fieldset) {
+      const name = fieldset.querySelector('.pub-name').value.trim();
+      if (!name) return;
+      const feeds = [];
+      fieldset.querySelectorAll('.feed-url').forEach(function (input) {
+        const url = input.value.trim();
+        if (url) feeds.push(url);
+      });
+      publications.push({
+        name: name,
+        lang: fieldset.querySelector('.pub-lang').value.trim(),
+        feeds: feeds
+      });
+    });
+    jsonField.value = JSON.stringify(publications);
+    form.submit();
+  });
+})();
+
+(function () {
   // Lightweight live reload: reload the page if press_room.html changes.
   let lastModified = null;
   const checkInterval = 30000; // 30 seconds
