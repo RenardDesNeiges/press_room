@@ -10,3 +10,4 @@ data/parsed_entries.yml
 data/filtered_entries.yml
 data/pressroom.db
 instance/
+config.yml

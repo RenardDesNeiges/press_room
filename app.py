@@ -122,6 +122,23 @@ def create_app() -> Flask:
     def page_js():
         return send_file(DEFAULT_TEMPLATE_DIR / "page.js", mimetype="text/javascript")
 
+    @app.route("/settings/feeds.yml")
+    def feeds_download():
+        """Download the user's raw feeds.yml (keeps per-feed flags like today_only)."""
+        username = session.get("username")
+        if not username:
+            abort(401)
+        user = database.get_user(username)
+        content = database.get_user_file(user["id"], "feeds.yml")
+        if not content:
+            abort(404)
+        return send_file(
+            io.BytesIO(content.encode("utf-8")),
+            as_attachment=True,
+            download_name="feeds.yml",
+            mimetype="application/x-yaml",
+        )
+
     @app.route("/settings", methods=["GET", "POST"])
     def settings():
         username = session.get("username")
@@ -159,12 +176,24 @@ def create_app() -> Flask:
                     user["id"], [d for d in domains.splitlines() if d.strip()]
                 )
                 flash("Domaines exclus enregistrés.")
+            elif action == "save_filter_mode":
+                mode = request.form.get("filter_mode", "24h")
+                database.set_filter_mode(user["id"], mode)
+                flash("Filtre des articles enregistré.")
+            elif action == "upload_feeds":
+                upload = request.files.get("feeds_file")
+                if upload and upload.filename:
+                    content = upload.stream.read().decode("utf-8", errors="replace")
+                    flash(_upload_feeds(user["id"], content))
+                else:
+                    flash("Aucun fichier envoyé.")
             return redirect(url_for("settings"))
 
         publications = _load_feeds(user["id"])
         interests = database.get_user_file(user["id"], "readers_interests.md") or ""
         editorial_minutes = database.get_editorial_minutes(user["id"])
         excluded_domains = "\n".join(database.get_excluded_domains(user["id"]))
+        filter_mode = database.get_filter_mode(user["id"])
         runs = []
         for issue in database.list_issues(user["id"]):
             try:
@@ -179,6 +208,7 @@ def create_app() -> Flask:
             interests=interests,
             editorial_minutes=editorial_minutes,
             excluded_domains=excluded_domains,
+            filter_mode=filter_mode,
             runs=runs,
         )
 
@@ -343,6 +373,7 @@ def _load_feeds(user_id: int) -> list[dict]:
                 "name": pub.get("name") or "",
                 "lang": pub.get("lang") or "",
                 "feeds": urls,
+                "today_only": bool(pub.get("today_only")),
             }
         )
     return publications
@@ -368,12 +399,27 @@ def _save_feeds(user_id: int, feeds_json: str) -> bool:
         urls = [str(u).strip() for u in (pub.get("feeds") or []) if str(u).strip()]
         if urls:
             entry["feeds"] = urls
+        if pub.get("today_only"):
+            entry["today_only"] = True
         publications.append(entry)
     yaml_text = yaml.safe_dump(
         {"publications": publications}, allow_unicode=True, sort_keys=False
     )
     database.set_user_file(user_id, "feeds.yml", yaml_text)
     return True
+
+
+def _upload_feeds(user_id: int, content: str) -> str:
+    """Validate an uploaded feeds.yml and store it. Returns a user-facing message."""
+    try:
+        data = yaml.safe_load(content)
+    except yaml.YAMLError:
+        return "Fichier YAML invalide."
+    pubs = data.get("publications") if isinstance(data, dict) else None
+    if not isinstance(pubs, list):
+        return "Le fichier doit contenir une liste « publications »."
+    database.set_user_file(user_id, "feeds.yml", content)
+    return "feeds.yml importé."
 
 
 def _save_credentials(user, session, form) -> str:

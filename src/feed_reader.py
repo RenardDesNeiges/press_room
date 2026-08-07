@@ -84,10 +84,16 @@ def collect_all_feeds(
 
         lang = publication.get("lang")
         source = publication.get("name")
+        today_only = publication.get("today_only")
         for url in urls:
             feed_data = query_rss_feed(url)
             if feed_data is not None:
-                results[url] = {"feed": feed_data, "lang": lang, "source": source}
+                results[url] = {
+                    "feed": feed_data,
+                    "lang": lang,
+                    "source": source,
+                    "today_only": today_only,
+                }
 
     return results
 
@@ -96,22 +102,33 @@ def filter_feeds_by_date(
     feeds: dict[str, dict[str, Any]],
     max_age: timedelta = timedelta(days=2),
     reference_date: datetime | None = None,
+    default_today_only: bool = False,
 ) -> dict[str, dict[str, Any]]:
     """Filter feed entries by date.
 
-    Returns a dict mapping feed URL -> {"entries": [...], "lang": lang, "source": source}
-    for entries whose publication date is within `max_age` of `reference_date`
-    (defaulting to UTC now).
+    Returns a dict mapping feed URL -> {"entries": [...], "lang": lang, "source": source}.
+
+    Each feed may carry a per-feed ``today_only`` flag (from feeds.yml); when set
+    to True, only entries published on ``reference_date``'s calendar day are kept,
+    regardless of ``max_age``. Feeds without the flag fall back to
+    ``default_today_only``; otherwise the ``max_age`` window applies.
     """
     if reference_date is None:
         reference_date = datetime.now(timezone.utc)
 
     filtered: dict[str, dict[str, Any]] = {}
     for url, meta in feeds.items():
+        flag = meta.get("today_only")
+        today_only = default_today_only if flag is None else bool(flag)
         recent_entries = []
         for entry in meta["feed"].get("entries", []):
             entry_date = parse_feed_date(entry)
-            if entry_date is not None and (reference_date - entry_date) <= max_age:
+            if entry_date is None:
+                continue
+            if today_only:
+                if entry_date.astimezone().date() == reference_date.astimezone().date():
+                    recent_entries.append(entry)
+            elif (reference_date - entry_date) <= max_age:
                 recent_entries.append(entry)
         if recent_entries:
             filtered[url] = {
@@ -222,8 +239,12 @@ def export_entries_yaml(
 def scrape_feeds(
     feeds_path: str | Path = DEFAULT_FEEDS_PATH,
     output_path: str | Path = DEFAULT_ENTRIES_PATH,
+    default_today_only: bool = False,
 ) -> list[dict[str, Any]]:
     """Scrape all configured feeds and export the recent entries.
+
+    ``default_today_only`` applies to feeds without their own ``today_only`` flag
+    in feeds.yml (per-user global mode chosen in the settings).
 
     Returns the list of exported entries.
     """
@@ -233,7 +254,9 @@ def scrape_feeds(
     for url in feeds:
         print(f"  - {url}")
 
-    recent = filter_feeds_by_date(feeds, max_age=timedelta(days=1))
+    recent = filter_feeds_by_date(
+        feeds, max_age=timedelta(days=1), default_today_only=default_today_only
+    )
 
     export_entries = flatten_filtered_entries(recent)
     export_entries_yaml(export_entries, path=output_path)

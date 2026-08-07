@@ -260,6 +260,7 @@
       '<div class="pub-fields">' +
       '<label>Nom <input type="text" class="pub-name"></label>' +
       '<label class="pub-lang-label">Langue <input type="text" class="pub-lang"></label>' +
+      '<label class="pub-today-label"><input type="checkbox" class="pub-today"> Aujourd\'hui uniquement</label>' +
       '</div>' +
       '<div class="pub-feeds"></div>' +
       '<div class="pub-actions">' +
@@ -268,6 +269,7 @@
       '</div>';
     fieldset.querySelector('.pub-name').value = pub.name || '';
     fieldset.querySelector('.pub-lang').value = pub.lang || '';
+    fieldset.querySelector('.pub-today').checked = !!(pub.today_only);
     const feedsBlock = fieldset.querySelector('.pub-feeds');
     (pub.feeds && pub.feeds.length ? pub.feeds : ['']).forEach(function (url) {
       addFeedRow(feedsBlock, url);
@@ -306,7 +308,8 @@
       publications.push({
         name: name,
         lang: fieldset.querySelector('.pub-lang').value.trim(),
-        feeds: feeds
+        feeds: feeds,
+        today_only: fieldset.querySelector('.pub-today').checked
       });
     });
     jsonField.value = JSON.stringify(publications);

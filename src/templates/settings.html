@@ -69,6 +69,36 @@
       </section>
 
       <section class="settings-section">
+        <h2>Filtre des articles</h2>
+        <p class="settings-hint">Articles à conserver lors du scraping des flux. Ce choix s'applique aux publications qui ne définissent pas leur propre filtre (« Aujourd'hui uniquement » par publication dans les flux RSS).</p>
+        <form method="post">
+          <input type="hidden" name="action" value="save_filter_mode">
+          <label class="filter-mode-label">Période
+            <select name="filter_mode" class="filter-mode-select">
+              <option value="24h" {% if filter_mode == '24h' %}selected{% endif %}>Dernières 24 heures</option>
+              <option value="today" {% if filter_mode == 'today' %}selected{% endif %}>Aujourd'hui uniquement</option>
+            </select>
+          </label>
+          <div class="settings-actions">
+            <button type="submit">Enregistrer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
+        <h2>Fichier feeds.yml</h2>
+        <p class="settings-hint">Télécharger ou importer le fichier complet feeds.yml. Il permet notamment de définir « Aujourd'hui uniquement » par publication (champ <code>today_only: true</code>).</p>
+        <form method="post" enctype="multipart/form-data" class="feeds-file-form">
+          <input type="hidden" name="action" value="upload_feeds">
+          <label class="file-label">Importer un fichier <input type="file" name="feeds_file" accept=".yml,.yaml"></label>
+          <div class="settings-actions">
+            <a class="feeds-download" href="/settings/feeds.yml">Télécharger feeds.yml</a>
+            <button type="submit">Importer</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-section">
         <h2>Identifiants</h2>
         <form method="post" class="credentials-form">
           <input type="hidden" name="action" value="save_credentials">
@@ -115,6 +145,7 @@
               <div class="pub-fields">
                 <label>Nom <input type="text" class="pub-name" value="{{ pub.name }}"></label>
                 <label class="pub-lang-label">Langue <input type="text" class="pub-lang" value="{{ pub.lang }}"></label>
+                <label class="pub-today-label"><input type="checkbox" class="pub-today" {% if pub.today_only %}checked{% endif %}> Aujourd'hui uniquement</label>
               </div>
               <div class="pub-feeds">
                 {% for url in pub.feeds %}

@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash TEXT NOT NULL,
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
     excluded_domains TEXT,
+    filter_mode TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -84,6 +85,10 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
         if "excluded_domains" not in user_cols:
             conn.execute(
                 "ALTER TABLE users ADD COLUMN excluded_domains TEXT"
+            )
+        if "filter_mode" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN filter_mode TEXT"
             )
 
 
@@ -213,6 +218,31 @@ def set_excluded_domains(user_id: int, domains: list[str], db_path: Path = DEFAU
         conn.execute(
             "UPDATE users SET excluded_domains = ? WHERE id = ?",
             ("\n".join(cleaned), user_id),
+        )
+
+
+def get_filter_mode(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> str:
+    """Return the user's article date filter mode: "24h" or "today".
+
+    Defaults to "24h" (the classic "less than X times old" window) when the user
+    has never set their own preference.
+    """
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT filter_mode FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+    return row["filter_mode"] if row and row["filter_mode"] == "today" else "24h"
+
+
+def set_filter_mode(user_id: int, mode: str, db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Store the user's article date filter mode ("24h" or "today")."""
+    if mode == "today":
+        value = "today"
+    else:
+        value = None
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET filter_mode = ? WHERE id = ?", (value, user_id)
         )
 
 

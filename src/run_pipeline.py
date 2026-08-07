@@ -66,7 +66,11 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         mp3_path = work / "editorial.mp3"
 
         print(f"\n>>> Running pipeline for '{username}' ({day})")
-        feed_reader.scrape_feeds(feeds_path=feeds_path, output_path=filtered_path)
+        feed_reader.scrape_feeds(
+            feeds_path=feeds_path,
+            output_path=filtered_path,
+            default_today_only=(database.get_filter_mode(user_id) == "today"),
+        )
         parse_feed.parse_and_export(
             entries_path=filtered_path,
             output_path=parsed_path,

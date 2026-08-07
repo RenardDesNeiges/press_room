@@ -20,6 +20,7 @@ import yaml
 
 from config import (
     DATA_DIR,
+    DEFAULT_EDITORIAL_MINUTES,
     DEFAULT_INTERESTS_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,
@@ -32,7 +33,6 @@ from src.rerank_llm import extract_json_list, query_model
 
 
 DEFAULT_EDITO_PATH = DATA_DIR / "edito.md"
-DEFAULT_EDITORIAL_MINUTES = 5
 
 
 def minutes_to_word_range(minutes: int) -> tuple[int, int]:

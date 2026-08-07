@@ -4,24 +4,39 @@
 
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
+Note on how to update the editorializing feature
+```
+I should update how the editorial is produced. I want it to become more structured. 
+
+It should rigidly separate points by 1) country 2) subject. It should then summarize the facts. And compare how they are reported from one source to another.
+
+The editorial should be produced as 
+1) first a list of bullet point summarizing todays news running with an anti-repeat persistence feature ran over the last day's summary.
+2) a nice editorial selecting the key points to show, what to priorize and and translating to more natural language.
+```
+
 ## To-be-added features
-    1. Ability to send the press briefings (especially the editorials) via a telegram bot. Admin status for some users.
-    2. Ability for people to request signup, only allow if they have acess to a unique key sent to the admin's telegram account.
-    3. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
-    4. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
-    5. Add a map widget, showing geographical coverage (puts the articles on a map).
-    6. Add an alert system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly.
+0. Ability to guarantee that every item from some sources (for instance for rare posting substacks) is included in briefing. Assign archive.ph by source rather than to URLs.
+1. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot. 
+2. Admin status for some users, logging of the system (and a page where admins can check logs out).
+3. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
+4. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
+5. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
+6. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
+7. Add a map widget, showing geographical coverage (puts the articles on a map).
+
 
 ## Webapp
 
 The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 
 - **Login** — connecting to the site redirects to `/login`. Credentials: demo user `titou` / `titou` (seeded from the `data/` folder). The login page shows a random photo (with caption) from any user's stored issue on the right, and a sign-up button on the left. New accounts are created at `/signup` and are seeded with the demo `feeds.yml` and `readers_interests.md`.
-- **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes) and an `excluded_domains` list (domains left out of the archive.ph link wrapper).
+- **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes), an `excluded_domains` list (domains left out of the archive.ph link wrapper), and a `filter_mode` setting (`"24h"` or `"today"`) controlling how recent articles are kept.
+- **Article date filtering** — during scraping, a publication in `feeds.yml` can carry `today_only: true` to keep only that day's articles instead of the rolling `max_age` window (24h). This overrides the user's global `filter_mode`. The global setting is exposed in the settings page ("Dernières 24 heures" vs "Aujourd'hui uniquement").
 - **Per-user per-day issues** — each pipeline stage's output (`filtered_entries`, `parsed_entries`, `prepared_entries`, `editorial.mp3`) is stored in `issue_artifacts`, keyed by `(user, day)` in `issues`. History of editorials, one per day.
 - **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time.
 - **Report picker** — clicking the date in the top bar opens a dropdown listing the last 7 days' issues (at most); clicking an entry regenerates the page from that report. The currently displayed day is highlighted.
-- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language), edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), set the list of domains excluded from the archive.ph link wrapper, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
+- **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language, optionally tick "Aujourd'hui uniquement" per publication), download or import the full `feeds.yml` file, edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), choose the article date filter ("Dernières 24 heures" vs "Aujourd'hui uniquement"), set the list of domains excluded from the archive.ph link wrapper, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
 - **Archive.ph links** — article links are wrapped through `archive.ph` unless their domain is in the user's `excluded_domains` list (one per line in settings). Users who have never set the list fall back to the built-in `DEFAULT_EXCLUDED_DOMAINS` in `config.py`.
 - **Daily schedule** — the webapp runs the pipeline once per day at a configured local time (default 06:00) for the configured users. See `config.yml` (`schedule.time`, `schedule.users`, `schedule.enabled`). The scheduling thread starts with the app (a daemon thread in `src/scheduler.py`).
 - **Page generation on login** — after login, the latest (or a historical) issue is rendered from the database.
@@ -54,12 +69,14 @@ The database is a single SQLite file `data/pressroom.db`, created on first run a
 -- is derived as 200 * minutes ± 150 words.
 -- excluded_domains = user's archive.ph-excluded domains, one per line
 -- (NULL/absent means "use the default list in config.py").
+-- filter_mode = article date filter: "today" or NULL (= "24h").
 CREATE TABLE users (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     username          TEXT NOT NULL UNIQUE,
     password_hash     TEXT NOT NULL,
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
     excluded_domains  TEXT,
+    filter_mode       TEXT,
     created_at        TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -118,7 +135,7 @@ All functions accept an optional `db_path` argument (defaults to `data/pressroom
 
 ## What it does
 
-1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date, and writes `filtered_entries`.
+1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date (24h window, or that day only when the user's `filter_mode` is `"today"` or a publication sets `today_only: true`), and writes `filtered_entries`.
 2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.
 3. **Prepare** – writes the French editorial and headline, classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and writes `prepared_entries`. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
 4. **Speak** – synthesizes the editorial to `editorial.mp3` via OpenRouter's TTS API.
@@ -130,8 +147,8 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 ```
 .
 ├── app.py                    # Flask webapp (login, per-user page rendering, /settings, daily scheduler)
-├── config.py                 # Paths, model names, serve port, diversity limits, config.yml loader
-├── config.yml                # Daily pipeline schedule (enabled / time / users)
+├── config.py                 # Defaults for paths, models, serve port, pipeline limits, config.yml loader
+├── config.yml                # Optional overrides (paths, models, pipeline, web, schedule, …)
 ├── data/                     # Source config + demo pipeline outputs (seeded for 'titou')
 │   ├── additional_rerank_prompt.md
 │   ├── edito.md              # Prompt for the editorial
@@ -237,12 +254,17 @@ pipeline daily at the configured local time (default 06:00) for each listed user
 
 ## Customization
 
-- **Daily run time / users:** edit `config.yml` (top-level `schedule:` block): `enabled`, `time` (`"HH:MM"`, local time), and the `users` list.
+All configuration lives in `config.yml` at the project root. Every value
+defaults to the built-in ones in `config.py`, so the project works even without
+a `config.yml`. Values in `config.yml` override the defaults:
 
-- **Number of articles:** edit `DEFAULT_CANDIDATES_COUNT` and `DEFAULT_FINAL_COUNT` in `config.py`.
-- **Section size:** edit `DEFAULT_SECTION_SIZE` in `config.py` to control how many articles each thematic section groups.
-- **Source diversity:** edit `DEFAULT_MAX_PER_SOURCE` in `config.py` to cap candidates per newspaper before LLM reranking.
-- **Models:** edit `DEFAULT_MODEL` (reranking/translation/title extraction), `FANCY_MODEL` (editorial), and `DEFAULT_SECTION_MODEL` (section classification) in `config.py`. The default slugs include `:nitro` for faster inference on OpenRouter.
+- **Paths:** the `paths:` block (`data_dir`, and the file names for feeds, the pipeline stages' YAML files, the MP3, `interests`, `title_guide`, `additional_rerank_prompt`, `template_dir`, and `db`).
+- **Editorial:** `editorial.minutes` — default target editorial read time (2-10 min), used when a user has not set their own.
+- **Models:** the `models:` block — `default` (reranking/translation/title extraction), `fancy` (editorial), and `section` (section classification). The default slugs include `:nitro` for faster inference on OpenRouter.
+- **Pipeline:** the `pipeline:` block — `candidates_count`, `final_count` (number of articles), `section_size`, and `max_per_source` (cap candidates per newspaper before LLM reranking).
+- **Web:** the `web:` block — `secret_key` and `port`.
+- **Archive.ph exclusions:** `excluded_domains` (list of domains left out of the archive.ph link wrapper; this is the default list new/never-configured users fall back to).
+- **Schedule:** the `schedule:` block — `enabled`, `time` (`"HH:MM"`, local time in `timezone`), `timezone` (IANA zone, e.g. `Europe/Paris`; default, falling back to `Europe/Paris` if invalid), and `users`.
 - **TTS voice:** edit `DEFAULT_VOICE` in `src/editorial_to_mp3.py`.
 - **Styling:** edit `src/templates/page.html`, `src/templates/article.html`, and `src/templates/page.css`.
 
