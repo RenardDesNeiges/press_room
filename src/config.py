@@ -74,6 +74,9 @@ DEFAULT_MP3_PATH = _data_file("mp3", "editorial.mp3")
 DEFAULT_INTERESTS_PATH = _data_file("interests", "readers_interests.md")
 DEFAULT_TITLE_GUIDE_PATH = _data_file("title_guide", "titre.md")
 DEFAULT_ARRANK_PROMPT_PATH = _data_file("additional_rerank_prompt", "additional_rerank_prompt.md")
+DEFAULT_PLAN_EDITO_PATH = _data_file("plan_edito", "plan_edito.md")
+DEFAULT_EDITO_FROM_PLAN_PATH = _data_file("edito_from_plan", "edito_from_plan.md")
+DEFAULT_NEWS_SUMMARY_PATH = _data_file("news_summary", "news_summary.yml")
 DEFAULT_DB_PATH = _data_file("db", "pressroom.db")
 DEFAULT_TEMPLATE_DIR = _resolve_path(
     _PATHS.get("template_dir"),

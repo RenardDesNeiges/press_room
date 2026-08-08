@@ -347,3 +347,334 @@
   checkForUpdate();
   setInterval(checkForUpdate, checkInterval);
 })();
+
+(function () {
+  // Collapsible JSON tree viewer for the news_summary admin stage.
+  // No-op on every page that lacks the data contract.
+  const dataScript = document.getElementById('news-summary-tree-data');
+  const container = document.getElementById('news-summary-tree');
+  if (!dataScript || !container) return;
+
+  let data;
+  try {
+    data = JSON.parse(dataScript.textContent);
+  } catch (err) {
+    return;
+  }
+
+  const collapsedClass = 'is-collapsed';
+  const hiddenClass = 'is-hidden';
+  const matchClass = 'is-match';
+
+  const input = document.getElementById('tree-search');
+  const expandBtn = document.getElementById('tree-expand-all');
+  const collapseBtn = document.getElementById('tree-collapse-all');
+
+  const allRecords = [];
+  let matchCount = 0;
+  let rootRecord = null;
+
+  function el(tag, className) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    return node;
+  }
+
+  function normText(s) {
+    return String(s == null ? '' : s).toLowerCase();
+  }
+
+  // JSONPath segments (used by copy): identifier keys -> /key, other keys -> .key, array index -> [i].
+  function segmentForKey(key) {
+    return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key) ? '/' + key : '.' + key;
+  }
+
+  function isEmptyContainer(value) {
+    if (value === null || typeof value !== 'object') return false;
+    if (Array.isArray(value)) return value.length === 0;
+    return Object.keys(value).length === 0;
+  }
+
+  function defaultCollapsedKey(key) {
+    if (key === null || key === undefined) return false;
+    const k = String(key).toLowerCase();
+    return k === 'facts' || k === 'views';
+  }
+
+  function buildNode(keyText, searchKey, value, path, isRoot) {
+    // Skip the always-single "Topics" wrapper under a region.
+    let disp = value;
+    if (!Array.isArray(disp) && disp !== null && typeof disp === 'object') {
+      const keys = Object.keys(disp);
+      if (keys.length === 1 && keys[0] === 'Topics') disp = disp['Topics'];
+    }
+    const isObject = disp !== null && typeof disp === 'object';
+    const isEmptyCont = isEmptyContainer(disp);
+    const isBranch = isObject && !isEmptyCont;
+
+    const row = el('div', isBranch ? 'tree-row' : 'tree-row tree-leaf');
+    if (!isRoot && keyText === '' && !isBranch) row.classList.add('bare-row');
+    row.setAttribute('data-path', path);
+    if (isBranch) row.setAttribute('aria-expanded', 'true');
+
+    const toggle = el('span', isBranch ? 'tree-toggle' : 'tree-toggle is-empty');
+    toggle.textContent = isBranch ? '▼' : '';
+    if (isBranch) toggle.setAttribute('data-action', 'toggle');
+    row.appendChild(toggle);
+
+    const keySpan = el('span', 'tree-key tok-key');
+    keySpan.textContent = keyText;
+    row.appendChild(keySpan);
+
+    if (!isRoot) {
+      const colon = el('span', 'tree-colon');
+      colon.textContent = ':';
+      row.appendChild(colon);
+    }
+
+    const record = {
+      el: row,
+      branch: isBranch,
+      children: [],
+      group: null,
+      keyName: String(searchKey || ''),
+      search: normText(isRoot ? '$' : searchKey)
+    };
+    row._tree = record;
+    allRecords.push(record);
+
+    if (isBranch) {
+      const group = el('div', 'tree-children');
+      const inner = el('div', 'tree-branch-inner');
+      group.appendChild(inner);
+      record.group = group;
+
+      if (Array.isArray(disp)) {
+        // Render array members without `[i]` index rows. Object members have
+        // their own keys promoted as direct children (`[{FR: {...}}]` becomes
+        // `FR` under the array key), while scalar members become bare-value
+        // leaf rows. The real array index is still kept in `data-path` so
+        // copied JSONPath stays exact.
+        for (let i = 0; i < disp.length; i++) {
+          const item = disp[i];
+          const itemIsObj = item !== null && typeof item === 'object' && !Array.isArray(item);
+          if (itemIsObj) {
+            const itemPath = path + '[' + i + ']';
+            Object.keys(item).forEach(function (k) {
+              const child = buildNode(JSON.stringify(k), k, item[k], itemPath + segmentForKey(k), false);
+              inner.appendChild(child.el);
+              if (child.group) inner.appendChild(child.group);
+              record.children.push(child);
+            });
+          } else {
+            const child = buildNode('', String(i), item, path + '[' + i + ']', false);
+            inner.appendChild(child.el);
+            if (child.group) inner.appendChild(child.group);
+            record.children.push(child);
+          }
+        }
+      } else {
+        Object.keys(disp).forEach(function (k) {
+          const child = buildNode(JSON.stringify(k), k, disp[k], path + segmentForKey(k), false);
+          inner.appendChild(child.el);
+          if (child.group) inner.appendChild(child.group);
+          record.children.push(child);
+        });
+      }
+    } else {
+      let valueText;
+      let tokenClass;
+      if (isEmptyCont) {
+        valueText = '(vide)';
+        tokenClass = 'tok-empty';
+      } else if (disp === null) {
+        valueText = 'null';
+        tokenClass = 'tok-null';
+      } else if (typeof disp === 'boolean') {
+        valueText = disp ? 'true' : 'false';
+        tokenClass = 'tok-bool';
+      } else if (typeof disp === 'number') {
+        valueText = String(disp);
+        tokenClass = 'tok-number';
+      } else {
+        valueText = JSON.stringify(String(disp));
+        tokenClass = 'tok-string';
+      }
+      const valueSpan = el('span', 'tree-value ' + tokenClass);
+      valueSpan.textContent = valueText;
+      row.appendChild(valueSpan);
+      record.search += '\n' + normText(isEmptyCont ? '(vide)' : (disp === null ? 'null' : String(disp)));
+    }
+
+    return record;
+  }
+
+  rootRecord = buildNode('$', 'root', data, '$', true);
+  container.appendChild(rootRecord.el);
+  if (rootRecord.group) container.appendChild(rootRecord.group);
+
+  function setCollapsed(record, collapsed) {
+    const row = record.el;
+    row.classList.toggle(collapsedClass, collapsed);
+    row.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    if (record.branch) {
+      const toggle = row.querySelector('.tree-toggle');
+      if (toggle) toggle.textContent = collapsed ? '▶' : '▼';
+    }
+  }
+
+  allRecords.forEach(function (record) {
+    if (record.branch && defaultCollapsedKey(record.keyName)) setCollapsed(record, true);
+  });
+
+  container.addEventListener('click', function (event) {
+    const target = event.target;
+    if (!target || !target.closest) return;
+
+    const toggleBtn = target.closest('.tree-toggle[data-action="toggle"]');
+    if (toggleBtn && container.contains(toggleBtn)) {
+      const row = toggleBtn.closest('.tree-row');
+      if (row && row._tree) {
+        setCollapsed(row._tree, !row.classList.contains(collapsedClass));
+      }
+      return;
+    }
+
+    const row = target.closest('.tree-row');
+    if (row && container.contains(row)) {
+      event.preventDefault();
+      copyPath(row, event.clientX, event.clientY);
+    }
+  });
+
+  function execCopyFallback(text, done) {
+    const ta = el('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '0';
+    ta.style.left = '0';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+    } catch (err) {
+      // Ignore: environment refuses programmatic copy.
+    }
+    document.body.removeChild(ta);
+    if (done) done();
+  }
+
+  let tipEl = null;
+  let tipTimer = null;
+
+  function ensureTip() {
+    if (!tipEl) {
+      tipEl = el('div', 'tree-copied-tip');
+      tipEl.textContent = 'Copié !';
+      container.appendChild(tipEl);
+    }
+    return tipEl;
+  }
+
+  function showTip(clientX, clientY) {
+    const tip = ensureTip();
+    const rect = container.getBoundingClientRect();
+    tip.style.left = (clientX - rect.left + 10) + 'px';
+    tip.style.top = (clientY - rect.top + 8) + 'px';
+    window.clearTimeout(tipTimer);
+    requestAnimationFrame(function () {
+      tip.classList.add('is-visible');
+    });
+    tipTimer = window.setTimeout(function () {
+      tip.classList.remove('is-visible');
+    }, 1500);
+  }
+
+  function copyPath(row, clientX, clientY) {
+    const path = row.getAttribute('data-path') || '';
+    const onDone = function () { showTip(clientX, clientY); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(path).then(onDone, function () {
+        execCopyFallback(path, onDone);
+      });
+    } else {
+      execCopyFallback(path, onDone);
+    }
+  }
+
+  function updateCount() {
+    if (!input || !countEl) return;
+    const q = normText(input.value);
+    if (!q) {
+      countEl.textContent = '';
+      return;
+    }
+    countEl.textContent = matchCount === 0
+      ? 'Aucun résultat'
+      : (matchCount + (matchCount > 1 ? ' correspondances' : ' correspondance'));
+  }
+
+  let countEl = null;
+  if (input) {
+    countEl = el('span', 'tree-match-count');
+    input.insertAdjacentElement('afterend', countEl);
+    input.addEventListener('input', function () {
+      filterTree(input.value);
+    });
+  }
+
+  function filterTree(query) {
+    const q = normText(query);
+
+    if (!q) {
+      allRecords.forEach(function (record) {
+        record.el.classList.remove(hiddenClass);
+        record.el.classList.remove(matchClass);
+        if (record.branch) setCollapsed(record, defaultCollapsedKey(record.keyName));
+      });
+      matchCount = 0;
+      updateCount();
+      return;
+    }
+
+    matchCount = 0;
+
+    function visit(record) {
+      const selfMatch = record.search.indexOf(q) !== -1;
+      let childMatch = false;
+      if (record.children && record.children.length) {
+        record.children.forEach(function (child) {
+          if (visit(child)) childMatch = true;
+        });
+      }
+      const visible = selfMatch || childMatch;
+      record.el.classList.toggle(hiddenClass, !visible);
+      record.el.classList.toggle(matchClass, selfMatch);
+      if (selfMatch) matchCount++;
+      if (visible && record.branch) setCollapsed(record, false);
+      return visible;
+    }
+
+    visit(rootRecord);
+    updateCount();
+  }
+
+  if (expandBtn) {
+    expandBtn.addEventListener('click', function () {
+      allRecords.forEach(function (record) {
+        if (record.branch) setCollapsed(record, false);
+      });
+    });
+  }
+
+  if (collapseBtn) {
+    collapseBtn.addEventListener('click', function () {
+      allRecords.forEach(function (record) {
+        setCollapsed(record, true);
+      });
+    });
+  }
+})();

@@ -1,9 +1,11 @@
 """Tier-1 tests for app.layout_pipeline_graph (pure geometry, no DB/network).
 
-The pipeline graph is laid out left-to-right by longest-path column; v1 adds
-the ``editorial`` stage between ``prepared_entries`` and ``editorial_mp3``.
-Reads-interests edges are rendered dashed. Tests only touch the returned
-geometry and the static PIPELINE_GRAPHS definitions.
+The pipeline graph is laid out left-to-right by longest-path column; v1 flows
+``parsed_entries -> prepared_entries -> news_summary -> editorial ->
+editorial_mp3`` (v0 keeps the older ``parsed_entries -> prepared_entries ->
+editorial_mp3`` chain). Reads-
+interests edges are rendered dashed. Tests only touch the returned geometry
+and the static PIPELINE_GRAPHS definitions.
 """
 
 from __future__ import annotations
@@ -35,13 +37,12 @@ def _edge_between(graph, frm: str, to: str) -> dict | None:
     return None
 
 
-def test_v1_has_editorial_between_prepared_and_mp3():
+def test_v1_has_news_summary_before_editorial():
     layout = layout_pipeline_graph(1)
+    news_summary = _node_geo(layout, "news_summary")
     editorial = _node_geo(layout, "editorial")
-    prepared = _node_geo(layout, "prepared_entries")
     mp3 = _node_geo(layout, "editorial_mp3")
-    lo, hi = sorted((prepared["x"], mp3["x"]))
-    assert lo < editorial["x"] < hi
+    assert news_summary["x"] < editorial["x"] < mp3["x"]
 
 
 def test_v0_omits_editorial():
@@ -49,6 +50,24 @@ def test_v0_omits_editorial():
     assert all(node["key"] != "editorial" for node in layout["nodes"])
     _node_geo(layout, "editorial_mp3")
     assert _edge_between(PIPELINE_GRAPHS[0], "prepared_entries", "editorial_mp3")
+
+
+def test_v0_omits_news_summary_v1_has_both():
+    for node in layout_pipeline_graph(0)["nodes"]:
+        assert node["key"] not in {"news_summary", "editorial"}
+    layout_v1 = layout_pipeline_graph(1)
+    _node_geo(layout_v1, "news_summary")
+    _node_geo(layout_v1, "editorial")
+
+
+def test_v1_news_summary_after_prepared_and_before_editorial():
+    layout = layout_pipeline_graph(1)
+    assert (
+        _node_geo(layout, "prepared_entries")["x"]
+        < _node_geo(layout, "news_summary")["x"]
+    )
+    assert _node_geo(layout, "news_summary")["x"] < _node_geo(layout, "editorial")["x"]
+    assert _node_geo(layout, "editorial")["x"] < _node_geo(layout, "editorial_mp3")["x"]
 
 
 def test_node_keys_match_graph():
@@ -85,10 +104,17 @@ def test_edges_connect_known_nodes():
 
 
 def test_editorial_edge_chain_v1():
-    assert _edge_between(PIPELINE_GRAPHS[1], "prepared_entries", "editorial")
+    assert _edge_between(PIPELINE_GRAPHS[1], "parsed_entries", "prepared_entries")
+    assert _edge_between(PIPELINE_GRAPHS[1], "prepared_entries", "news_summary")
+    assert _edge_between(PIPELINE_GRAPHS[1], "news_summary", "editorial")
     assert _edge_between(PIPELINE_GRAPHS[1], "editorial", "editorial_mp3")
+    assert not _edge_between(PIPELINE_GRAPHS[1], "parsed_entries", "news_summary")
+    assert not _edge_between(PIPELINE_GRAPHS[1], "prepared_entries", "editorial")
     for edge in PIPELINE_GRAPHS[0]["edges"]:
-        assert edge.get("from") != "editorial" and edge.get("to") != "editorial"
+        assert (
+            edge.get("from") not in {"news_summary", "editorial"}
+            and edge.get("to") not in {"news_summary", "editorial"}
+        )
 
 
 def test_readers_edges_are_dashed_side_inputs():

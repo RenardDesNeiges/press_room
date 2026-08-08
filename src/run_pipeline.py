@@ -7,7 +7,7 @@ Usage:
 Pipeline stages per user/day:
   1. Scrape RSS feeds          -> filtered_entries
   2. Rank, rerank, translate   -> parsed_entries
-  3. Write editorial + sections-> prepared_entries
+  3. Write sections + news_summary + editorial from plan -> prepared_entries
   4. Synthesize editorial MP3  -> editorial.mp3
 
 All artifacts are written to the database, keyed by (user, day).
@@ -66,6 +66,8 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         filtered_path = work / "filtered_entries.yml"
         parsed_path = work / "parsed_entries.yml"
         prepared_path = work / "prepared_entries.yml"
+        news_summary_path = work / "news_summary.yml"
+        editorial_path = work / "editorial.yml"
         mp3_path = work / "editorial.mp3"
 
         print(f"\n>>> Running pipeline for '{username}' ({day})")
@@ -80,24 +82,34 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
             default_today_only=(database.get_filter_mode(user_id) == "today"),
             eid_factory=eid_factory,
         )
-        parse_feed.parse_and_export(
+        parsed_entries = parse_feed.parse_and_export(
             entries_path=filtered_path,
             output_path=parsed_path,
             interests_path=interests_path,
         )
-        prepare_entries.prepare_and_export(
-            parsed_entries_path=parsed_path,
-            output_path=prepared_path,
-            interests_path=interests_path,
+        if not parsed_entries:
+            raise SystemExit(
+                f"No articles parsed for '{username}' ({day}) — aborting pipeline run."
+            )
+        prepare_entries.prepare_sections_and_export(parsed_path, prepared_path)
+        prepare_entries.plan_and_export(prepared_path, news_summary_path, interests_path)
+        prepare_entries.editorial_from_plan_and_export(
+            news_summary_path,
+            editorial_path,
+            prepared_path,
+            interests_path,
             editorial_minutes=editorial_minutes,
         )
         editorial_to_mp3.generate_editorial_mp3(
-            parsed_entries_path=prepared_path, output_path=mp3_path
+            parsed_entries_path=editorial_path, output_path=mp3_path
         )
 
         issue_id = database.get_or_create_issue(user_id, day)
         database.set_artifact(issue_id, "filtered_entries", filtered_path.read_bytes())
         database.set_artifact(issue_id, "parsed_entries", parsed_path.read_bytes())
+        database.set_artifact(issue_id, "prepared_entries", prepared_path.read_bytes())
+        database.set_artifact(issue_id, "news_summary", news_summary_path.read_bytes())
+        database.set_artifact(issue_id, "editorial", editorial_path.read_bytes())
         if mp3_path.exists():
             database.set_artifact(issue_id, "editorial_mp3", mp3_path.read_bytes())
 
@@ -105,17 +117,6 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         seeded_entries = prepared_data.get("entries") or []
         if seeded_entries:
             database.set_prepared_entries(issue_id, seeded_entries)
-
-        editorial_yaml = yaml.safe_dump(
-            {
-                "title": prepared_data.get("title"),
-                "editorial": prepared_data.get("editorial"),
-            },
-            allow_unicode=True,
-            sort_keys=False,
-            default_flow_style=False,
-        ).encode("utf-8")
-        database.set_artifact(issue_id, "editorial", editorial_yaml)
 
         for name in database.SOURCE_FILES:
             content = database.get_user_file(user_id, name)

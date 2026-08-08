@@ -101,10 +101,12 @@
           <p class="settings-hint">filtered_entries — articles extraits des flux.</p>
         {% elif stage == 'parsed_entries' %}
           <p class="settings-hint">parsed_entries — articles classés, traduits et tagués.</p>
+        {% elif stage == 'news_summary' %}
+          <p class="settings-hint">news_summary — la synthèse structurée des faits du jour (plan_edito.md), matière première de l'éditorial.</p>
         {% elif stage == 'prepared_entries' %}
           <p class="settings-hint">prepared_entries — journal final avec sections.</p>
         {% elif stage == 'editorial' %}
-          <p class="settings-hint">editorial — le texte de l'éditorial et son titre (ligne séparée du pipeline v{{ pipeline_version }}).</p>
+          <p class="settings-hint">editorial — le texte de l'éditorial et son titre, rédigé à partir de news_summary via edito_from_plan.md (ligne séparée du pipeline v{{ pipeline_version }}).</p>
         {% elif stage == 'editorial_mp3' %}
           <p class="settings-hint">editorial_mp3 — l'éditorial synthétisé en audio.</p>
         {% endif %}
@@ -153,6 +155,15 @@
               </tbody>
             </table>
           </div>
+          {% elif stage == 'news_summary' and news_tree is not none %}
+          <div class="tree-toolbar">
+            <input type="search" id="tree-search" class="tree-search"
+                   placeholder="Rechercher dans la synthèse…" aria-label="Rechercher">
+            <button type="button" id="tree-expand-all" class="tree-btn">Déplier tout</button>
+            <button type="button" id="tree-collapse-all" class="tree-btn">Replier tout</button>
+          </div>
+          <div class="tree-view" id="news-summary-tree" role="tree"></div>
+          <script type="application/json" id="news-summary-tree-data">{{ news_tree | tojson }}</script>
           {% else %}
           <pre class="admin-code">{{ content }}</pre>
           {% endif %}

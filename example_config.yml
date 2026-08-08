@@ -14,6 +14,9 @@ paths:
   interests: "readers_interests.md"
   title_guide: "titre.md"
   additional_rerank_prompt: "additional_rerank_prompt.md"
+  plan_edito: "plan_edito.md"
+  edito_from_plan: "edito_from_plan.md"
+  news_summary: "news_summary.yml"
   template_dir: "src/templates"
   db: "pressroom.db"
 

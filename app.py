@@ -285,6 +285,9 @@ def create_app() -> Flask:
         content, is_audio = _pipeline_stage_content(
             selected_user, selected_issue, stage
         )
+        news_tree = None
+        if stage == "news_summary" and content is not None:
+            news_tree = _news_summary_tree(content)
 
         entries = None
         entry_columns: list[str] = []
@@ -318,6 +321,7 @@ def create_app() -> Flask:
             stage=stage,
             content=content,
             is_audio=is_audio,
+            news_tree=news_tree,
             entries=entries,
             entry_columns=entry_columns,
             visible_columns=visible_columns,
@@ -478,6 +482,7 @@ ADMIN_STAGES = [
     {"key": "feeds", "label": "feeds.yml"},
     {"key": "filtered_entries", "label": "filtered_entries"},
     {"key": "parsed_entries", "label": "parsed_entries"},
+    {"key": "news_summary", "label": "news_summary"},
     {"key": "prepared_entries", "label": "prepared_entries"},
     {"key": "editorial", "label": "editorial"},
     {"key": "editorial_mp3", "label": "editorial_mp3"},
@@ -509,6 +514,7 @@ PIPELINE_GRAPH_V1 = {
         {"key": "filtered_entries", "label": "filtered_entries"},
         {"key": "parsed_entries", "label": "parsed_entries"},
         {"key": "prepared_entries", "label": "prepared_entries"},
+        {"key": "news_summary", "label": "news_summary"},
         {"key": "editorial", "label": "editorial"},
         {"key": "editorial_mp3", "label": "editorial_mp3"},
         {"key": "readers", "label": "readers_interests.md"},
@@ -516,10 +522,13 @@ PIPELINE_GRAPH_V1 = {
     "edges": [
         {"from": "feeds", "to": "filtered_entries"},
         {"from": "filtered_entries", "to": "parsed_entries"},
-        {"from": "parsed_entries", "to": "prepared_entries"},
-        {"from": "prepared_entries", "to": "editorial"},
+        {"from": "prepared_entries", "to": "news_summary"},
+        {"from": "news_summary", "to": "editorial"},
         {"from": "editorial", "to": "editorial_mp3"},
+        {"from": "parsed_entries", "to": "prepared_entries"},
         {"from": "readers", "to": "parsed_entries"},
+        {"from": "readers", "to": "news_summary"},
+        {"from": "readers", "to": "editorial"},
         {"from": "readers", "to": "prepared_entries"},
     ],
 }
@@ -528,8 +537,8 @@ PIPELINE_GRAPHS = {0: PIPELINE_GRAPH_V0, 1: PIPELINE_GRAPH_V1}
 
 DEFAULT_ENTRY_COLUMNS = ("EID", "title", "source", "rerank_reason")
 
-_FLOW_NODE_W = 170
-_FLOW_NODE_H = 44
+_FLOW_NODE_W = 140
+_FLOW_NODE_H = 50
 _FLOW_COL_GAP = 90
 _FLOW_ROW_GAP = 32
 _FLOW_PAD_X = 18
@@ -675,6 +684,37 @@ def _pipeline_stage_content(selected_user, selected_issue, stage: str):
     if stage == "editorial_mp3":
         return blob, True
     return blob.decode("utf-8", errors="replace"), False
+
+
+def _strip_code_fences(text: str | None) -> str:
+    """Remove a surrounding ```...``` markdown fence if present."""
+    if not text:
+        return ""
+    lines = text.splitlines()
+    if lines and lines[0].lstrip().startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines)
+
+
+def _news_summary_tree(content: str | None) -> dict | list | None:
+    """Parse stored news_summary text (possibly markdown-fenced) into a JSON-safe structure.
+
+    Returns a dict/list for the tree view, or None if the content is empty or
+    not object/array YAML (so the caller falls back to the raw <pre> display).
+    """
+    text = _strip_code_fences(content).strip()
+    if not text:
+        return None
+    try:
+        data = yaml.safe_load(text)
+    except yaml.YAMLError:
+        return None
+    if not isinstance(data, (dict, list)):
+        return None
+    # Normalize anything YAML turned into a non-JSON type (e.g. date) to strings.
+    return json.loads(json.dumps(data, default=str))
 
 
 def random_feed_photo() -> dict | None:

@@ -16,7 +16,6 @@ The editorial should be produced as
 ```
 
 ## To-be-added features
-0. a) editorial plans generated before the actual editorials b) editorial persistence on the plan level c) editorial writing from the plan 
 1. Refactored user preference specification setup, which automatically handles translation.
 2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot. 
 3. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 

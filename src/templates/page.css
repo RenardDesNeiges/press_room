@@ -1464,7 +1464,7 @@ footer {
   background-color: var(--bg);
   border: 2px solid #001F3F;
   padding: 0 0.9rem;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-align: center;
@@ -1504,4 +1504,177 @@ footer {
   background-color: var(--highlight-mid);
   color: #001F3F;
   vertical-align: middle;
+}
+
+/* === JSON tree viewer (news_summary) === */
+.tree-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.tree-search {
+  flex: 0 1 22rem;
+  min-width: 10rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--rule);
+  background-color: var(--bg);
+  font: inherit;
+  font-size: 0.8rem;
+  color: inherit;
+}
+
+.tree-btn {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #001F3F;
+  background: none;
+  font: inherit;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.tree-btn:hover,
+.tree-btn:focus-visible {
+  background-color: var(--highlight);
+}
+
+.tree-match-count {
+  font-size: 0.75rem;
+  color: #333;
+}
+
+.tree-view {
+  position: relative;
+  overflow: auto;
+  max-height: 70vh;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  background-color: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0;
+}
+
+.tree-row {
+  padding: 0.12rem 0.5rem;
+  cursor: pointer;
+  color: var(--fg);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tree-row:hover {
+  background-color: var(--highlight);
+}
+
+.tree-row.is-match {
+  background-color: var(--highlight);
+  font-weight: 600;
+}
+
+.tree-row.is-hidden {
+  display: none;
+}
+
+.tree-row.is-hidden + .tree-children {
+  display: none;
+}
+
+.tree-children {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.22s ease;
+  padding-left: 1.1rem;
+}
+
+.tree-row.is-collapsed + .tree-children,
+.tree-children.is-collapsed {
+  grid-template-rows: 0fr;
+}
+
+.tree-branch-inner {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tree-toggle {
+  display: inline-block;
+  min-width: 1em;
+  text-align: center;
+  margin-right: 0.15rem;
+  color: #666;
+}
+
+.tree-toggle.is-empty {
+  color: transparent;
+}
+
+.tree-key.tok-key {
+  color: #b26b00;
+}
+
+.tok-string {
+  color: #0a7d33;
+}
+
+.tok-number {
+  color: #b0078a;
+}
+
+.tok-bool {
+  color: #b0078a;
+}
+
+.tok-null {
+  color: #888;
+}
+
+/* Bare scalar-array value rows: no key label or colon, just the token value. */
+.tree-row.bare-row .tree-key,
+.tree-row.bare-row .tree-colon {
+  display: none;
+}
+
+.tok-empty {
+  color: var(--text-dim, #888);
+  font-style: italic;
+}
+
+.tok-type {
+  color: #888;
+}
+
+.tree-key,
+.tree-value,
+.tree-type {
+  padding-right: 0.3rem;
+}
+
+.tree-colon {
+  color: var(--fg);
+  padding-right: 0.3rem;
+}
+
+.tree-copied-tip {
+  position: absolute;
+  z-index: 60;
+  pointer-events: none;
+  background: #001F3F;
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.tree-copied-tip.is-visible {
+  opacity: 1;
 }

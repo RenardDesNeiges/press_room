@@ -1,10 +1,15 @@
 """Classify parsed entries into editorial sections and write the editorial.
 
-This is step 3 of the pipeline. It reads data/parsed_entries.yml, writes the
-editorial (using FANCY_MODEL) and headline, then groups the articles into
-"sections" of approximately `section_size` articles each. Sections are titled
-with 1-2 words. Only the title, themes, and countries are sent to the section
-LLM (not the summaries) to keep costs low.
+Pipeline v1 step 3 now happens in two phases:
+- section classification (``prepare_entries``) has no editorial responsibility;
+- the editorial is produced in two sub-steps:
+  1. ``generate_news_summary`` writes a structured synthesis to a raw-text
+     ``news_summary.yml`` artifact using ``data/plan_edito.md`` (FANCY_MODEL);
+  2. ``generate_editorial_from_plan`` turns that synthesis + the user's
+     interests into the editorial text + headline using ``data/edito_from_plan.md``.
+
+The legacy single-step path (``build_edito_prompt`` / ``generate_editorial`` /
+``prepare_and_export`` using ``data/edito.md``) is kept unchanged.
 
 The result is written to data/prepared_entries.yml with each entry carrying a
 "section" field.
@@ -21,9 +26,12 @@ import yaml
 
 from src.config import (
     DATA_DIR,
+    DEFAULT_EDITO_FROM_PLAN_PATH,
     DEFAULT_EDITORIAL_MINUTES,
     DEFAULT_INTERESTS_PATH,
+    DEFAULT_NEWS_SUMMARY_PATH,
     DEFAULT_PARSED_ENTRIES_PATH,
+    DEFAULT_PLAN_EDITO_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,
     DEFAULT_SECTION_MODEL,
     DEFAULT_SECTION_SIZE,
@@ -34,6 +42,7 @@ from src.rerank_llm import extract_json_list, query_model
 
 
 DEFAULT_EDITO_PATH = DATA_DIR / "edito.md"
+DEFAULT_EDITORIAL_OUTPUT_PATH = DATA_DIR / "editorial.yml"
 
 
 def minutes_to_word_range(minutes: int) -> tuple[int, int]:
@@ -176,6 +185,102 @@ def extract_editorial_title(
     print(f"Extracting editorial title with {model_name}...")
     title = query_model(prompt, model_name=model_name, temperature=0.3)
     return title.strip().strip('"').strip("'")
+
+
+def _load_interests_preferences(interests_path: Path) -> str:
+    """Read the interests file and return the part after the ``-----`` separator.
+
+    Falls back to the whole file content if the separator is missing, to keep
+    prompt building robust to partial user files.
+    """
+    with open(interests_path, "r", encoding="utf-8") as fh:
+        user_preferences = fh.read()
+    parts = user_preferences.split("-----")
+    return parts[1] if len(parts) > 1 else user_preferences
+
+
+def build_plan_edito_prompt(
+    entries: list[dict[str, Any]],
+    plan_edito_path: Path = DEFAULT_PLAN_EDITO_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+) -> str:
+    """Fill the news-summary template with the EID-based entries and preferences."""
+    with open(plan_edito_path, "r", encoding="utf-8") as fh:
+        prompt_template = fh.read()
+
+    rss_feed_yaml = yaml.safe_dump(
+        {"entries": _editorial_prompt_entries(entries)},
+        allow_unicode=True,
+        sort_keys=False,
+        default_flow_style=False,
+    )
+
+    user_preferences = _load_interests_preferences(interests_path)
+
+    return (
+        prompt_template.replace("{ rss_feed_yaml }", rss_feed_yaml)
+        .replace("{ user_preferences.md }", user_preferences)
+    )
+
+
+def generate_news_summary(
+    entries: list[dict[str, Any]],
+    plan_edito_path: Path = DEFAULT_PLAN_EDITO_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    model_name: str = FANCY_MODEL,
+) -> str:
+    """Generate a structured news summary (news_summary.yml content) from entries."""
+    if not entries:
+        raise ValueError("news_summary generation requires at least one article")
+    prompt = build_plan_edito_prompt(entries, plan_edito_path, interests_path)
+    print(f"Generating news summary with {model_name}...")
+    text = query_model(prompt, model_name=model_name, temperature=0.7)
+    return text.strip()
+
+
+def build_edito_from_plan_prompt(
+    news_summary: str,
+    edito_from_plan_path: Path = DEFAULT_EDITO_FROM_PLAN_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    word_min: int | None = None,
+    word_max: int | None = None,
+) -> str:
+    """Fill the editorial-from-plan template with the synthesis and preferences."""
+    with open(edito_from_plan_path, "r", encoding="utf-8") as fh:
+        prompt_template = fh.read()
+
+    if word_min is None or word_max is None:
+        word_min, word_max = minutes_to_word_range(DEFAULT_EDITORIAL_MINUTES)
+
+    user_preferences = _load_interests_preferences(interests_path)
+
+    return (
+        prompt_template.replace("{ synthesis_yaml }", news_summary)
+        .replace("{ user_preferences.md }", user_preferences)
+        .replace("{ word_min }", str(word_min))
+        .replace("{ word_max }", str(word_max))
+    )
+
+
+def generate_editorial_from_plan(
+    news_summary: str,
+    entries: list[dict[str, Any]],
+    edito_from_plan_path: Path = DEFAULT_EDITO_FROM_PLAN_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    model_name: str = FANCY_MODEL,
+    word_min: int | None = None,
+    word_max: int | None = None,
+) -> str:
+    """Generate the editorial text from the news summary + user preferences."""
+    if not news_summary.strip():
+        raise ValueError("editorial_from_plan: empty news_summary, cannot write an editorial")
+    prompt = build_edito_from_plan_prompt(
+        news_summary, edito_from_plan_path, interests_path, word_min, word_max
+    )
+    print(f"Generating editorial from plan with {model_name}...")
+    editorial = query_model(prompt, model_name=model_name, temperature=0.7)
+    editorial = resolve_editorial_links(editorial, entries)
+    return editorial.strip()
 
 
 def build_section_prompt(entries: list[dict[str, Any]], section_size: int = 5) -> str:
@@ -370,6 +475,124 @@ def prepare_and_export(
         )
     print(f"Exported {len(prepared)} prepared entries to {output_path}")
     return prepared, editorial, title
+
+
+def prepare_sections_and_export(
+    parsed_entries_path: Path = DEFAULT_PARSED_ENTRIES_PATH,
+    output_path: Path = DEFAULT_PREPARED_ENTRIES_PATH,
+    section_size: int = DEFAULT_SECTION_SIZE,
+    model_name: str = DEFAULT_SECTION_MODEL,
+) -> list[dict[str, Any]]:
+    """Load parsed entries, classify them into sections, and export.
+
+    Section classification only — no editorial generation. Writes
+    ``{"entries": [...]}`` (same shape as ``prepare_and_export`` minus the
+    editorial/title keys) and returns the prepared entries.
+    """
+    with open(parsed_entries_path, "r", encoding="utf-8") as fh:
+        data = yaml.safe_load(fh)
+
+    entries = data.get("entries", [])
+    prepared = prepare_entries(entries, section_size=section_size, model_name=model_name)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as fh:
+        yaml.safe_dump(
+            {"entries": prepared},
+            fh,
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        )
+    print(f"Exported {len(prepared)} prepared entries to {output_path}")
+    return prepared
+
+
+def plan_and_export(
+    entries_path: Path = DEFAULT_PARSED_ENTRIES_PATH,
+    output_path: Path = DEFAULT_NEWS_SUMMARY_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    plan_edito_path: Path = DEFAULT_PLAN_EDITO_PATH,
+    model_name: str = FANCY_MODEL,
+) -> str:
+    """Generate the news summary from the entries file and export it as raw text.
+
+    In the v1 pipeline this reads the PREPARED entries file (classified into
+    sections) so the summary reflects the final article selection.
+    """
+    with open(entries_path, "r", encoding="utf-8") as fh:
+        data = yaml.safe_load(fh)
+
+    entries = data.get("entries", [])
+    if not entries:
+        raise ValueError(f"plan_and_export: no articles to summarize (file: {entries_path})")
+    news_summary = generate_news_summary(
+        entries,
+        plan_edito_path=plan_edito_path,
+        interests_path=interests_path,
+        model_name=model_name,
+    )
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as fh:
+        fh.write(news_summary)
+    print(f"Exported news summary to {output_path}")
+    return news_summary
+
+
+def editorial_from_plan_and_export(
+    news_summary_path: Path = DEFAULT_NEWS_SUMMARY_PATH,
+    output_path: Path = DEFAULT_EDITORIAL_OUTPUT_PATH,
+    entries_path: Path = DEFAULT_PARSED_ENTRIES_PATH,
+    interests_path: Path = DEFAULT_INTERESTS_PATH,
+    edito_from_plan_path: Path = DEFAULT_EDITO_FROM_PLAN_PATH,
+    editorial_minutes: int | None = None,
+    model_name: str = FANCY_MODEL,
+) -> tuple[str, str]:
+    """Generate the editorial from the news summary + entries and export it.
+
+    The news summary is read as raw text from ``news_summary_path``; entries are
+    loaded from ``entries_path`` purely to resolve EID links. In the v1 pipeline
+    this reads the PREPARED entries file so the links resolve to the article
+    URLs carried by the prepared entries. Writes an editorial YAML
+    ``{"title": ..., "editorial": ...}`` to ``output_path`` and returns
+    ``(editorial, title)``.
+    """
+    with open(news_summary_path, "r", encoding="utf-8") as fh:
+        news_summary = fh.read()
+
+    if not news_summary.strip():
+        raise ValueError("editorial_from_plan: empty news_summary, cannot write an editorial")
+
+    with open(entries_path, "r", encoding="utf-8") as fh:
+        entries = yaml.safe_load(fh).get("entries", [])
+
+    word_min = word_max = None
+    if editorial_minutes is not None:
+        word_min, word_max = minutes_to_word_range(editorial_minutes)
+
+    editorial = generate_editorial_from_plan(
+        news_summary,
+        entries,
+        edito_from_plan_path=edito_from_plan_path,
+        interests_path=interests_path,
+        model_name=model_name,
+        word_min=word_min,
+        word_max=word_max,
+    )
+    title = extract_editorial_title(editorial)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as fh:
+        yaml.safe_dump(
+            {"title": title, "editorial": editorial},
+            fh,
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        )
+    print(f"Exported editorial to {output_path}")
+    return editorial, title
 
 
 def main() -> None:
