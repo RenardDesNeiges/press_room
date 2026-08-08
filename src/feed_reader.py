@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -11,6 +12,19 @@ import feedparser
 import yaml
 
 from src.config import *
+
+
+def make_eid(username: str, stamp: datetime, seq: int) -> str:
+    """Build a unique article ID encoding the user, the run time, and the index.
+
+    The EID has the shape ``<user>_<YYYYMMDD>_<HHMM>_<seq>`` (e.g.
+    ``titou_20260808_1430_7``): it records *which user* queried the article, at
+    *which time* (day, hour, minute) the run happened, and a *sequence number*
+    that separates the articles of this run. It is a stable, opaque identifier
+    that the LLM steps echo back instead of URLs.
+    """
+    slug = re.sub(r"[^A-Za-z0-9]", "_", username or "").strip("_") or "user"
+    return f"{slug}_{stamp:%Y%m%d}_{stamp:%H%M}_{seq:04d}"
 
 
 class HTMLStripper(HTMLParser):
@@ -205,8 +219,14 @@ def format_entry(
 
 def flatten_filtered_entries(
     filtered: dict[str, dict[str, Any]],
+    eid_factory=None,
 ) -> list[dict[str, Any]]:
-    """Flatten filtered entries grouped by feed URL into a single list."""
+    """Flatten filtered entries grouped by feed URL into a single list.
+
+    ``eid_factory`` is an optional callable ``f(seq)`` producing the EID for the
+    ``seq``-th article of the run. When None (legacy), plain sequential integers
+    are assigned.
+    """
     entries: list[dict[str, Any]] = []
     eid = 1
     for meta in filtered.values():
@@ -214,7 +234,7 @@ def flatten_filtered_entries(
         source = meta.get("source")
         for entry in meta["entries"]:
             formatted = format_entry(entry, lang=lang, source=source)
-            formatted["EID"] = eid
+            formatted["EID"] = eid if eid_factory is None else eid_factory(eid)
             entries.append(formatted)
             eid += 1
     return entries
@@ -240,11 +260,15 @@ def scrape_feeds(
     feeds_path: str | Path = DEFAULT_FEEDS_PATH,
     output_path: str | Path = DEFAULT_ENTRIES_PATH,
     default_today_only: bool = False,
+    eid_factory=None,
 ) -> list[dict[str, Any]]:
     """Scrape all configured feeds and export the recent entries.
 
     ``default_today_only`` applies to feeds without their own ``today_only`` flag
     in feeds.yml (per-user global mode chosen in the settings).
+
+    ``eid_factory(seq)`` produces each article's EID (see ``make_eid``); when
+    omitted, legacy sequential integers are used.
 
     Returns the list of exported entries.
     """
@@ -258,7 +282,7 @@ def scrape_feeds(
         feeds, max_age=timedelta(days=1), default_today_only=default_today_only
     )
 
-    export_entries = flatten_filtered_entries(recent)
+    export_entries = flatten_filtered_entries(recent, eid_factory=eid_factory)
     export_entries_yaml(export_entries, path=output_path)
     print(f"\nExported {len(export_entries)} entries to {output_path}")
     return export_entries

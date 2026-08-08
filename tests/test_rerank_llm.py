@@ -61,6 +61,23 @@ def test_parse_eids_from_response_empty():
     assert rerank_llm.parse_eids_from_response("nothing here") == []
 
 
+def test_parse_eids_from_response_string_eids():
+    response = (
+        '[{"EID": "titou_20260808_1430_0007", "reason": "x"}, '
+        '{"EID": "titou_20260808_1430_0005", "reason": "y"}]'
+    )
+    assert rerank_llm.parse_eids_from_response(response) == [
+        "titou_20260808_1430_0007",
+        "titou_20260808_1430_0005",
+    ]
+
+
+def test_coerce_eid_keeps_types():
+    assert rerank_llm._coerce_eid(12) == 12
+    assert rerank_llm._coerce_eid(6.0) == 6
+    assert rerank_llm._coerce_eid("titou_20260808_1430_0007") == "titou_20260808_1430_0007"
+
+
 # --- build_candidate_prompt_block --------------------------------------------
 
 def test_build_candidate_prompt_block_fields():

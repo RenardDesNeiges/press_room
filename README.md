@@ -172,6 +172,37 @@ flowchart TD
 
 All four artifacts are stored per user/day in SQLite. The newspaper HTML is generated on login from the stored data.
 
+
+**Proposed update**
+
+```mermaid
+flowchart TD
+    A[feeds.yml] -->|Requests + filter| B[filtered_entries]
+    B -->|ranking + reranking + themes and countires| C{parsed_entries of the day}
+    
+    D0[editorial_plan, t-1, t-2...]-->|compare with last day-s|D
+
+
+    C -->|Select, source and organize informations|D
+    D[editorial_plan, t]-->|editorial writing|E1
+    D-->|sections|E2
+    D-->E3[future_calendar]
+
+    E1[editorial]
+    E2[prepared_entries]
+
+    P0[readers interests field]
+    P0-->|Multlingual prompt preparation|P1
+    P1[reader_profile]
+    P1-->E1
+    P1-->D
+    P1-->C
+    
+    E1-->|text2speech|F[editorial_mp3]
+
+```
+
+
 ## Repository layout
 
 ```

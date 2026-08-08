@@ -17,12 +17,13 @@ from __future__ import annotations
 
 import argparse
 import tempfile
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
 from src import db as database
 from src import editorial_to_mp3, feed_reader, parse_feed, prepare_entries
+from src.feed_reader import make_eid
 
 
 def _write(path: Path, content: str | bytes) -> None:
@@ -66,10 +67,16 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         mp3_path = work / "editorial.mp3"
 
         print(f"\n>>> Running pipeline for '{username}' ({day})")
+        run_stamp = datetime.now()
+
+        def eid_factory(seq: int) -> str:
+            return make_eid(username, run_stamp, seq)
+
         feed_reader.scrape_feeds(
             feeds_path=feeds_path,
             output_path=filtered_path,
             default_today_only=(database.get_filter_mode(user_id) == "today"),
+            eid_factory=eid_factory,
         )
         parse_feed.parse_and_export(
             entries_path=filtered_path,
@@ -92,6 +99,12 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         database.set_artifact(issue_id, "prepared_entries", prepared_path.read_bytes())
         if mp3_path.exists():
             database.set_artifact(issue_id, "editorial_mp3", mp3_path.read_bytes())
+
+        for name in database.SOURCE_FILES:
+            content = database.get_user_file(user_id, name)
+            if content:
+                database.set_artifact(issue_id, name, content.encode("utf-8"))
+        database.set_pipeline_version(issue_id, 1)
 
     print(f"\nStored all artifacts for '{username}' / {day} in the database.")
     return {"user": username, "day": day, "issue_id": issue_id}

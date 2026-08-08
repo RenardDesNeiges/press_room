@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS issues (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     day TEXT NOT NULL,
+    pipeline_version INTEGER NOT NULL DEFAULT 0,
     run_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(user_id, day)
@@ -75,6 +76,11 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
         }
         if "run_at" not in issue_cols:
             conn.execute("ALTER TABLE issues ADD COLUMN run_at TEXT")
+        if "pipeline_version" not in issue_cols:
+            conn.execute(
+                "ALTER TABLE issues ADD COLUMN pipeline_version "
+                "INTEGER NOT NULL DEFAULT 0"
+            )
         user_cols = {
             row["name"] for row in conn.execute("PRAGMA table_info(users)").fetchall()
         }
@@ -95,6 +101,11 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
             conn.execute(
                 "ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"
             )
+
+    # Backwards compatibility: archive each user's feeds.yml / readers file onto
+    # every past issue that never archived them (source files were only stored in
+    # user_files before pipeline_version=1).
+    backfill_issue_source_files(db_path)
 
 
 def create_user(username: str, password: str, db_path: Path = DEFAULT_DB_PATH) -> int:
@@ -388,6 +399,43 @@ def get_issue(
         ).fetchone()
 
 
+def set_pipeline_version(
+    issue_id: int, version: int, db_path: Path = DEFAULT_DB_PATH
+) -> None:
+    """Stamp which pipeline version produced an issue (0 = legacy, 1 = current)."""
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE issues SET pipeline_version = ? WHERE id = ?",
+            (int(version), issue_id),
+        )
+
+
+SOURCE_FILES = ("feeds.yml", "readers_interests.md")
+
+
+def backfill_issue_source_files(db_path: Path = DEFAULT_DB_PATH) -> int:
+    """Archive every user's feeds.yml/readers_interests.md onto issues that lack it.
+
+    Before ``pipeline_version`` 1, the source files were only kept in
+    ``user_files`` (mutable), never frozen per issue. This copies the *current*
+    user file into every issue that has no archived copy, so the admin pipeline
+    inspector stays debuggable for historical issues. Returns the written count.
+    """
+    written = 0
+    for user in list_users(db_path):
+        for name in SOURCE_FILES:
+            content = get_user_file(user["id"], name, db_path)
+            if content is None:
+                continue
+            for issue in list_issues(user["id"], db_path):
+                if get_artifact(issue["id"], name, db_path) is None:
+                    set_artifact(
+                        issue["id"], name, content.encode("utf-8"), db_path
+                    )
+                    written += 1
+    return written
+
+
 def list_artifacts(issue_id: int, db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
     """Return (stage, size_bytes, created_at) for every artifact of an issue."""
     with connect(db_path) as conn:
@@ -425,6 +473,12 @@ def _seed_user_account(username: str, password: str, db_path: Path) -> None:
         if path.exists():
             content = path.read_bytes()
             set_artifact(issue_id, stage, content, db_path)
+
+    # Archive the seeded source files onto the issue (pipeline_version 0 flow).
+    for name in SOURCE_FILES:
+        content = get_user_file(user_id, name, db_path)
+        if content:
+            set_artifact(issue_id, name, content.encode("utf-8"), db_path)
 
 
 def seed_demo_user(db_path: Path = DEFAULT_DB_PATH) -> None:

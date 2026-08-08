@@ -277,7 +277,7 @@ def create_app() -> Flask:
         available_stages = _available_stages(selected_user, selected_issue)
 
         stage = request.args.get("stage")
-        if stage not in ADMIN_STAGE_KEYS:
+        if stage not in ADMIN_STAGE_KEYS and stage != "readers":
             stage = "prepared_entries"
         content, is_audio = _pipeline_stage_content(
             selected_user, selected_issue, stage

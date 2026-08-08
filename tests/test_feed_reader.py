@@ -133,6 +133,25 @@ def test_collect_all_feeds_skips_failed_fetch(monkeypatch, feeds_config):
     assert fr.collect_all_feeds(feeds_config) == {}
 
 
+# --- make_eid ----------------------------------------------------------------
+
+def test_make_eid_shape():
+    ts = datetime(2026, 8, 8, 14, 30, tzinfo=timezone.utc)
+    assert fr.make_eid("titou", ts, 7) == "titou_20260808_1430_0007"
+
+
+def test_make_eid_sanitizes_username_and_zero_pads():
+    ts = datetime(2026, 8, 8, 14, 30, tzinfo=timezone.utc)
+    assert fr.make_eid("Jean DUPONT.", ts, 42) == "Jean_DUPONT_20260808_1430_0042"
+    assert fr.make_eid("???", ts, 1) == "user_20260808_1430_0001"
+
+
+def test_make_eid_sequences_unique():
+    ts = datetime(2026, 8, 8, 14, 30, tzinfo=timezone.utc)
+    ids = {fr.make_eid("titou", ts, seq) for seq in range(1, 5)}
+    assert len(ids) == 4
+
+
 # --- flatten / export --------------------------------------------------------
 
 def test_format_entry_shape():
@@ -164,6 +183,17 @@ def test_flatten_assigns_eids():
     entries = fr.flatten_filtered_entries(filtered)
     assert [e["EID"] for e in entries] == [1, 2, 3]
     assert [e["url"] for e in entries] == ["u1a", "u1b", "u2a"]
+
+
+def test_flatten_uses_eid_factory():
+    ref = datetime(2026, 8, 8, 14, 30, tzinfo=timezone.utc)
+    filtered = {
+        "u1": {"entries": [_mk_entry(ref, "a")], "lang": "FR", "source": "One"},
+        "u2": {"entries": [_mk_entry(ref, "b")], "lang": "FR", "source": "Two"},
+    }
+    factory = lambda seq: "eid-%03d" % seq
+    entries = fr.flatten_filtered_entries(filtered, eid_factory=factory)
+    assert [e["EID"] for e in entries] == ["eid-001", "eid-002"]
 
 
 # --- scrape_feeds (mocked network + frozen clock) ----------------------------

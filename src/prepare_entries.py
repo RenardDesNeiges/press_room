@@ -13,6 +13,7 @@ The result is written to data/prepared_entries.yml with each entry carrying a
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -53,6 +54,56 @@ def load_edito_prompt(
         return fh.read()
 
 
+def _editorial_prompt_entries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Strip every URL from the entries sent to the editorial LLM.
+
+    Each article is identified only by its EID, exposed as a markdown link of
+    the form ``[*<title>*](EID)`` so the LLM can cite sources without seeing the
+    actual article URLs. Those links are resolved back to URLs afterwards by
+    ``resolve_editorial_links``.
+    """
+    refs: list[dict[str, Any]] = []
+    for entry in entries:
+        eid = entry.get("EID")
+        title = entry.get("title") or "Untitled"
+        refs.append(
+            {
+                "EID": eid,
+                "reference": f"[*{title}*]({eid})",
+                "source": entry.get("source") or "",
+                "summary": (entry.get("summary") or "")[:300],
+                "theme": entry.get("theme") or "",
+                "country": entry.get("country") or "",
+                "date": entry.get("date") or "",
+            }
+        )
+    return refs
+
+
+def resolve_editorial_links(
+    editorial: str, entries: list[dict[str, Any]]
+) -> str:
+    """Replace EID-based markdown links with the articles' real URLs.
+
+    The editorial LLM cites sources as ``[text](EID)`` (EID never leaks a URL).
+    This maps each EID back to its article URL so the stored editorial carries
+    working links. EIDs without a matching URL are left untouched.
+    """
+    if not editorial:
+        return editorial
+    url_by_eid = {
+        str(entry.get("EID")): entry.get("url")
+        for entry in entries
+        if entry.get("url")
+    }
+    resolved = editorial
+    for eid, url in url_by_eid.items():
+        # Match both the plain ``](EID)`` form and a bracketed ``](<EID>)`` form.
+        resolved = resolved.replace(f"]({eid})", f"]({url})")
+        resolved = resolved.replace(f"](<{eid}>)", f"]({url})")
+    return resolved
+
+
 def build_edito_prompt(
     entries: list[dict[str, Any]],
     edito_path: Path = DEFAULT_EDITO_PATH,
@@ -64,15 +115,18 @@ def build_edito_prompt(
 
     ``word_min``/``word_max`` bound the requested editorial length (in words) and
     are substituted into the ``{ word_min }`` / ``{ word_max }`` placeholders.
+
+    The entries are passed WITHOUT their URLs: each article is exposed under its
+    EID, cited as ``[text](EID)`` (see ``resolve_editorial_links``).
     """
     prompt_template = load_edito_prompt(edito_path)
 
     if word_min is None or word_max is None:
         word_min, word_max = minutes_to_word_range(DEFAULT_EDITORIAL_MINUTES)
 
-    # Convert the selected entries to a clean YAML string.
+    # Convert the selected entries to a clean YAML string, dropping URLs.
     rss_feed_yaml = yaml.safe_dump(
-        {"entries": entries},
+        {"entries": _editorial_prompt_entries(entries)},
         allow_unicode=True,
         sort_keys=False,
         default_flow_style=False,
@@ -101,6 +155,7 @@ def generate_editorial(
     prompt = build_edito_prompt(entries, edito_path, interests_path, word_min, word_max)
     print(f"Generating editorial with {model_name}...")
     editorial = query_model(prompt, model_name=model_name, temperature=0.7)
+    editorial = resolve_editorial_links(editorial, entries)
     return editorial.strip()
 
 
@@ -151,14 +206,14 @@ ARTICLE LIST (EID, title, themes, countries):
 
 OUTPUT FORMAT:
 Return ONLY a JSON array where each element is an object with:
-- "title": the section title (1-2 words, French)
-- "EIDs": the list of integer EIDs assigned to this section
+- "title": the section title (1-2 words listed in French)
+- "EIDs": the list of EIDs assigned to this section (copy each EID EXACTLY as shown, with no changes)
 
 Example output format:
 [
-  {{"title": "Présidentielle", "EIDs": [12, 5, 7]}},
-  {{"title": "Ukraine", "EIDs": [3, 9]}},
-  {{"title": "Économie", "EIDs": [1, 4, 8, 11]}}
+  {{"title": "Présidentielle", "EIDs": ["12", "5", "7"]}},
+  {{"title": "Ukraine", "EIDs": ["3", "9"]}},
+  {{"title": "Économie", "EIDs": ["1", "4", "8", "11"]}}
 ]
 
 Return ONLY the JSON array, with no other text.
@@ -183,11 +238,27 @@ def parse_sections(response_text: str | None) -> list[dict[str, Any]]:
         if isinstance(eids_raw, int):
             eids = [eids_raw]
         elif isinstance(eids_raw, list):
-            eids = [int(e) for e in eids_raw if isinstance(e, (int, float))]
+            eids = []
+            for e in eids_raw:
+                if isinstance(e, bool):
+                    continue
+                if isinstance(e, int):
+                    eids.append(e)
+                elif isinstance(e, float) and e.is_integer():
+                    eids.append(int(e))
+                elif isinstance(e, str) and re.search(r"[0-9]", e):
+                    eids.append(e)
         else:
             eids = []
         sections.append({"title": title, "EIDs": eids})
     return sections
+
+
+def _normalise_eid(value: Any) -> str | None:
+    """Normalise an EID for comparison (int and string forms both match)."""
+    if value is None:
+        return None
+    return str(value).strip()
 
 
 def assign_sections(
@@ -198,15 +269,18 @@ def assign_sections(
 
     Entries not mentioned in the LLM response are grouped under "Autres".
     """
-    section_by_eid: dict[int, str] = {}
+    section_by_eid: dict[str, str] = {}
     for section in sections:
         for eid in section["EIDs"]:
-            section_by_eid.setdefault(eid, section["title"])
+            key = _normalise_eid(eid)
+            if key:
+                section_by_eid.setdefault(key, section["title"])
 
     assigned: list[dict[str, Any]] = []
     leftover: list[dict[str, Any]] = []
     for entry in entries:
-        section = section_by_eid.get(int(entry.get("EID") or -1))
+        key = _normalise_eid(entry.get("EID"))
+        section = section_by_eid.get(key) if key else None
         if section:
             enriched = dict(entry)
             enriched["section"] = section
@@ -238,7 +312,7 @@ def prepare_entries(
 
     if not sections:
         print("WARNING: no valid sections returned by LLM; grouping all under 'Autres'.")
-        sections = [{"title": "Autres", "EIDs": [int(e.get("EID") or -1) for e in entries]}]
+        sections = [{"title": "Autres", "EIDs": [e.get("EID") for e in entries]}]
 
     prepared = assign_sections(entries, sections)
     print(f"Classified into {len(sections)} sections "

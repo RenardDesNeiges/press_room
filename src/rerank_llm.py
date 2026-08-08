@@ -73,7 +73,7 @@ CANDIDATE ARTICLES (numbered by EID):
 
 OUTPUT FORMAT:
 Return ONLY a JSON array of exactly {final_count} objects, ordered from most to least important. Each object must have:
-- "EID": the integer EID of the selected article
+- "EID": the EID of the selected article (copy it EXACTLY as shown, with no changes)
 - "reason": a one-sentence explanation of why it was selected
 - "theme": between one and thee theme tag in French describing the article's main topic (e.g., "politique", "économie", "société", "environnement", "géopolitique", "droits humains", "médias", "culture", "technologie")
 - "country": one country tag in French indicating the primary country or region concerned. Add a second "international" tag if the article concerns diplomacy or other interactions between countries. Separate tags with commas.
@@ -123,16 +123,36 @@ def extract_json_list(response_text: str | None) -> list[Any] | None:
     return None
 
 
-def parse_eids_from_response(response_text: str | None) -> list[int]:
-    """Extract an ordered list of EIDs from the LLM response."""
+def _coerce_eid(value: Any) -> Any:
+    """Normalize an EID: keep ints as ints, strings as-is (new EID format)."""
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    return str(value)
+
+
+def parse_eids_from_response(response_text: str | None) -> list[Any]:
+    """Extract an ordered list of EIDs from the LLM response.
+
+    Works with the legacy integer EIDs and the new ``<user>_<date>_<time>_<seq>``
+    string EIDs. Returns the EIDs in the order chosen by the LLM.
+    """
     if not response_text:
         return []
     data = extract_json_list(response_text)
     if data is not None:
-        return [int(item["EID"]) for item in data if isinstance(item, dict) and "EID" in item]
+        return [
+            _coerce_eid(item["EID"])
+            for item in data
+            if isinstance(item, dict) and "EID" in item
+        ]
 
     # Fallback: look for EID numbers in the text.
-    return [int(m) for m in re.findall(r"\bEID\D+(\d+)", response_text, re.IGNORECASE)]
+    return [
+        int(m)
+        for m in re.findall(r"\bEID\D+(\d+)", response_text, re.IGNORECASE)
+    ]
 
 
 def query_model(
@@ -195,13 +215,13 @@ def rerank_with_llm(
     entry_by_eid = {entry.get("EID"): entry for entry in entries}
 
     # Attach reasons and tags from the parsed JSON (if any).
-    reasons: dict[int, str] = {}
-    tags: dict[int, dict[str, str]] = {}
+    reasons: dict[Any, str] = {}
+    tags: dict[Any, dict[str, str]] = {}
     data = extract_json_list(response_text)
     if data is not None:
         for item in data:
             if isinstance(item, dict) and "EID" in item:
-                eid = int(item["EID"])
+                eid = _coerce_eid(item["EID"])
                 reasons[eid] = _clean_tag(item.get("reason", ""))
                 tags[eid] = {
                     "theme": _clean_tag(item.get("theme", "")),
