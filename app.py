@@ -286,6 +286,24 @@ def create_app() -> Flask:
             selected_user, selected_issue, stage
         )
 
+        entries = None
+        entry_columns: list[str] = []
+        visible_columns: set[str] | None = None
+        if selected_issue is not None and stage == "prepared_entries":
+            entries = database.get_prepared_entries(selected_issue["id"])
+            if entries:
+                seen: set[str] = set()
+                for entry in entries:
+                    for key in entry:
+                        if key not in seen:
+                            seen.add(key)
+                            entry_columns.append(key)
+                raw_cols = request.args.getlist("cols")
+                if raw_cols:
+                    visible_columns = {c for c in raw_cols if c in entry_columns}
+                else:
+                    visible_columns = set(DEFAULT_ENTRY_COLUMNS)
+
         return render_template(
             "admin_data.html",
             username=user["username"],
@@ -300,6 +318,9 @@ def create_app() -> Flask:
             stage=stage,
             content=content,
             is_audio=is_audio,
+            entries=entries,
+            entry_columns=entry_columns,
+            visible_columns=visible_columns,
         )
 
     @app.route("/admin/data/<int:user_id>/<day>/<stage>")
@@ -376,13 +397,17 @@ def render_issue(username: str, day: str | None = None) -> str:
     if issue is None:
         return "<p>Aucune édition pour ce jour. Lancez le pipeline.</p>"
 
-    prepared = database.get_artifact(issue["id"], "prepared_entries")
-    parsed = database.get_artifact(issue["id"], "parsed_entries")
-    raw = prepared or parsed
-    if raw is None:
-        return "<p>Aucune donnée pour cette édition. Lancez le pipeline.</p>"
+    table_entries = database.get_prepared_entries(issue["id"])
+    if table_entries:
+        data: dict = {"entries": table_entries}
+    else:
+        prepared = database.get_artifact(issue["id"], "prepared_entries")
+        parsed = database.get_artifact(issue["id"], "parsed_entries")
+        raw = prepared or parsed
+        if raw is None:
+            return "<p>Aucune donnée pour cette édition. Lancez le pipeline.</p>"
+        data = yaml.safe_load(raw)
 
-    data = yaml.safe_load(raw)
     entries = data.get("entries", [])
     editorial, title = _issue_editorial(issue, data)
 
@@ -467,6 +492,8 @@ PIPELINE_V0_STAGES = [
     {"key": "editorial_mp3", "label": "editorial_mp3"},
 ]
 
+DEFAULT_ENTRY_COLUMNS = ("EID", "title", "source", "rerank_reason")
+
 PIPELINE_V1_STAGES = [
     {"key": "feeds", "label": "feeds.yml"},
     {"key": "filtered_entries", "label": "filtered_entries"},
@@ -496,6 +523,8 @@ def _available_stages(selected_user, selected_issue) -> set[str]:
     if selected_issue is not None:
         for artifact in database.list_artifacts(selected_issue["id"]):
             available.add(artifact["stage"])
+        if database.count_prepared_entries(selected_issue["id"]):
+            available.add("prepared_entries")
     return available
 
 
@@ -523,6 +552,13 @@ def _pipeline_stage_content(selected_user, selected_issue, stage: str):
             database.get_user_file(selected_user["id"], "readers_interests.md"),
             False,
         )
+    if stage == "prepared_entries":
+        entries = database.get_prepared_entries(selected_issue["id"])
+        if entries:
+            payload = {"entries": entries}
+            return yaml.safe_dump(
+                payload, allow_unicode=True, sort_keys=False, default_flow_style=False
+            ), False
     blob = database.get_artifact(selected_issue["id"], stage)
     if blob is None:
         return None, False
@@ -540,16 +576,19 @@ def random_feed_photo() -> dict | None:
     photos = []
     for user in database.list_users():
         for issue in database.list_issues(user["id"]):
-            raw = database.get_artifact(issue["id"], "prepared_entries")
-            if raw is None:
-                raw = database.get_artifact(issue["id"], "parsed_entries")
-            if raw is None:
-                continue
-            try:
-                data = yaml.safe_load(raw)
-            except yaml.YAMLError:
-                continue
-            for entry in data.get("entries", []) or []:
+            entries = database.get_prepared_entries(issue["id"])
+            if not entries:
+                raw = database.get_artifact(issue["id"], "prepared_entries")
+                if raw is None:
+                    raw = database.get_artifact(issue["id"], "parsed_entries")
+                if raw is None:
+                    continue
+                try:
+                    data = yaml.safe_load(raw)
+                except yaml.YAMLError:
+                    continue
+                entries = data.get("entries", []) or []
+            for entry in entries:
                 media = entry.get("media")
                 if not media:
                     continue

@@ -98,11 +98,14 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         issue_id = database.get_or_create_issue(user_id, day)
         database.set_artifact(issue_id, "filtered_entries", filtered_path.read_bytes())
         database.set_artifact(issue_id, "parsed_entries", parsed_path.read_bytes())
-        database.set_artifact(issue_id, "prepared_entries", prepared_path.read_bytes())
         if mp3_path.exists():
             database.set_artifact(issue_id, "editorial_mp3", mp3_path.read_bytes())
 
         prepared_data = yaml.safe_load(prepared_path.read_bytes()) or {}
+        seeded_entries = prepared_data.get("entries") or []
+        if seeded_entries:
+            database.set_prepared_entries(issue_id, seeded_entries)
+
         editorial_yaml = yaml.safe_dump(
             {
                 "title": prepared_data.get("title"),

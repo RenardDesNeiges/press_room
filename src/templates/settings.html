@@ -32,7 +32,7 @@
 
       <section class="settings-section">
         <h2>Préférences de lecture</h2>
-        <p class="settings-hint">Texte libre décrivant les goûts et intérêts du lecteur (utilisé par le pipeline pour sélectionner les articles).</p>
+        <p class="settings-hint">Texte libre décrivant les goûts et intérêts de la/du lecteur·ice (utilisé par Pressroom pour sélectionner les articles).</p>
         <form method="post">
           <input type="hidden" name="action" value="save_interests">
           <textarea name="interests" rows="12" class="interests-input">{{ interests }}</textarea>
@@ -44,7 +44,7 @@
 
       <section class="settings-section">
         <h2>Durée de l'éditorial</h2>
-        <p class="settings-hint">Durée de lecture cible de l'éditorial (2 à 10 minutes). Le nombre de mots demandé à l'IA en est dérivé.</p>
+        <p class="settings-hint">Durée de lecture cible de l'éditorial (2 à 10 minutes). Le nombre de mots demandé au rédacteur en est dérivé.</p>
         <form method="post">
           <input type="hidden" name="action" value="save_editorial_minutes">
           <div class="slider-row">
@@ -59,7 +59,7 @@
 
       <section class="settings-section">
         <h2>Domaines exclus d'archive.ph</h2>
-        <p class="settings-hint">Un domaine par ligne. Les liens vers ces domaines ne seront pas redirigés via archive.ph (ils restent accessibles directement).</p>
+        <p class="settings-hint">Archive.ph est un site d'archive qui permet de passer le payload de beaucoup de journaux. Par défault Pressroom passe par archive.ph, mais si vous avez un abonnement ou qu'il s'agit d'un site gratuit, il est possible qu'il soit plus agréable de ne pas passer par archive.ph. Un domaine par ligne. Les liens vers ces domaines ne seront pas redirigés via archive.ph (ils restent accessibles directement).</p>
         <form method="post">
           <input type="hidden" name="action" value="save_excluded_domains">
           <textarea name="excluded_domains" rows="10" class="interests-input">{{ excluded_domains }}</textarea>
@@ -88,7 +88,7 @@
 
       <section class="settings-section">
         <h2>Fichier feeds.yml</h2>
-        <p class="settings-hint">Télécharger ou importer le fichier complet feeds.yml. Il permet notamment de définir « Aujourd'hui uniquement » par publication (champ <code>today_only: true</code>).</p>
+        <p class="settings-hint">Télécharger ou importer le fichier complet feeds.yml. Ces fichiers résument la liste de source à utiliser pour l'aggrégateur.</p>
         <form method="post" enctype="multipart/form-data" class="feeds-file-form">
           <input type="hidden" name="action" value="upload_feeds">
           <p class="file-label">Importer un fichier</p>

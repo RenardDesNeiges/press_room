@@ -1363,6 +1363,59 @@ footer {
   max-width: 40rem;
 }
 
+.admin-column-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-column-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 2rem;
+  cursor: pointer;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  background-color: var(--bg);
+}
+
+.admin-entries-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.78rem;
+}
+
+.admin-entries-table th,
+.admin-entries-table td {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+  max-width: 22rem;
+  overflow-wrap: break-word;
+}
+
+.admin-entries-table th {
+  background-color: var(--highlight-mid);
+  position: sticky;
+  top: 0;
+}
+
+.admin-entries-table td.is-hidden,
+.admin-entries-table th.is-hidden {
+  display: none;
+}
+
 .flow-scroll {
   overflow-x: auto;
   padding-bottom: 0.5rem;

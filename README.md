@@ -16,8 +16,7 @@ The editorial should be produced as
 ```
 
 ## To-be-added features
-0. Refactored data pipeline with a) prepared entries 
- b) editorial plans generated before the actual editorials c) editorial persistence on the plan level d) editorial writing from the plan 
+0. a) editorial plans generated before the actual editorials b) editorial persistence on the plan level c) editorial writing from the plan 
 1. Refactored user preference specification setup, which automatically handles translation.
 2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot. 
 3. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
@@ -107,24 +106,53 @@ CREATE TABLE issues (
     UNIQUE(user_id, day)
 );
 
--- Pipeline outputs for a given issue.
+-- Pipeline outputs for a given issue (feeds/parsed/editorial/audio, …).
 CREATE TABLE issue_artifacts (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     issue_id   INTEGER NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
-    stage      TEXT NOT NULL,          -- 'feeds.yml' | 'readers_interests.md' | 'filtered_entries' | 'parsed_entries' | 'prepared_entries' | 'editorial' | 'editorial_mp3'
+    stage      TEXT NOT NULL,          -- 'feeds.yml' | 'readers_interests.md' | 'filtered_entries' | 'parsed_entries' | 'editorial' | 'editorial_mp3'
     content    BLOB NOT NULL,          -- YAML (text) or MP3 (binary)
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(issue_id, stage)
 );
+
+-- Prepared articles, one row per EID (pipeline_version 1).
+-- The full original entry is kept verbatim in `data`; the main fields are
+-- denormalised into columns so they can be queried/filtered by EID or issue_id.
+CREATE TABLE prepared_entries (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    issue_id         INTEGER NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
+    eid              TEXT NOT NULL,
+    data             TEXT NOT NULL,
+    title            TEXT,
+    summary          TEXT,
+    media            TEXT,
+    url              TEXT,
+    date             TEXT,
+    lang             TEXT,
+    author           TEXT,
+    source           TEXT,
+    similarity_score REAL,
+    rerank_reason    TEXT,
+    theme            TEXT,
+    country          TEXT,
+    section          TEXT,
+    position         INTEGER NOT NULL DEFAULT 0,
+    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(issue_id, eid)
+);
 ```
 
 **Pipeline versions.** `issues.pipeline_version` records the storage layout of an
-issue. `0` = legacy: the editorial text + headline are embedded inside the
-`prepared_entries` blob. `1` = the editorial is stored in its own `editorial`
-artifact row (`{title: ..., editorial: ...}`), with `prepared_entries` holding
-only the article sections. `init_db()` runs `backfill_issue_editorials()` to
-promote any stored editorial into its own row and stamp the issue as v1, so old
-issues remain readable after the layout change.
+issue. `0` = legacy (v0): the editorial text + headline are embedded inside the
+`prepared_entries` blob, and only the blob is stored. `1` = current (v1): the
+editorial is stored in its own `editorial` artifact row (`{title: ...,
+editorial: ...}`), the prepared articles are stored relationally in the
+`prepared_entries` table (one row per EID, keyed by `issue_id`), and no
+`prepared_entries` blob is written. `init_db()` runs
+`backfill_issue_editorials()` and `discard_legacy_prepared_eids()` so old issues
+remain readable: v0 issues fall back to their blob on render, and any leftover
+integer-keyed table rows (a v0 artifact) are dropped.
 
 ### Usage
 
@@ -146,8 +174,11 @@ All functions live in `src/db.py` and accept an optional `db_path` argument (def
 | `set_user_file(user_id, name, content)` / `get_user_file(user_id, name)` / `list_user_files(user_id)` | Read/write the user's config files. |
 | `get_or_create_issue(user_id, day)` | Return the issue id for a user/day, creating it and stamping `run_at` if needed. |
 | `set_artifact(issue_id, stage, content)` / `get_artifact(issue_id, stage)` | Store / fetch a pipeline stage output (bytes). |
-| `set_pipeline_version(issue_id, version)` | Stamp the storage layout version of an issue (v0 = editorial in `prepared_entries`; v1 = separate `editorial` row). |
+| `set_pipeline_version(issue_id, version)` | Stamp the storage layout version of an issue (v0 = editorial inside the `prepared_entries` blob; v1 = separate `editorial` row + relational `prepared_entries` table). |
+| `set_prepared_entries(issue_id, entries)` / `get_prepared_entries(issue_id)` | Replace / fetch all prepared entries of an issue (one row per EID, ordered by section position). |
+| `get_prepared_entry(issue_id, eid)` / `count_prepared_entries(issue_id)` | Fetch a single prepared entry by EID / count the rows of an issue. |
 | `backfill_issue_editorials()` | Upgrade issues to v1: extract the editorial into its own row and stamp `pipeline_version=1` (idempotent). |
+| `discard_legacy_prepared_eids()` | Drop `prepared_entries` rows keyed by legacy integer EIDs (v0 leftovers); returns the number removed. |
 | `list_issues(user_id)` / `latest_issue(user_id)` | All issues for a user (newest first) / the latest one. |
 | `get_issue(user_id, day)` / `list_artifacts(issue_id)` | Get a specific issue / the artifact stages (with sizes) of an issue. |
 | `seed_demo_user()` | Create `titou`/`titou` and `demo_user`/`demo_user`, copy `data/` files into their `user_files`, and seed today's issue with the demo artifacts. |
@@ -179,7 +210,7 @@ flowchart TD
 
 1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date (24h window, or that day only when the user's `filter_mode` is `"today"` or a publication sets `today_only: true`), and writes `filtered_entries`.
 2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.
-3. **Prepare** – writes the French editorial and headline (stored as its own `editorial` artifact in pipeline_version 1), classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and writes `prepared_entries`. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
+3. **Prepare** – writes the French editorial and headline (stored as its own `editorial` artifact in pipeline_version ≥1), classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and stores the articles relationally in the `prepared_entries` table (one row per EID, in section order) instead of a blob. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
 4. **Speak** – synthesizes the editorial to `editorial.mp3` via OpenRouter's TTS API.
 
 All four artifacts are stored per user/day in SQLite. The newspaper HTML is generated on login from the stored data.
@@ -189,6 +220,7 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 
 ```mermaid
 flowchart TD
+
     A[feeds.yml] -->|Requests + filter| B[filtered_entries]
     B -->|ranking + reranking + themes and countires| C{parsed_entries of the day}
     
@@ -213,6 +245,10 @@ flowchart TD
     P1-->C
     
     E1-->|text2speech|F[editorial_mp3]
+
+    E2-->H[Edition page]
+    E1-->H
+    F-->H
 
 ```
 

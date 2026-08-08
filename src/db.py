@@ -4,7 +4,8 @@ Schema:
 - users            : username + password hash
 - user_files       : per-user readers_interests.md and feeds.yml
 - issues           : one row per user per day
-- issue_artifacts  : per-issue pipeline outputs (filtered/parsed/prepared/editorial.mp3)
+- issue_artifacts  : per-issue pipeline outputs (filtered/parsed/editorial/editorial.mp3)
+- prepared_entries : per-issue prepared articles, one row per EID
 """
 
 from __future__ import annotations
@@ -12,6 +13,7 @@ from __future__ import annotations
 import sqlite3
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -59,6 +61,29 @@ CREATE TABLE IF NOT EXISTS issue_artifacts (
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(issue_id, stage)
 );
+
+CREATE TABLE IF NOT EXISTS prepared_entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    issue_id INTEGER NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
+    eid TEXT NOT NULL,
+    data TEXT NOT NULL,
+    title TEXT,
+    summary TEXT,
+    media TEXT,
+    url TEXT,
+    date TEXT,
+    lang TEXT,
+    author TEXT,
+    source TEXT,
+    similarity_score REAL,
+    rerank_reason TEXT,
+    theme TEXT,
+    country TEXT,
+    section TEXT,
+    position INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(issue_id, eid)
+);
 """
 
 
@@ -103,12 +128,22 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
             conn.execute(
                 "ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"
             )
+        prepared_cols = {
+            row["name"]
+            for row in conn.execute("PRAGMA table_info(prepared_entries)").fetchall()
+        }
+        for col, ddl in PREPARED_COLUMNS_DDL.items():
+            if col not in prepared_cols:
+                conn.execute(f"ALTER TABLE prepared_entries ADD COLUMN {ddl}")
 
     # Backwards compatibility: archive each user's feeds.yml / readers file onto
     # every past issue that never archived them (source files were only stored in
     # user_files before pipeline_version=1).
     backfill_issue_source_files(db_path)
     backfill_issue_editorials(db_path)
+    # v0 issues stay blob-only; drop any legacy integer-EID rows that a prior
+    # migration wrote into the relational table.
+    discard_legacy_prepared_eids(db_path)
 
 
 def create_user(username: str, password: str, db_path: Path = DEFAULT_DB_PATH) -> int:
@@ -494,6 +529,172 @@ def list_artifacts(issue_id: int, db_path: Path = DEFAULT_DB_PATH) -> list[sqlit
         ).fetchall()
 
 
+# --- prepared entries (relational layout, pipeline_version 1) -----------------
+
+# Columns that may be added to a pre-existing prepared_entries table.
+PREPARED_COLUMNS_DDL = {
+    "data": "data TEXT",
+    "title": "title TEXT",
+    "summary": "summary TEXT",
+    "media": "media TEXT",
+    "url": "url TEXT",
+    "date": "date TEXT",
+    "lang": "lang TEXT",
+    "author": "author TEXT",
+    "source": "source TEXT",
+    "similarity_score": "similarity_score REAL",
+    "rerank_reason": "rerank_reason TEXT",
+    "theme": "theme TEXT",
+    "country": "country TEXT",
+    "section": "section TEXT",
+    "position": "position INTEGER NOT NULL DEFAULT 0",
+}
+
+PREPARED_COLUMNS = (
+    "eid",
+    "data",
+    "title",
+    "summary",
+    "media",
+    "url",
+    "date",
+    "lang",
+    "author",
+    "source",
+    "similarity_score",
+    "rerank_reason",
+    "theme",
+    "country",
+    "section",
+    "position",
+)
+
+# Entry fields whose *text* can be queried/filtered directly (columns in the table).
+_QUERY_FIELDS = ("title", "source", "section", "theme", "country", "lang")
+
+
+def _row_to_entry(row: sqlite3.Row) -> dict[str, Any]:
+    """Rebuild an entry dict from a prepared_entries row.
+
+    The ``data`` column holds the full original entry (lossless): when present,
+    it is parsed and returned as-is. Older/partially-populated rows fall back to
+    building the dict from the typed columns.
+    """
+    raw_data = row["data"]
+    if raw_data:
+        try:
+            stored = yaml.safe_load(raw_data)
+            if isinstance(stored, dict):
+                entry = dict(stored)
+                entry["EID"] = row["eid"]
+                return entry
+        except (KeyError, ValueError, TypeError):
+            pass
+    entry: dict[str, Any] = {}
+    for col in ("title", "summary", "media", "url", "date", "lang", "author",
+                "source", "similarity_score", "rerank_reason", "theme", "country",
+                "section"):
+        value = row[col]
+        if value is not None:
+            entry[col] = value
+    entry["EID"] = row["eid"]
+    return entry
+
+
+def set_prepared_entries(
+    issue_id: int, entries: list[dict[str, Any]], db_path: Path = DEFAULT_DB_PATH
+) -> int:
+    """Replace all prepared entries of an issue with rows from ``entries``.
+
+    The full original entry dict is kept verbatim in the ``data`` column, and its
+    main fields are denormalised into typed columns for query/filter. Each entry
+    is keyed by ``(issue_id, eid)`` so a re-run overwrites in place. Returns the
+    number of rows written.
+    """
+    with connect(db_path) as conn:
+        conn.execute("DELETE FROM prepared_entries WHERE issue_id = ?", (issue_id,))
+        for position, entry in enumerate(entries):
+            eid = entry.get("EID")
+            data_text = yaml.safe_dump(
+                dict(entry), allow_unicode=True, sort_keys=False, default_flow_style=False
+            )
+            conn.execute(
+                "INSERT INTO prepared_entries "
+                "(issue_id, eid, data, title, summary, media, url, date, lang, "
+                "author, source, similarity_score, rerank_reason, theme, country, "
+                "section, position) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    issue_id,
+                    str(eid),
+                    data_text,
+                    entry.get("title"),
+                    entry.get("summary"),
+                    entry.get("media"),
+                    entry.get("url"),
+                    entry.get("date"),
+                    entry.get("lang"),
+                    entry.get("author"),
+                    entry.get("source"),
+                    entry.get("similarity_score"),
+                    entry.get("rerank_reason"),
+                    entry.get("theme"),
+                    entry.get("country"),
+                    entry.get("section"),
+                    position,
+                ),
+            )
+    return len(entries)
+
+
+def get_prepared_entries(
+    issue_id: int, db_path: Path = DEFAULT_DB_PATH
+) -> list[dict[str, Any]]:
+    """Return all prepared entries of an issue, ordered by their section order."""
+    with connect(db_path) as conn:
+        rows = conn.execute(
+            "SELECT * FROM prepared_entries WHERE issue_id = ? ORDER BY position, id",
+            (issue_id,),
+        ).fetchall()
+    return [_row_to_entry(row) for row in rows]
+
+
+def get_prepared_entry(
+    issue_id: int, eid: str | int, db_path: Path = DEFAULT_DB_PATH
+) -> dict[str, Any] | None:
+    """Return a single prepared entry by EID, or None."""
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT * FROM prepared_entries WHERE issue_id = ? AND eid = ?",
+            (issue_id, str(eid)),
+        ).fetchone()
+    return _row_to_entry(row) if row else None
+
+
+def count_prepared_entries(issue_id: int, db_path: Path = DEFAULT_DB_PATH) -> int:
+    """Return the number of prepared entries stored for an issue."""
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT COUNT(*) AS n FROM prepared_entries WHERE issue_id = ?",
+            (issue_id,),
+        ).fetchone()
+    return int(row["n"])
+
+
+def discard_legacy_prepared_eids(db_path: Path = DEFAULT_DB_PATH) -> int:
+    """Delete prepared_entries rows whose EID uses the legacy integer format.
+
+    Current EIDs are strings of the form ``<user>_<date>_<time>_<seq>``. Rows
+    keyed by a bare integer EID are leftovers of the v0 pipeline and would
+    collide with the contemporary rows of a re-run, so they are dropped. Returns
+    the number of rows removed.
+    """
+    with connect(db_path) as conn:
+        cursor = conn.execute(
+            "DELETE FROM prepared_entries WHERE eid NOT GLOB '*[^0-9]*'"
+        )
+        return cursor.rowcount
+
+
 def _seed_user_account(username: str, password: str, db_path: Path) -> None:
     """(Re)create one demo account with config files and today's seeded issue."""
     data_dir = DATA_DIR
@@ -514,7 +715,6 @@ def _seed_user_account(username: str, password: str, db_path: Path) -> None:
     for stage, filename in (
         ("filtered_entries", "filtered_entries.yml"),
         ("parsed_entries", "parsed_entries.yml"),
-        ("prepared_entries", "prepared_entries.yml"),
         ("editorial_mp3", "editorial.mp3"),
     ):
         path = data_dir / filename
@@ -529,6 +729,7 @@ def _seed_user_account(username: str, password: str, db_path: Path) -> None:
             set_artifact(issue_id, name, content.encode("utf-8"), db_path)
 
     prepared_path = data_dir / "prepared_entries.yml"
+    seeded_entries: list[dict[str, Any]] = []
     if prepared_path.exists():
         try:
             prepared_data = yaml.safe_load(prepared_path.read_text(encoding="utf-8")) or {}
@@ -544,6 +745,17 @@ def _seed_user_account(username: str, password: str, db_path: Path) -> None:
             default_flow_style=False,
         ).encode("utf-8")
         set_artifact(issue_id, "editorial", editorial_yaml, db_path)
+        seeded_entries = prepared_data.get("entries") or []
+    if seeded_entries:
+        # Demo source files still carry legacy integer EIDs; re-key them to the
+        # contemporary <user>_<date>_<seq> shape so they survive the migration
+        # that drops integer-keyed rows.
+        day_slug = today.replace("-", "")
+        for position, entry in enumerate(seeded_entries, start=1):
+            eid = entry.get("EID")
+            if isinstance(eid, int):
+                entry["EID"] = f"{username}_{day_slug}_{position:04d}"
+        set_prepared_entries(issue_id, seeded_entries, db_path)
     set_pipeline_version(issue_id, 1, db_path)
 
 

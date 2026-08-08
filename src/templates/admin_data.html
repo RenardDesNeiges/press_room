@@ -135,7 +135,44 @@
             <a class="feeds-download" href="/admin/data/{{ selected_user.id }}/{{ day }}/editorial_mp3?download=1">Télécharger le MP3</a>
           </div>
         {% else %}
+          {% if stage == 'prepared_entries' and entries %}
+          <p class="settings-hint">{{ entries|length }} entrée{{ 's' if entries|length > 1 else '' }} — cochez/décochez les colonnes pour les afficher.</p>
+          <form method="get" action="/admin/data" class="admin-column-picker">
+            <input type="hidden" name="user_id" value="{{ selected_user.id }}">
+            <input type="hidden" name="day" value="{{ day }}">
+            <input type="hidden" name="stage" value="prepared_entries">
+            {% for col in entry_columns %}
+            <label class="admin-column-toggle">
+              <input type="checkbox" name="cols" value="{{ col }}"
+                     {% if visible_columns and col in visible_columns %}checked{% endif %}
+                     onchange="this.form.submit()">{{ col }}
+            </label>
+            {% endfor %}
+            <noscript><button type="submit">Appliquer</button></noscript>
+          </form>
+          <div class="admin-table-wrap">
+            <table class="admin-entries-table">
+              <thead>
+                <tr>
+                  {% for col in entry_columns %}
+                  <th data-col="{{ col }}" class="{% if visible_columns and col not in visible_columns %}is-hidden{% endif %}">{{ col }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for entry in entries %}
+                <tr>
+                  {% for col in entry_columns %}
+                  <td data-col="{{ col }}" class="{% if visible_columns and col not in visible_columns %}is-hidden{% endif %}">{{ entry.get(col) or '' }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
           <pre class="admin-code">{{ content }}</pre>
+          {% endif %}
         {% endif %}
       </section>
       {% endif %}
