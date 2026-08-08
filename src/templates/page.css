@@ -1263,3 +1263,62 @@ footer {
 .settings-collapse > form {
   margin-top: 1rem;
 }
+
+.admin-users td,
+.admin-data td {
+  vertical-align: top;
+}
+
+.inline-form {
+  display: inline;
+  margin: 0;
+}
+
+.admin-danger {
+  color: #8a1f1f;
+  border-color: #8a1f1f !important;
+}
+
+.admin-danger:hover {
+  background-color: #f5d9d9 !important;
+}
+
+.admin-self {
+  color: #888;
+}
+
+.admin-add-form label {
+  display: block;
+  margin: 0.8rem 0 0.3rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-add-form input {
+  display: block;
+  width: 100%;
+  max-width: 24rem;
+  margin-top: 0.3rem;
+  padding: 0.5rem;
+  border: 1px solid var(--rule);
+  background-color: var(--bg);
+  font: inherit;
+  color: inherit;
+}
+
+.admin-code {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background-color: var(--highlight-mid);
+  border: 1px solid var(--rule);
+  padding: 1rem;
+  font-size: 0.8rem;
+  overflow-x: auto;
+}
+
+.admin-link {
+  display: inline-block;
+  margin-right: 1rem;
+  color: #001F3F;
+}

@@ -13,6 +13,7 @@
         <h1 class="top-bar-title">Pressroom</h1>
         <div class="top-bar-right">
           <a class="top-bar-link" href="/">Lire l'édition</a>
+          {% if is_admin %}<a class="top-bar-link" href="/admin">Admin</a>{% endif %}
           <span class="top-bar-user">{{ username }}</span>
           <a class="top-bar-logout" href="/logout">Déconnexion</a>
         </div>

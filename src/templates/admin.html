@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pressroom — Administration</title>
+  <link rel="stylesheet" href="/page.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top-bar">
+      <div class="top-bar-inner">
+        <h1 class="top-bar-title">Pressroom</h1>
+        <div class="top-bar-right">
+          <a class="top-bar-link" href="/">Lire l'édition</a>
+          <a class="top-bar-link" href="/settings">Paramètres</a>
+          <a class="top-bar-link" href="/admin" aria-disabled="true">Admin</a>
+          <a class="top-bar-link" href="/admin/data">Données des pipelines</a>
+          <span class="top-bar-user">{{ username }}</span>
+          <a class="top-bar-logout" href="/logout">Déconnexion</a>
+        </div>
+        <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <main class="settings">
+      <h1 class="settings-title">Administration</h1>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <p class="settings-flash">{{ messages[0] }}</p>
+        {% endif %}
+      {% endwith %}
+
+      <section class="settings-section">
+        <h2>Utilisateurs</h2>
+        <table class="pipeline-history admin-users">
+          <thead>
+            <tr><th>Nom d'utilisateur</th><th>Admin</th><th>Créé le</th><th>Exécutions du pipeline</th><th>Supprimer</th></tr>
+          </thead>
+          <tbody>
+            {% for row in users %}
+            <tr>
+              <td>{{ row.username }}</td>
+              <td>{% if row.is_admin %}Oui{% else %}—{% endif %}</td>
+              <td>{{ row.created_at }}</td>
+              <td>{{ row.run_count }}</td>
+              <td>
+                {% if row.username != username %}
+                <form method="post" action="/admin/users/delete" class="inline-form">
+                  <input type="hidden" name="username" value="{{ row.username }}">
+                  <button type="submit" class="admin-danger">Supprimer</button>
+                </form>
+                {% else %}
+                <span class="admin-self">—</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">Aucun utilisateur.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="settings-section">
+        <h2>Ajouter un utilisateur</h2>
+        <form method="post" action="/admin/users" class="admin-add-form">
+          <label>Nom d'utilisateur <input type="text" name="username" required autocomplete="off"></label>
+          <label>Mot de passe <input type="password" name="password" required minlength="4" autocomplete="new-password"></label>
+          <div class="settings-actions">
+            <button type="submit">Créer le compte</button>
+          </div>
+        </form>
+        <p class="settings-hint">Le nouveau compte est initialisé avec les fichiers de démonstration (feeds.yml et readers_interests.md). Pour accorder des droits d'administrateur, utilisez une commande Python :</p>
+        <pre class="admin-code">python -c "import src.db as d; d.set_admin('utilisateur')"</pre>
+      </section>
+    </main>
+  </div>
+  <script src="/page.js"></script>
+</body>
+</html>

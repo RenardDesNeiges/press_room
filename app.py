@@ -7,6 +7,7 @@ and the editorial MP3 are served from the database/templates.
 
 from __future__ import annotations
 
+import functools
 import html
 import io
 import json
@@ -204,6 +205,7 @@ def create_app() -> Flask:
         return render_template(
             "settings.html",
             username=username,
+            is_admin=database.user_is_admin(user),
             publications=publications,
             interests=interests,
             editorial_minutes=editorial_minutes,
@@ -212,9 +214,122 @@ def create_app() -> Flask:
             runs=runs,
         )
 
+    @app.route("/admin")
+    @require_admin
+    def admin(user):
+        """Admin panel: list users, add/remove accounts, browse pipeline data."""
+        return render_template(
+            "admin.html",
+            username=user["username"],
+            users=database.list_users_with_counts(),
+        )
+
+    @app.route("/admin/users", methods=["POST"])
+    @require_admin
+    def admin_add_user(user):
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+        if not username or not password:
+            flash("Nom d'utilisateur et mot de passe requis.")
+        elif len(password) < 4:
+            flash("Mot de passe trop court (4 caractères minimum).")
+        elif database.get_user(username):
+            flash("Ce nom d'utilisateur est déjà pris.")
+        else:
+            user_id = database.create_user(username, password)
+            database.seed_default_files(user_id)
+            flash(f"Utilisateur « {username} » créé.")
+        return redirect(url_for("admin"))
+
+    @app.route("/admin/users/delete", methods=["POST"])
+    @require_admin
+    def admin_delete_user(user):
+        username = request.form.get("username", "").strip()
+        if username == user["username"]:
+            flash("Impossible de supprimer votre propre compte.")
+        elif database.delete_user(username):
+            flash(f"Utilisateur « {username} » supprimé.")
+        else:
+            flash("Utilisateur inconnu.")
+        return redirect(url_for("admin"))
+
+    @app.route("/admin/data")
+    @require_admin
+    def admin_data(user):
+        """All stored pipeline items (issues + artifacts) for every user."""
+        users = []
+        for row in database.list_users():
+            issues = []
+            for issue in database.list_issues(row["id"]):
+                artifacts = [
+                    {
+                        "stage": a["stage"],
+                        "size": _human_size(a["size_bytes"]),
+                    }
+                    for a in database.list_artifacts(issue["id"])
+                ]
+                issues.append(
+                    {"day": issue["day"], "run_at": issue["run_at"], "artifacts": artifacts}
+                )
+            users.append({"id": row["id"], "username": row["username"], "issues": issues})
+        return render_template(
+            "admin_data.html",
+            username=user["username"],
+            users=users,
+        )
+
+    @app.route("/admin/data/<int:user_id>/<day>/<stage>")
+    @require_admin
+    def admin_artifact(user, user_id, day, stage):
+        """Raw view (text stages) or download (MP3) of a stored pipeline item."""
+        target = database.get_user_by_id(user_id)
+        issue = database.get_issue(user_id, day)
+        if target is None or issue is None:
+            abort(404)
+        content = database.get_artifact(issue["id"], stage)
+        if content is None:
+            abort(404)
+        if stage == "editorial_mp3":
+            return send_file(
+                io.BytesIO(content),
+                mimetype="audio/mpeg",
+                as_attachment=True,
+                download_name=f"{target['username']}-{day}-editorial.mp3",
+            )
+        text = content.decode("utf-8", errors="replace")
+        return render_template(
+            "admin_artifact.html",
+            username=user["username"],
+            user_name=target["username"],
+            day=day,
+            stage=stage,
+            content=text,
+        )
+
     _maybe_start_scheduler(app)
 
     return app
+
+
+def require_admin(view):
+    """Flask decorator: only a logged-in admin may call the view.
+
+    The authenticated users row is passed as the first positional argument.
+    Not logged in -> redirect to login; non-admin -> HTTP 403.
+    """
+    @functools.wraps(view)
+    def wrapped(*args, **kwargs):
+        username = session.get("username")
+        if not username:
+            return redirect(url_for("login"))
+        user = database.get_user(username)
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
+        if not database.user_is_admin(user):
+            abort(403)
+        return view(user, *args, **kwargs)
+    return wrapped
 
 
 def _maybe_start_scheduler(app: Flask) -> None:
@@ -260,8 +375,9 @@ def render_issue(username: str, day: str | None = None) -> str:
 
     user_info = (
         f'<a class="top-bar-link" href="{url_for("settings")}">Paramètres</a>'
-        f'<span class="top-bar-user">{html.escape(username)}</span>'
-        f'<a class="top-bar-logout" href="{url_for("logout")}">Déconnexion</a>'
+        + (f'<a class="top-bar-link" href="{url_for("admin")}">Admin</a>' if database.user_is_admin(user) else "")
+        + f'<span class="top-bar-user">{html.escape(username)}</span>'
+        + f'<a class="top-bar-logout" href="{url_for("logout")}">Déconnexion</a>'
     )
 
     day_menu = _build_day_menu(user["id"], current_day=issue["day"])
@@ -294,6 +410,14 @@ def _parse_run_at(issue) -> datetime:
         return datetime.fromisoformat(run_at)
     except ValueError:
         return datetime.now()
+
+
+def _human_size(size_bytes: int) -> str:
+    """Format a byte count for display (Ko/Mo)."""
+    size_bytes = int(size_bytes or 0)
+    if size_bytes >= 1024 * 1024:
+        return f"{size_bytes / (1024 * 1024):.1f} Mo"
+    return f"{size_bytes / 1024:.1f} Ko"
 
 
 def random_feed_photo() -> dict | None:

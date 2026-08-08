@@ -30,7 +30,8 @@ The editorial should be produced as
 
 The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 
-- **Login** — connecting to the site redirects to `/login`. Credentials: demo user `titou` / `titou` (seeded from the `data/` folder). The login page shows a random photo (with caption) from any user's stored issue on the right, and a sign-up button on the left. New accounts are created at `/signup` and are seeded with the demo `feeds.yml` and `readers_interests.md`.
+- **Login** — connecting to the site redirects to `/login`. Credentials: demo user `titou` / `titou` and `demo_user` / `demo_user` (seeded from the `data/` folder). The login page shows a random photo (with caption) from any user's stored issue on the right, and a sign-up button on the left. New accounts are created at `/signup` and are seeded with the demo `feeds.yml` and `readers_interests.md`.
+- **Admin** — a user with the `is_admin` flag sees an **Admin** link in the top bar and reaches `/admin`: list all users (with pipeline-run counts), create and delete accounts, and browse every stored pipeline item (issues + artifacts) for all users in `/admin/data`. Access is restricted; non-admin users get a 403. Admin rights are granted by a Python call (see "Running" below).
 - **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes), an `excluded_domains` list (domains left out of the archive.ph link wrapper), and a `filter_mode` setting (`"24h"` or `"today"`) controlling how recent articles are kept.
 - **Article date filtering** — during scraping, a publication in `feeds.yml` can carry `today_only: true` to keep only that day's articles instead of the rolling `max_age` window (24h). This overrides the user's global `filter_mode`. The global setting is exposed in the settings page ("Dernières 24 heures" vs "Aujourd'hui uniquement").
 - **Per-user per-day issues** — each pipeline stage's output (`filtered_entries`, `parsed_entries`, `prepared_entries`, `editorial.mp3`) is stored in `issue_artifacts`, keyed by `(user, day)` in `issues`. History of editorials, one per day.
@@ -47,8 +48,11 @@ The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 conda activate press_room
 cd /path/to/press_room
 
-# 1. Seed the database with the demo user 'titou' (copies data/ files in)
+# 1. Seed the database with the demo users 'titou' and 'demo_user' (copies data/ files in)
 python -c "import src.db as d; d.init_db(); d.seed_demo_user()"
+
+# Grant admin rights to a user (e.g. demo_user)
+python -c "import src.db as d; d.set_admin('demo_user')"
 
 # 2. Run the pipeline for a user (writes all artifacts to SQLite)
 python -m src.run_pipeline --user titou
@@ -65,6 +69,7 @@ The database is a single SQLite file `data/pressroom.db`, created on first run a
 
 ```sql
 -- One row per user account. Passwords are stored as werkzeug password hashes.
+-- is_admin = admin rights (1) or not (0); grants access to /admin.
 -- editorial_minutes = target editorial read time (2-10 min); the LLM word range
 -- is derived as 200 * minutes ± 150 words.
 -- excluded_domains = user's archive.ph-excluded domains, one per line
@@ -74,6 +79,7 @@ CREATE TABLE users (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     username          TEXT NOT NULL UNIQUE,
     password_hash     TEXT NOT NULL,
+    is_admin          INTEGER NOT NULL DEFAULT 0,
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
     excluded_domains  TEXT,
     filter_mode       TEXT,
@@ -124,16 +130,40 @@ All functions live in `src/db.py` and accept an optional `db_path` argument (def
 | `get_editorial_minutes(user_id)` / `set_editorial_minutes(user_id, minutes)` | Read / write the target editorial read time (clamped 2-10). |
 | `get_excluded_domains(user_id)` / `set_excluded_domains(user_id, domains)` | Read / write the user's archive.ph-excluded domains (falls back to `DEFAULT_EXCLUDED_DOMAINS` when never set; an empty list excludes nothing). |
 | `list_users()` | All users. |
+| `user_is_admin(user)` / `is_admin_user(username)` / `set_admin(username, is_admin=True)` | Read the admin flag from a users row / by username, or grant/revoke admin rights (returns whether a row was updated). |
+| `delete_user(username)` | Remove a user (and cascade its files/issues/artifacts). |
+| `list_users_with_counts()` | All users with a `run_count` of issues (pipeline runs). |
 | `seed_default_files(user_id)` | Copy `data/feeds.yml` + `data/readers_interests.md` into a user's config files. |
 | `set_user_file(user_id, name, content)` / `get_user_file(user_id, name)` / `list_user_files(user_id)` | Read/write the user's config files. |
 | `get_or_create_issue(user_id, day)` | Return the issue id for a user/day, creating it and stamping `run_at` if needed. |
 | `set_artifact(issue_id, stage, content)` / `get_artifact(issue_id, stage)` | Store / fetch a pipeline stage output (bytes). |
 | `list_issues(user_id)` / `latest_issue(user_id)` | All issues for a user (newest first) / the latest one. |
-| `seed_demo_user()` | Create `titou`/`titou`, copy `data/` files into `user_files`, and seed today's issue with the demo artifacts. |
+| `get_issue(user_id, day)` / `list_artifacts(issue_id)` | Get a specific issue / the artifact stages (with sizes) of an issue. |
+| `seed_demo_user()` | Create `titou`/`titou` and `demo_user`/`demo_user`, copy `data/` files into their `user_files`, and seed today's issue with the demo artifacts. |
 
 All functions accept an optional `db_path` argument (defaults to `data/pressroom.db`).
 
+
 ## What it does
+```mermaid
+flowchart TD
+    F[feeds.yml] -->|Requests + filter| B[filtered_entries]
+    B -->|ranking + reranking + themes and countires| C[parsed_entries]
+    C -->|editorial writing + sections| D[prepared_entries]
+    D --> E[editorial_mp3]
+
+    A2(additional_rerank_prompt.md)
+    A2 --> C
+
+    A1[readers_interests.md]
+    A1 --> C
+    A1 --> D
+
+
+    A3(edito.md) --> D
+    
+    A4(title.md) --> D
+```
 
 1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date (24h window, or that day only when the user's `filter_mode` is `"today"` or a publication sets `today_only: true`), and writes `filtered_entries`.
 2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.

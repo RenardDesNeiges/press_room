@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pressroom — Données des pipelines</title>
+  <link rel="stylesheet" href="/page.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top-bar">
+      <div class="top-bar-inner">
+        <h1 class="top-bar-title">Pressroom</h1>
+        <div class="top-bar-right">
+          <a class="top-bar-link" href="/">Lire l'édition</a>
+          <a class="top-bar-link" href="/settings">Paramètres</a>
+          <a class="top-bar-link" href="/admin">Admin</a>
+          <a class="top-bar-link" href="/admin/data" aria-disabled="true">Données des pipelines</a>
+          <span class="top-bar-user">{{ username }}</span>
+          <a class="top-bar-logout" href="/logout">Déconnexion</a>
+        </div>
+        <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <main class="settings">
+      <h1 class="settings-title">Données des pipelines</h1>
+      <p class="settings-hint">Tous les éléments stockés en base pour chaque utilisateur, édition par édition. Les étapes textuelles (YAML) peuvent être affichées ; l'éditorial MP3 peut être téléchargé.</p>
+
+      {% for user in users %}
+      <section class="settings-section">
+        <h2>{{ user.username }}</h2>
+        {% if user.issues %}
+        <table class="pipeline-history admin-data">
+          <thead>
+            <tr><th>Édition</th><th>Dernière exécution</th><th>Étapes</th></tr>
+          </thead>
+          <tbody>
+            {% for issue in user.issues %}
+            <tr>
+              <td>{{ issue.day }}</td>
+              <td>{{ issue.run_at }}</td>
+              <td>
+                {% for artifact in issue.artifacts %}
+                {% if artifact.stage == 'editorial_mp3' %}
+                <a class="admin-link" href="/admin/data/{{ user.id }}/{{ issue.day }}/editorial_mp3">Éditorial (MP3) · {{ artifact.size }}</a>
+                {% else %}
+                <a class="admin-link" href="/admin/data/{{ user.id }}/{{ issue.day }}/{{ artifact.stage }}">{{ artifact.stage }} · {{ artifact.size }}</a>
+                {% endif %}
+                {% else %}
+                <span>Aucune étape enregistrée.</span>
+                {% endfor %}
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">Aucune édition.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="settings-hint">Aucune édition pour cet utilisateur.</p>
+        {% endif %}
+      </section>
+      {% else %}
+      <p class="settings-hint">Aucun utilisateur.</p>
+      {% endfor %}
+    </main>
+  </div>
+  <script src="/page.js"></script>
+</body>
+</html>

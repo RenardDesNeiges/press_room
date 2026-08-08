@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
+    is_admin INTEGER NOT NULL DEFAULT 0,
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
     excluded_domains TEXT,
     filter_mode TEXT,
@@ -89,6 +90,10 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
         if "filter_mode" not in user_cols:
             conn.execute(
                 "ALTER TABLE users ADD COLUMN filter_mode TEXT"
+            )
+        if "is_admin" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"
             )
 
 
@@ -168,6 +173,60 @@ def list_user_files(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> dict[str, 
 def list_users(db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
     with connect(db_path) as conn:
         return conn.execute("SELECT * FROM users ORDER BY username").fetchall()
+
+
+def get_user_by_id(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> sqlite3.Row | None:
+    with connect(db_path) as conn:
+        return conn.execute(
+            "SELECT * FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+
+
+def user_is_admin(user: sqlite3.Row | None) -> bool:
+    """Return True if a users row carries the admin flag.
+
+    Missing/old rows (DB not yet migrated) are treated as non-admin.
+    """
+    if user is None:
+        return False
+    try:
+        return bool(user["is_admin"])
+    except (KeyError, IndexError, TypeError):
+        return False
+
+
+def is_admin_user(username: str, db_path: Path = DEFAULT_DB_PATH) -> bool:
+    """Return True if the given username exists with admin rights."""
+    return user_is_admin(get_user(username, db_path))
+
+
+def set_admin(
+    username: str, is_admin: bool = True, db_path: Path = DEFAULT_DB_PATH
+) -> bool:
+    """Grant or revoke admin rights for a user. Returns True if updated."""
+    flag = 1 if is_admin else 0
+    with connect(db_path) as conn:
+        cursor = conn.execute(
+            "UPDATE users SET is_admin = ? WHERE username = ?", (flag, username)
+        )
+    return cursor.rowcount > 0
+
+
+def delete_user(username: str, db_path: Path = DEFAULT_DB_PATH) -> bool:
+    """Remove a user and (cascade) its files/issues/artifacts. Returns True if removed."""
+    with connect(db_path) as conn:
+        cursor = conn.execute("DELETE FROM users WHERE username = ?", (username,))
+    return cursor.rowcount > 0
+
+
+def list_users_with_counts(db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
+    """All users plus a ``run_count`` of issues (pipeline runs) each has."""
+    with connect(db_path) as conn:
+        return conn.execute(
+            "SELECT u.id, u.username, u.is_admin, u.created_at, "
+            "(SELECT COUNT(*) FROM issues i WHERE i.user_id = u.id) AS run_count "
+            "FROM users u ORDER BY u.username"
+        ).fetchall()
 
 
 def get_editorial_minutes(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> int:
@@ -319,15 +378,35 @@ def latest_issue(
         ).fetchone()
 
 
-def seed_demo_user(db_path: Path = DEFAULT_DB_PATH) -> None:
-    """Create the demo user 'titou' copying the config/pipeline files from data/."""
+def get_issue(
+    user_id: int, day: str, db_path: Path = DEFAULT_DB_PATH
+) -> sqlite3.Row | None:
+    """Return the issue row for a user/day, or None."""
+    with connect(db_path) as conn:
+        return conn.execute(
+            "SELECT * FROM issues WHERE user_id = ? AND day = ?", (user_id, day)
+        ).fetchone()
+
+
+def list_artifacts(issue_id: int, db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
+    """Return (stage, size_bytes, created_at) for every artifact of an issue."""
+    with connect(db_path) as conn:
+        return conn.execute(
+            "SELECT stage, length(content) AS size_bytes, created_at "
+            "FROM issue_artifacts WHERE issue_id = ? ORDER BY created_at",
+            (issue_id,),
+        ).fetchall()
+
+
+def _seed_user_account(username: str, password: str, db_path: Path) -> None:
+    """(Re)create one demo account with config files and today's seeded issue."""
     data_dir = DATA_DIR
 
     with connect(db_path) as conn:
-        conn.execute("DELETE FROM users WHERE username = 'titou'")
+        conn.execute("DELETE FROM users WHERE username = ?", (username,))
         cursor = conn.execute(
             "INSERT INTO users (username, password_hash) VALUES (?, ?)",
-            ("titou", generate_password_hash("titou")),
+            (username, generate_password_hash(password)),
         )
         user_id = int(cursor.lastrowid)
 
@@ -347,7 +426,16 @@ def seed_demo_user(db_path: Path = DEFAULT_DB_PATH) -> None:
             content = path.read_bytes()
             set_artifact(issue_id, stage, content, db_path)
 
-    print(f"Seeded demo user 'titou' (issue {today}).")
+
+def seed_demo_user(db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Create the demo users 'titou' and 'demo_user'.
+
+    Each copies the config/pipeline files from data/ and gets today's seeded
+    issue. Grant admin rights with ``set_admin('demo_user')``.
+    """
+    _seed_user_account("titou", "titou", db_path)
+    _seed_user_account("demo_user", "demo_user", db_path)
+    print("Seeded demo users 'titou' and 'demo_user' (issue today).")
 
 
 if __name__ == "__main__":
