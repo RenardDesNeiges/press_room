@@ -11,7 +11,7 @@ import http.server
 import socketserver
 from pathlib import Path
 
-from config import SERVE_PORT
+from src.config import SERVE_PORT
 
 
 PROJECT_ROOT = Path(__file__).parent

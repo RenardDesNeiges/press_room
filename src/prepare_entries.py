@@ -18,7 +18,7 @@ from typing import Any
 
 import yaml
 
-from config import (
+from src.config import (
     DATA_DIR,
     DEFAULT_EDITORIAL_MINUTES,
     DEFAULT_INTERESTS_PATH,

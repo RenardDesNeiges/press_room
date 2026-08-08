@@ -37,7 +37,7 @@ The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 - **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time.
 - **Report picker** — clicking the date in the top bar opens a dropdown listing the last 7 days' issues (at most); clicking an entry regenerates the page from that report. The currently displayed day is highlighted.
 - **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language, optionally tick "Aujourd'hui uniquement" per publication), download or import the full `feeds.yml` file, edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), choose the article date filter ("Dernières 24 heures" vs "Aujourd'hui uniquement"), set the list of domains excluded from the archive.ph link wrapper, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
-- **Archive.ph links** — article links are wrapped through `archive.ph` unless their domain is in the user's `excluded_domains` list (one per line in settings). Users who have never set the list fall back to the built-in `DEFAULT_EXCLUDED_DOMAINS` in `config.py`.
+- **Archive.ph links** — article links are wrapped through `archive.ph` unless their domain is in the user's `excluded_domains` list (one per line in settings). Users who have never set the list fall back to the built-in `DEFAULT_EXCLUDED_DOMAINS` in `src/config.py`.
 - **Daily schedule** — the webapp runs the pipeline once per day at a configured local time (default 06:00) for the configured users. See `config.yml` (`schedule.time`, `schedule.users`, `schedule.enabled`). The scheduling thread starts with the app (a daemon thread in `src/scheduler.py`).
 - **Page generation on login** — after login, the latest (or a historical) issue is rendered from the database.
 
@@ -68,7 +68,7 @@ The database is a single SQLite file `data/pressroom.db`, created on first run a
 -- editorial_minutes = target editorial read time (2-10 min); the LLM word range
 -- is derived as 200 * minutes ± 150 words.
 -- excluded_domains = user's archive.ph-excluded domains, one per line
--- (NULL/absent means "use the default list in config.py").
+-- (NULL/absent means "use the default list in src/config.py").
 -- filter_mode = article date filter: "today" or NULL (= "24h").
 CREATE TABLE users (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -147,7 +147,6 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 ```
 .
 ├── app.py                    # Flask webapp (login, per-user page rendering, /settings, daily scheduler)
-├── config.py                 # Defaults for paths, models, serve port, pipeline limits, config.yml loader
 ├── config.yml                # Optional overrides (paths, models, pipeline, web, schedule, …)
 ├── data/                     # Source config + demo pipeline outputs (seeded for 'titou')
 │   ├── additional_rerank_prompt.md
@@ -162,6 +161,7 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 │   └── readers_interests.md  # Demo reader profile (seeded)
 └── src/
     ├── __init__.py
+    ├── config.py              # Defaults for paths, models, serve port, pipeline limits, config.yml loader
     ├── db.py                 # SQLite schema + seed + CRUD for users/files/issues/artifacts
     ├── editorial_to_mp3.py   # Step 4: editorial audio synthesis
     ├── feed_reader.py        # Step 1: RSS scraping
@@ -255,7 +255,7 @@ pipeline daily at the configured local time (default 06:00) for each listed user
 ## Customization
 
 All configuration lives in `config.yml` at the project root. Every value
-defaults to the built-in ones in `config.py`, so the project works even without
+defaults to the built-in ones in `src/config.py`, so the project works even without
 a `config.yml`. Values in `config.yml` override the defaults:
 
 - **Paths:** the `paths:` block (`data_dir`, and the file names for feeds, the pipeline stages' YAML files, the MP3, `interests`, `title_guide`, `additional_rerank_prompt`, `template_dir`, and `db`).

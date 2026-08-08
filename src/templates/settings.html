@@ -90,7 +90,11 @@
         <p class="settings-hint">Télécharger ou importer le fichier complet feeds.yml. Il permet notamment de définir « Aujourd'hui uniquement » par publication (champ <code>today_only: true</code>).</p>
         <form method="post" enctype="multipart/form-data" class="feeds-file-form">
           <input type="hidden" name="action" value="upload_feeds">
-          <label class="file-label">Importer un fichier <input type="file" name="feeds_file" accept=".yml,.yaml"></label>
+          <p class="file-label">Importer un fichier</p>
+          <label class="file-picker">
+            <span class="file-picker-text">Parcourir…</span>
+            <input type="file" name="feeds_file" accept=".yml,.yaml" class="file-picker-input">
+          </label>
           <div class="settings-actions">
             <a class="feeds-download" href="/settings/feeds.yml">Télécharger feeds.yml</a>
             <button type="submit">Importer</button>

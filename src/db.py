@@ -15,7 +15,7 @@ from pathlib import Path
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from config import DEFAULT_DB_PATH, DATA_DIR, DEFAULT_EXCLUDED_DOMAINS
+from src.config import DEFAULT_DB_PATH, DATA_DIR, DEFAULT_EXCLUDED_DOMAINS
 
 
 SCHEMA = """

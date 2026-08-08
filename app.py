@@ -28,7 +28,7 @@ from flask import (
     url_for,
 )
 
-from config import (
+from src.config import (
     DEFAULT_TEMPLATE_DIR,
     SCHEDULE_ENABLED,
     SCHEDULE_USERS,

@@ -12,7 +12,7 @@ from typing import Any
 
 import yaml
 
-from config import (
+from src.config import (
     DEFAULT_EXCLUDED_DOMAINS,
     DEFAULT_PARSED_ENTRIES_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,

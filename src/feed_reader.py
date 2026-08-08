@@ -10,7 +10,7 @@ from typing import Any
 import feedparser
 import yaml
 
-from config import *
+from src.config import *
 
 
 class HTMLStripper(HTMLParser):

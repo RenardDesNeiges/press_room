@@ -1,7 +1,7 @@
 # Pressroom configuration example file.
 # Copy into a config.yml to actually setup the config for your installation.
-# Every default set in config.py can be overridden here. If this file is
-# absent, the built-in defaults in config.py are used instead.
+# Every default set in src/config.py can be overridden here. If this file is
+# absent, the built-in defaults in src/config.py are used instead.
 
 # --- paths ------------------------------------------------------------------
 paths:

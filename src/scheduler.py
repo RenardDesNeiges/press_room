@@ -15,7 +15,7 @@ from datetime import datetime, timedelta, timezone
 
 from zoneinfo import ZoneInfo
 
-from config import schedule_timezone
+from src.config import schedule_timezone
 from src.run_pipeline import run_for_user
 
 logger = logging.getLogger(__name__)

@@ -12,7 +12,7 @@ from typing import Any
 
 import yaml
 
-from config import (
+from src.config import (
     DEFAULT_CANDIDATES_COUNT,
     DEFAULT_ENTRIES_PATH,
     DEFAULT_FINAL_COUNT,

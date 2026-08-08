@@ -10,7 +10,7 @@ from typing import Any
 from openrouter import OpenRouter
 
 from src.key import API_KEY
-from config import *
+from src.config import *
 from src.rank_entries import load_interests
 
 
@@ -225,7 +225,7 @@ def rerank_with_llm(
 def main() -> None:
     """CLI smoke test: load filtered entries, get top candidates, rerank to final."""
     import yaml
-    from config import DEFAULT_CANDIDATES_COUNT, DEFAULT_ENTRIES_PATH, DEFAULT_FINAL_COUNT
+    from src.config import DEFAULT_CANDIDATES_COUNT, DEFAULT_ENTRIES_PATH, DEFAULT_FINAL_COUNT
     from src.rank_entries import rank_entries
 
     with open(DEFAULT_ENTRIES_PATH, "r", encoding="utf-8") as fh:

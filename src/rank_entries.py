@@ -7,7 +7,7 @@ from typing import Any
 
 from wordllama import WordLlama
 
-from config import *
+from src.config import *
 
 
 def load_interests(path: str | Path = DEFAULT_INTERESTS_PATH) -> str:

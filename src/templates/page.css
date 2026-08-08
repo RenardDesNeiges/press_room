@@ -1066,15 +1066,38 @@ footer {
 
 .feeds-file-form .file-label {
   display: block;
+  margin: 0 0 0.6rem;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
-.feeds-file-form .file-label input[type="file"] {
-  display: block;
-  margin-top: 0.4rem;
-  font-family: inherit;
+.file-picker {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #001F3F;
+  background: none;
+  font: inherit;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.file-picker:hover {
+  background-color: var(--highlight);
+}
+
+.file-picker-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .feeds-download {

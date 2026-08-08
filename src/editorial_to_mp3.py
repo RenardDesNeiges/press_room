@@ -11,7 +11,7 @@ import requests
 import yaml
 
 from src.key import API_KEY
-from config import DEFAULT_MP3_PATH, DEFAULT_PREPARED_ENTRIES_PATH
+from src.config import DEFAULT_MP3_PATH, DEFAULT_PREPARED_ENTRIES_PATH
 
 
 DEFAULT_OUTPUT_PATH = DEFAULT_MP3_PATH
