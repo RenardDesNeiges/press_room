@@ -16,12 +16,12 @@ The editorial should be produced as
 ```
 
 ## To-be-added features
-0. Ability to guarantee that every item from some sources (for instance for rare posting substacks) is included in briefing. Assign archive.ph by source rather than to URLs.
-1. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot. 
-2. Admin status for some users, logging of the system (and a page where admins can check logs out).
+0. Refactored data pipeline with a) prepared entries 
+ b) editorial plans generated before the actual editorials c) editorial persistence on the plan level d) editorial writing from the plan 
+1. Refactored user preference specification setup, which automatically handles translation.
+2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot. 
 3. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
 4. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
-5. Make use of persistence, so editorials focus on novel information, and avoid repeating things.
 6. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
 7. Add a map widget, showing geographical coverage (puts the articles on a map).
 
@@ -98,11 +98,12 @@ CREATE TABLE user_files (
 
 -- One issue per (user, day). run_at = when the pipeline last ran for it.
 CREATE TABLE issues (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    day        TEXT NOT NULL,          -- ISO date, e.g. '2026-08-06'
-    run_at     TEXT NOT NULL DEFAULT (datetime('now','localtime')),
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id          INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day              TEXT NOT NULL,          -- ISO date, e.g. '2026-08-06'
+    pipeline_version INTEGER NOT NULL DEFAULT 0,
+    run_at           TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(user_id, day)
 );
 
@@ -110,12 +111,20 @@ CREATE TABLE issues (
 CREATE TABLE issue_artifacts (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     issue_id   INTEGER NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
-    stage      TEXT NOT NULL,          -- 'filtered_entries' | 'parsed_entries' | 'prepared_entries' | 'editorial_mp3'
+    stage      TEXT NOT NULL,          -- 'feeds.yml' | 'readers_interests.md' | 'filtered_entries' | 'parsed_entries' | 'prepared_entries' | 'editorial' | 'editorial_mp3'
     content    BLOB NOT NULL,          -- YAML (text) or MP3 (binary)
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(issue_id, stage)
 );
 ```
+
+**Pipeline versions.** `issues.pipeline_version` records the storage layout of an
+issue. `0` = legacy: the editorial text + headline are embedded inside the
+`prepared_entries` blob. `1` = the editorial is stored in its own `editorial`
+artifact row (`{title: ..., editorial: ...}`), with `prepared_entries` holding
+only the article sections. `init_db()` runs `backfill_issue_editorials()` to
+promote any stored editorial into its own row and stamp the issue as v1, so old
+issues remain readable after the layout change.
 
 ### Usage
 
@@ -137,6 +146,8 @@ All functions live in `src/db.py` and accept an optional `db_path` argument (def
 | `set_user_file(user_id, name, content)` / `get_user_file(user_id, name)` / `list_user_files(user_id)` | Read/write the user's config files. |
 | `get_or_create_issue(user_id, day)` | Return the issue id for a user/day, creating it and stamping `run_at` if needed. |
 | `set_artifact(issue_id, stage, content)` / `get_artifact(issue_id, stage)` | Store / fetch a pipeline stage output (bytes). |
+| `set_pipeline_version(issue_id, version)` | Stamp the storage layout version of an issue (v0 = editorial in `prepared_entries`; v1 = separate `editorial` row). |
+| `backfill_issue_editorials()` | Upgrade issues to v1: extract the editorial into its own row and stamp `pipeline_version=1` (idempotent). |
 | `list_issues(user_id)` / `latest_issue(user_id)` | All issues for a user (newest first) / the latest one. |
 | `get_issue(user_id, day)` / `list_artifacts(issue_id)` | Get a specific issue / the artifact stages (with sizes) of an issue. |
 | `seed_demo_user()` | Create `titou`/`titou` and `demo_user`/`demo_user`, copy `data/` files into their `user_files`, and seed today's issue with the demo artifacts. |
@@ -149,8 +160,9 @@ All functions accept an optional `db_path` argument (defaults to `data/pressroom
 flowchart TD
     F[feeds.yml] -->|Requests + filter| B[filtered_entries]
     B -->|ranking + reranking + themes and countires| C[parsed_entries]
-    C -->|editorial writing + sections| D[prepared_entries]
-    D --> E[editorial_mp3]
+    C -->|editorial writing| E[editorial]
+    C -->|sections| D[prepared_entries]
+    D --> E1[editorial_mp3]
 
     A2(additional_rerank_prompt.md)
     A2 --> C
@@ -160,14 +172,14 @@ flowchart TD
     A1 --> D
 
 
-    A3(edito.md) --> D
+    A3(edito.md) --> E
     
-    A4(title.md) --> D
+    A4(title.md) --> E
 ```
 
 1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date (24h window, or that day only when the user's `filter_mode` is `"today"` or a publication sets `today_only: true`), and writes `filtered_entries`.
 2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.
-3. **Prepare** – writes the French editorial and headline, classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and writes `prepared_entries`. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
+3. **Prepare** – writes the French editorial and headline (stored as its own `editorial` artifact in pipeline_version 1), classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and writes `prepared_entries`. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
 4. **Speak** – synthesizes the editorial to `editorial.mp3` via OpenRouter's TTS API.
 
 All four artifacts are stored per user/day in SQLite. The newspaper HTML is generated on login from the stored data.
@@ -180,18 +192,20 @@ flowchart TD
     A[feeds.yml] -->|Requests + filter| B[filtered_entries]
     B -->|ranking + reranking + themes and countires| C{parsed_entries of the day}
     
-    D0[editorial_plan, t-1, t-2...]-->|compare with last day-s|D
+    D0(editorial_plan, t-1, t-2...)-->|compare with last day-s|D
 
 
-    C -->|Select, source and organize informations|D
-    D[editorial_plan, t]-->|editorial writing|E1
-    D-->|sections|E2
-    D-->E3[future_calendar]
+    C -->|Select, source and organize informations|E2
+    D(editorial_plan, t)-->|editorial writing|E1
+
+    D-->E3(future_calendar)
 
     E1[editorial]
     E2[prepared_entries]
+    E2-->D
 
     P0[readers interests field]
+
     P0-->|Multlingual prompt preparation|P1
     P1[reader_profile]
     P1-->E1
@@ -208,7 +222,8 @@ flowchart TD
 ```
 .
 ├── app.py                    # Flask webapp (login, per-user page rendering, /settings, daily scheduler)
-├── config.yml                # Optional overrides (paths, models, pipeline, web, schedule, …)
+├── config.yml                # Optional overrides (paths, models, pipeline, web, schedule, …; gitignored)
+├── requirements.txt          # Runtime + test deps with tolerant version floors
 ├── data/                     # Source config + demo pipeline outputs (seeded for 'titou')
 │   ├── additional_rerank_prompt.md
 │   ├── edito.md              # Prompt for the editorial
@@ -251,16 +266,16 @@ flowchart TD
 - Python 3.12
 - Conda (the project uses a Conda environment, not venv)
 - An OpenRouter API key (stored in `src/key.py`)
-- Flask
+- The packages in `requirements.txt` (runtime + pytest)
 
 ## Setup
 
 1. Create and activate the Conda environment:
 
 ```bash
-conda create -n press_room python=3.12 pyyaml feedparser requests -y
+conda create -n press_room python=3.12 -y
 conda activate press_room
-pip install wordllama openrouter flask pytest
+pip install -r requirements.txt
 ```
 
 2. Add your OpenRouter API key to `src/key.py`.
@@ -323,7 +338,7 @@ a `config.yml`. Values in `config.yml` override the defaults:
 - **Editorial:** `editorial.minutes` — default target editorial read time (2-10 min), used when a user has not set their own.
 - **Models:** the `models:` block — `default` (reranking/translation/title extraction), `fancy` (editorial), and `section` (section classification). The default slugs include `:nitro` for faster inference on OpenRouter.
 - **Pipeline:** the `pipeline:` block — `candidates_count`, `final_count` (number of articles), `section_size`, and `max_per_source` (cap candidates per newspaper before LLM reranking).
-- **Web:** the `web:` block — `secret_key` and `port`.
+- **Web:** the `web:` block — `secret_key` and `port`. The secret key resolves with this precedence: `PRESSROOM_SECRET_KEY` env var → `config.yml` → a fresh key generated and persisted into the gitignored `config.yml` on first boot (the placeholder `dev-secret-change-me` does not count as a real key).
 - **Archive.ph exclusions:** `excluded_domains` (list of domains left out of the archive.ph link wrapper; this is the default list new/never-configured users fall back to).
 - **Schedule:** the `schedule:` block — `enabled`, `time` (`"HH:MM"`, local time in `timezone`), `timezone` (IANA zone, e.g. `Europe/Paris`; default, falling back to `Europe/Paris` if invalid), and `users`.
 - **TTS voice:** edit `DEFAULT_VOICE` in `src/editorial_to_mp3.py`.

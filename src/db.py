@@ -13,6 +13,8 @@ import sqlite3
 from datetime import date
 from pathlib import Path
 
+import yaml
+
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.config import DEFAULT_DB_PATH, DATA_DIR, DEFAULT_EXCLUDED_DOMAINS
@@ -106,6 +108,7 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
     # every past issue that never archived them (source files were only stored in
     # user_files before pipeline_version=1).
     backfill_issue_source_files(db_path)
+    backfill_issue_editorials(db_path)
 
 
 def create_user(username: str, password: str, db_path: Path = DEFAULT_DB_PATH) -> int:
@@ -436,6 +439,51 @@ def backfill_issue_source_files(db_path: Path = DEFAULT_DB_PATH) -> int:
     return written
 
 
+def backfill_issue_editorials(db_path: Path = DEFAULT_DB_PATH) -> int:
+    """Promote stored editorials to their own artifact row (pipeline_version 1).
+
+    In pipeline_version 0, the editorial text + headline lived inside the
+    ``prepared_entries`` blob. pipeline_version 1 stores them in a dedicated
+    ``editorial`` row. Every issue whose ``prepared_entries`` carries a title/
+    editorial is upgraded: the editorial row is written (if missing) and the
+    issue is stamped ``pipeline_version=1``. Returns the number upgraded.
+    """
+    upgraded = 0
+    for (issue_id,) in _prepared_issue_ids(db_path):
+        if get_artifact(issue_id, "editorial", db_path) is not None:
+            continue
+        try:
+            blob = get_artifact(issue_id, "prepared_entries", db_path)
+            data = yaml.safe_load(blob.decode("utf-8", errors="replace")) or {}
+        except Exception:
+            continue
+        if data.get("editorial") is None and data.get("title") is None:
+            continue
+        editorial_yaml = yaml.safe_dump(
+            {
+                "title": data.get("title"),
+                "editorial": data.get("editorial"),
+            },
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        ).encode("utf-8")
+        set_artifact(issue_id, "editorial", editorial_yaml, db_path)
+        set_pipeline_version(issue_id, 1, db_path)
+        upgraded += 1
+    return upgraded
+
+
+def _prepared_issue_ids(db_path: Path) -> list[tuple[int]]:
+    """Return the issue ids that store a ``prepared_entries`` artifact."""
+    with connect(db_path) as conn:
+        rows = conn.execute(
+            "SELECT DISTINCT issue_id FROM issue_artifacts "
+            "WHERE stage = 'prepared_entries'"
+        ).fetchall()
+    return [(int(row["issue_id"]),) for row in rows]
+
+
 def list_artifacts(issue_id: int, db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
     """Return (stage, size_bytes, created_at) for every artifact of an issue."""
     with connect(db_path) as conn:
@@ -474,11 +522,29 @@ def _seed_user_account(username: str, password: str, db_path: Path) -> None:
             content = path.read_bytes()
             set_artifact(issue_id, stage, content, db_path)
 
-    # Archive the seeded source files onto the issue (pipeline_version 0 flow).
+    # Archive the seeded source files onto the issue (pipeline_version 1 flow).
     for name in SOURCE_FILES:
         content = get_user_file(user_id, name, db_path)
         if content:
             set_artifact(issue_id, name, content.encode("utf-8"), db_path)
+
+    prepared_path = data_dir / "prepared_entries.yml"
+    if prepared_path.exists():
+        try:
+            prepared_data = yaml.safe_load(prepared_path.read_text(encoding="utf-8")) or {}
+        except Exception:
+            prepared_data = {}
+        editorial_yaml = yaml.safe_dump(
+            {
+                "title": prepared_data.get("title"),
+                "editorial": prepared_data.get("editorial"),
+            },
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        ).encode("utf-8")
+        set_artifact(issue_id, "editorial", editorial_yaml, db_path)
+    set_pipeline_version(issue_id, 1, db_path)
 
 
 def seed_demo_user(db_path: Path = DEFAULT_DB_PATH) -> None:

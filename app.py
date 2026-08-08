@@ -33,8 +33,8 @@ from src.config import (
     DEFAULT_TEMPLATE_DIR,
     SCHEDULE_ENABLED,
     SCHEDULE_USERS,
-    SECRET_KEY,
     schedule_clock,
+    setup_secret_key,
 )
 from src import db as database
 from src.scheduler import start_daily
@@ -48,7 +48,7 @@ from src.gen_static_page import (
 
 def create_app() -> Flask:
     app = Flask(__name__, template_folder=str(DEFAULT_TEMPLATE_DIR))
-    app.secret_key = SECRET_KEY
+    app.secret_key = setup_secret_key()
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
@@ -276,6 +276,9 @@ def create_app() -> Flask:
         run_at = _format_run_at(selected_issue) if selected_issue else None
         available_stages = _available_stages(selected_user, selected_issue)
 
+        pipeline_version = _pipeline_version_of(selected_issue)
+        stages = PIPELINE_V1_STAGES if pipeline_version >= 1 else PIPELINE_V0_STAGES
+
         stage = request.args.get("stage")
         if stage not in ADMIN_STAGE_KEYS and stage != "readers":
             stage = "prepared_entries"
@@ -291,7 +294,8 @@ def create_app() -> Flask:
             issues=issues,
             day=selected_issue["day"] if selected_issue else None,
             run_at=run_at,
-            stages=ADMIN_STAGES,
+            pipeline_version=pipeline_version,
+            stages=stages,
             available=available_stages,
             stage=stage,
             content=content,
@@ -380,8 +384,7 @@ def render_issue(username: str, day: str | None = None) -> str:
 
     data = yaml.safe_load(raw)
     entries = data.get("entries", [])
-    editorial = data.get("editorial")
-    title = data.get("title")
+    editorial, title = _issue_editorial(issue, data)
 
     generated_at = format_datetime_fr(_parse_run_at(issue))
 
@@ -424,14 +427,53 @@ def _parse_run_at(issue) -> datetime:
         return datetime.now()
 
 
+def _issue_editorial(issue, prepared_data: dict) -> tuple[str | None, str | None]:
+    """Return (editorial, title) for an issue, in its stored pipeline layout.
+
+    pipeline_version 1 stores the editorial text + headline in their own
+    artifact row; older pipelines kept them inside ``prepared_entries``.
+    """
+    try:
+        version = int(issue["pipeline_version"] or 0)
+    except (KeyError, IndexError, TypeError, ValueError):
+        version = 0
+    if version >= 1:
+        blob = database.get_artifact(issue["id"], "editorial")
+        if blob is not None:
+            try:
+                ed = yaml.safe_load(blob.decode("utf-8", errors="replace")) or {}
+            except yaml.YAMLError:
+                ed = {}
+            if ed.get("editorial") is not None or ed.get("title") is not None:
+                return ed.get("editorial"), ed.get("title")
+    return prepared_data.get("editorial"), prepared_data.get("title")
+
+
 ADMIN_STAGES = [
+    {"key": "feeds", "label": "feeds.yml"},
+    {"key": "filtered_entries", "label": "filtered_entries"},
+    {"key": "parsed_entries", "label": "parsed_entries"},
+    {"key": "prepared_entries", "label": "prepared_entries"},
+    {"key": "editorial", "label": "editorial"},
+    {"key": "editorial_mp3", "label": "editorial_mp3"},
+]
+ADMIN_STAGE_KEYS = {s["key"] for s in ADMIN_STAGES}
+
+PIPELINE_V0_STAGES = [
     {"key": "feeds", "label": "feeds.yml"},
     {"key": "filtered_entries", "label": "filtered_entries"},
     {"key": "parsed_entries", "label": "parsed_entries"},
     {"key": "prepared_entries", "label": "prepared_entries"},
     {"key": "editorial_mp3", "label": "editorial_mp3"},
 ]
-ADMIN_STAGE_KEYS = {s["key"] for s in ADMIN_STAGES}
+
+PIPELINE_V1_STAGES = [
+    {"key": "feeds", "label": "feeds.yml"},
+    {"key": "filtered_entries", "label": "filtered_entries"},
+    {"key": "parsed_entries", "label": "parsed_entries"},
+    {"key": "prepared_entries", "label": "prepared_entries"},
+    {"key": "editorial_mp3", "label": "editorial_mp3"},
+]
 
 
 def _format_run_at(issue) -> str:
@@ -455,6 +497,16 @@ def _available_stages(selected_user, selected_issue) -> set[str]:
         for artifact in database.list_artifacts(selected_issue["id"]):
             available.add(artifact["stage"])
     return available
+
+
+def _pipeline_version_of(issue) -> int:
+    """Return the pipeline version of an issue (0 for legacy issues)."""
+    if issue is None:
+        return 0
+    try:
+        return int(issue["pipeline_version"] or 0)
+    except (KeyError, IndexError, TypeError, ValueError):
+        return 0
 
 
 def _pipeline_stage_content(selected_user, selected_issue, stage: str):

@@ -21,6 +21,8 @@ from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from src import db as database
 from src import editorial_to_mp3, feed_reader, parse_feed, prepare_entries
 from src.feed_reader import make_eid
@@ -99,6 +101,18 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         database.set_artifact(issue_id, "prepared_entries", prepared_path.read_bytes())
         if mp3_path.exists():
             database.set_artifact(issue_id, "editorial_mp3", mp3_path.read_bytes())
+
+        prepared_data = yaml.safe_load(prepared_path.read_bytes()) or {}
+        editorial_yaml = yaml.safe_dump(
+            {
+                "title": prepared_data.get("title"),
+                "editorial": prepared_data.get("editorial"),
+            },
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        ).encode("utf-8")
+        database.set_artifact(issue_id, "editorial", editorial_yaml)
 
         for name in database.SOURCE_FILES:
             content = database.get_user_file(user_id, name)

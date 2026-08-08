@@ -1,0 +1,12 @@
+# Runtime dependencies for Pressroom.
+# Version floors are tolerant: newer compatible releases are accepted.
+# Install:  conda install pyyaml feedparser requests && pip install flask openrouter wordllama
+flask>=3.0
+feedparser>=6.0
+requests>=2.31
+pyyaml>=6.0
+openrouter>=1.1
+wordllama>=0.4
+
+# Development / tests
+pytest>=8.0

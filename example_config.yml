@@ -35,6 +35,9 @@ pipeline:
   section_size: 5
 
 # --- web --------------------------------------------------------------------
+# The secret key can be set via the PRESSROOM_SECRET_KEY env var (highest
+# precedence), or in config.yml. The placeholder below does not count as a real
+# key: the app replaces it with a generated one on first boot.
 web:
   secret_key: "dev-secret-change-me"
   port: 8080

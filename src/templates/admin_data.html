@@ -56,7 +56,11 @@
 
       {% if selected_user %}
       <section class="settings-section">
-        <h2>Pipeline</h2>
+        <h2>Pipeline
+          {% if pipeline_version >= 1 %}
+          <span class="pipeline-version-tag">v{{ pipeline_version }}</span>
+          {% endif %}
+        </h2>
         {% if day %}
         <div class="flow-scroll">
           <div class="pipeline-flow">
@@ -70,6 +74,19 @@
               <span class="flow-arrow">→</span>
               {% endif %}
             {% endfor %}
+
+            {% if pipeline_version >= 1 %}
+            <div class="flow-readers">
+              <div class="flow-readers-bar">
+                <span class="flow-readers-tip" style="left: 33%">↟ editorial</span>
+              </div>
+              <a class="flow-node reader-node{% if stage == 'editorial' %} is-active{% endif %}{% if 'editorial' not in available %} unavailable{% endif %}"
+                 href="/admin/data?user_id={{ selected_user.id }}&day={{ day }}&stage=editorial"
+                 {% if 'editorial' not in available %}aria-disabled="true" tabindex="-1"{% endif %}>
+                editorial
+              </a>
+            </div>
+            {% endif %}
 
             <div class="flow-readers">
               <div class="flow-readers-bar">
@@ -102,7 +119,9 @@
         {% elif stage == 'parsed_entries' %}
           <p class="settings-hint">parsed_entries — articles classés, traduits et tagués.</p>
         {% elif stage == 'prepared_entries' %}
-          <p class="settings-hint">prepared_entries — journal final avec éditorial et sections.</p>
+          <p class="settings-hint">prepared_entries — journal final avec sections.</p>
+        {% elif stage == 'editorial' %}
+          <p class="settings-hint">editorial — le texte de l'éditorial et son titre (ligne séparée du pipeline v{{ pipeline_version }}).</p>
         {% elif stage == 'editorial_mp3' %}
           <p class="settings-hint">editorial_mp3 — l'éditorial synthétisé en audio.</p>
         {% endif %}

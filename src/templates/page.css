@@ -1456,3 +1456,16 @@ footer {
 .pipeline-flow .reader-node {
   margin-top: 0.35rem;
 }
+
+.pipeline-version-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #001F3F;
+  background-color: var(--highlight-mid);
+  color: #001F3F;
+  vertical-align: middle;
+}

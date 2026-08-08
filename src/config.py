@@ -7,6 +7,8 @@ defined here are used, so the project works without any configuration file.
 
 from __future__ import annotations
 
+import os
+import secrets
 from pathlib import Path
 from typing import Any
 
@@ -102,8 +104,63 @@ DEFAULT_EDITORIAL_MINUTES = _as_int(_EDITORIAL.get("minutes"), 5)
 # --- web --------------------------------------------------------------------
 _WEB = _section("web")
 
-SECRET_KEY = str(_WEB.get("secret_key", "dev-secret-change-me"))
+_SECRET_KEY_PLACEHOLDER = "dev-secret-change-me"
+
+
+def generate_secret_key() -> str:
+    """Return a fresh random secret key (URL-safe base64, 64 chars)."""
+    return secrets.token_urlsafe(48)
+
+
+def _configured_secret_key(config_value: Any, env_value: str | None) -> str | None:
+    """Return a real configured secret key (env or config.yml), else None.
+
+    The well-known placeholder ``dev-secret-change-me`` counts as unconfigured.
+    """
+    if env_value and env_value.strip():
+        return env_value
+    if config_value and str(config_value).strip():
+        value = str(config_value)
+        return None if value == _SECRET_KEY_PLACEHOLDER else value
+    return None
+
+
+_SECRET_ENV = os.environ.get("PRESSROOM_SECRET_KEY")
+_CONFIGURED_SECRET = _configured_secret_key(_WEB.get("secret_key"), _SECRET_ENV)
+SECRET_KEY = _CONFIGURED_SECRET if _CONFIGURED_SECRET is not None else generate_secret_key()
 SERVE_PORT = _as_int(_WEB.get("port"), 8080)
+
+
+def setup_secret_key() -> str:
+    """Return a stable secret key for the webapp, persisting one if needed.
+
+    Precedence: ``PRESSROOM_SECRET_KEY`` env var, then ``config.yml``'s
+    ``web.secret_key`` (the placeholder does not count), otherwise a fresh random
+    key written into the gitignored ``config.yml`` so the app keeps the same
+    secret across restarts. Returns the resolved key.
+    """
+    global SECRET_KEY
+    env_value = os.environ.get("PRESSROOM_SECRET_KEY")
+    configured = _configured_secret_key(_WEB.get("secret_key"), env_value)
+    if configured is not None:
+        SECRET_KEY = configured
+        return configured
+    generated = generate_secret_key()
+    data = {}
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH, "r", encoding="utf-8") as fh:
+            loaded = yaml.safe_load(fh)
+        if isinstance(loaded, dict):
+            data = loaded
+    web = data.setdefault("web", {})
+    if not isinstance(web, dict):
+        web = {}
+        data["web"] = web
+    web["secret_key"] = generated
+    with open(CONFIG_PATH, "w", encoding="utf-8") as fh:
+        yaml.safe_dump(data, fh, allow_unicode=True, sort_keys=False)
+    SECRET_KEY = generated
+    return generated
 
 # --- archive.ph exclusions --------------------------------------------------
 _DEFAULT_EXCLUDED_DOMAINS = [
