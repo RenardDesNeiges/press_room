@@ -23,47 +23,103 @@
       </div>
     </header>
 
-    <main class="settings">
+    <main class="settings admin-data-page">
       <h1 class="settings-title">Données des pipelines</h1>
-      <p class="settings-hint">Tous les éléments stockés en base pour chaque utilisateur, édition par édition. Les étapes textuelles (YAML) peuvent être affichées ; l'éditorial MP3 peut être téléchargé.</p>
 
-      {% for user in users %}
       <section class="settings-section">
-        <h2>{{ user.username }}</h2>
-        {% if user.issues %}
-        <table class="pipeline-history admin-data">
-          <thead>
-            <tr><th>Édition</th><th>Dernière exécution</th><th>Étapes</th></tr>
-          </thead>
-          <tbody>
-            {% for issue in user.issues %}
-            <tr>
-              <td>{{ issue.day }}</td>
-              <td>{{ issue.run_at }}</td>
-              <td>
-                {% for artifact in issue.artifacts %}
-                {% if artifact.stage == 'editorial_mp3' %}
-                <a class="admin-link" href="/admin/data/{{ user.id }}/{{ issue.day }}/editorial_mp3">Éditorial (MP3) · {{ artifact.size }}</a>
-                {% else %}
-                <a class="admin-link" href="/admin/data/{{ user.id }}/{{ issue.day }}/{{ artifact.stage }}">{{ artifact.stage }} · {{ artifact.size }}</a>
-                {% endif %}
-                {% else %}
-                <span>Aucune étape enregistrée.</span>
-                {% endfor %}
-              </td>
-            </tr>
-            {% else %}
-            <tr><td colspan="3">Aucune édition.</td></tr>
+        <h2>Consultation</h2>
+        <form method="get" action="/admin/data" class="admin-picker">
+          {% if users %}
+          <label>Utilisateur
+            <select name="user_id" onchange="this.form.submit()">
+              {% for u in users %}
+              <option value="{{ u.id }}" {% if u.id == selected_user.id %}selected{% endif %}>{{ u.username }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>Édition
+            <select name="day" onchange="this.form.submit()">
+              {% for issue in issues %}
+              <option value="{{ issue.day }}" {% if issue.day == day %}selected{% endif %}>{{ issue.day }}</option>
+              {% else %}
+              <option value="">Aucune édition</option>
+              {% endfor %}
+            </select>
+          </label>
+          <span class="admin-run-info">
+            {% if run_at %}<strong>Dernière exécution :</strong> {{ run_at }}
+            {% else %}Aucune exécution pour cet utilisateur.{% endif %}
+          </span>
+          {% endif %}
+        </form>
+      </section>
+
+      {% if selected_user %}
+      <section class="settings-section">
+        <h2>Pipeline</h2>
+        {% if day %}
+        <div class="flow-scroll">
+          <div class="pipeline-flow">
+            {% for s in stages %}
+              <a class="flow-node{% if stage == s.key %} is-active{% endif %}{% if s.key not in available %} unavailable{% endif %}"
+                 href="/admin/data?user_id={{ selected_user.id }}&day={{ day }}&stage={{ s.key }}"
+                 {% if s.key not in available %}aria-disabled="true" tabindex="-1"{% endif %}>
+                {{ s.label }}
+              </a>
+              {% if not loop.last %}
+              <span class="flow-arrow">→</span>
+              {% endif %}
             {% endfor %}
-          </tbody>
-        </table>
+
+            <div class="flow-readers">
+              <div class="flow-readers-bar">
+                <span class="flow-readers-tip" style="left: 33%">↟ parsed_entries</span><span class="flow-readers-tip" style="left: 69%">↟ prepared_entries</span>
+              </div>
+              {% if "readers" in available %}
+              <a class="flow-node reader-node{% if stage == 'readers' %} is-active{% endif %}"
+                 href="/admin/data?user_id={{ selected_user.id }}&day={{ day }}&stage=readers">
+                readers_interests.md
+              </a>
+              {% else %}
+              <span class="flow-node reader-node unavailable">readers_interests.md</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
         {% else %}
-        <p class="settings-hint">Aucune édition pour cet utilisateur.</p>
+        <p class="settings-hint">Aucune édition pour cet utilisateur : lancez le pipeline pour consulter ses données.</p>
         {% endif %}
       </section>
-      {% else %}
-      <p class="settings-hint">Aucun utilisateur.</p>
-      {% endfor %}
+
+      <section class="settings-section">
+        <h2>Contenu</h2>
+        {% if stage == 'feeds' %}
+          <p class="settings-hint">feeds.yml — sources RSS de l'utilisateur.</p>
+        {% elif stage == 'readers' %}
+          <p class="settings-hint">readers_interests.md — profil de lecture (utilisé par les étapes parsed et prepared).</p>
+        {% elif stage == 'filtered_entries' %}
+          <p class="settings-hint">filtered_entries — articles extraits des flux.</p>
+        {% elif stage == 'parsed_entries' %}
+          <p class="settings-hint">parsed_entries — articles classés, traduits et tagués.</p>
+        {% elif stage == 'prepared_entries' %}
+          <p class="settings-hint">prepared_entries — journal final avec éditorial et sections.</p>
+        {% elif stage == 'editorial_mp3' %}
+          <p class="settings-hint">editorial_mp3 — l'éditorial synthétisé en audio.</p>
+        {% endif %}
+
+        {% if content is none %}
+          <p class="settings-hint">Aucune donnée pour cette étape sur cette édition.</p>
+        {% elif is_audio %}
+          <audio controls preload="metadata" class="admin-audio"
+                 src="/admin/data/{{ selected_user.id }}/{{ day }}/editorial_mp3"></audio>
+          <div class="settings-actions">
+            <a class="feeds-download" href="/admin/data/{{ selected_user.id }}/{{ day }}/editorial_mp3?download=1">Télécharger le MP3</a>
+          </div>
+        {% else %}
+          <pre class="admin-code">{{ content }}</pre>
+        {% endif %}
+      </section>
+      {% endif %}
     </main>
   </div>
   <script src="/page.js"></script>

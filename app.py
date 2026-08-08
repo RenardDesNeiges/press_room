@@ -256,55 +256,67 @@ def create_app() -> Flask:
     @app.route("/admin/data")
     @require_admin
     def admin_data(user):
-        """All stored pipeline items (issues + artifacts) for every user."""
-        users = []
-        for row in database.list_users():
-            issues = []
-            for issue in database.list_issues(row["id"]):
-                artifacts = [
-                    {
-                        "stage": a["stage"],
-                        "size": _human_size(a["size_bytes"]),
-                    }
-                    for a in database.list_artifacts(issue["id"])
-                ]
-                issues.append(
-                    {"day": issue["day"], "run_at": issue["run_at"], "artifacts": artifacts}
-                )
-            users.append({"id": row["id"], "username": row["username"], "issues": issues})
+        """Pipeline inspector: pick user + day, then display a stage's content."""
+        users = database.list_users()
+        selected_user = None
+        if users:
+            uid = request.args.get("user_id", type=int)
+            selected_user = next((u for u in users if u["id"] == uid), users[0])
+
+        issues = database.list_issues(selected_user["id"]) if selected_user else []
+        selected_issue = None
+        day_arg = request.args.get("day")
+        for issue in issues:
+            if issue["day"] == day_arg:
+                selected_issue = issue
+                break
+        if selected_issue is None and issues:
+            selected_issue = issues[0]
+
+        run_at = _format_run_at(selected_issue) if selected_issue else None
+        available_stages = _available_stages(selected_user, selected_issue)
+
+        stage = request.args.get("stage")
+        if stage not in ADMIN_STAGE_KEYS:
+            stage = "prepared_entries"
+        content, is_audio = _pipeline_stage_content(
+            selected_user, selected_issue, stage
+        )
+
         return render_template(
             "admin_data.html",
             username=user["username"],
             users=users,
+            selected_user=selected_user,
+            issues=issues,
+            day=selected_issue["day"] if selected_issue else None,
+            run_at=run_at,
+            stages=ADMIN_STAGES,
+            available=available_stages,
+            stage=stage,
+            content=content,
+            is_audio=is_audio,
         )
 
     @app.route("/admin/data/<int:user_id>/<day>/<stage>")
     @require_admin
     def admin_artifact(user, user_id, day, stage):
-        """Raw view (text stages) or download (MP3) of a stored pipeline item."""
-        target = database.get_user_by_id(user_id)
+        """Stream a stored pipeline item: inline MP3 (or download) / raw text."""
         issue = database.get_issue(user_id, day)
-        if target is None or issue is None:
+        if issue is None:
             abort(404)
         content = database.get_artifact(issue["id"], stage)
         if content is None:
             abort(404)
+        download = request.args.get("download") == "1"
         if stage == "editorial_mp3":
             return send_file(
                 io.BytesIO(content),
                 mimetype="audio/mpeg",
-                as_attachment=True,
-                download_name=f"{target['username']}-{day}-editorial.mp3",
+                as_attachment=download,
+                download_name=f"{user_id}-{day}-editorial.mp3",
             )
-        text = content.decode("utf-8", errors="replace")
-        return render_template(
-            "admin_artifact.html",
-            username=user["username"],
-            user_name=target["username"],
-            day=day,
-            stage=stage,
-            content=text,
-        )
+        return send_file(io.BytesIO(content), mimetype="text/plain; charset=utf-8")
 
     _maybe_start_scheduler(app)
 
@@ -412,12 +424,59 @@ def _parse_run_at(issue) -> datetime:
         return datetime.now()
 
 
-def _human_size(size_bytes: int) -> str:
-    """Format a byte count for display (Ko/Mo)."""
-    size_bytes = int(size_bytes or 0)
-    if size_bytes >= 1024 * 1024:
-        return f"{size_bytes / (1024 * 1024):.1f} Mo"
-    return f"{size_bytes / 1024:.1f} Ko"
+ADMIN_STAGES = [
+    {"key": "feeds", "label": "feeds.yml"},
+    {"key": "filtered_entries", "label": "filtered_entries"},
+    {"key": "parsed_entries", "label": "parsed_entries"},
+    {"key": "prepared_entries", "label": "prepared_entries"},
+    {"key": "editorial_mp3", "label": "editorial_mp3"},
+]
+ADMIN_STAGE_KEYS = {s["key"] for s in ADMIN_STAGES}
+
+
+def _format_run_at(issue) -> str:
+    """Format an issue's run_at in French (fallback: raw value)."""
+    try:
+        return format_datetime_fr(_parse_run_at(issue))
+    except ValueError:
+        return issue["run_at"] or ""
+
+
+def _available_stages(selected_user, selected_issue) -> set[str]:
+    """The pipeline elements that have stored content for the selection."""
+    available: set[str] = set()
+    if selected_user is None:
+        return available
+    if database.get_user_file(selected_user["id"], "feeds.yml"):
+        available.add("feeds")
+    if database.get_user_file(selected_user["id"], "readers_interests.md"):
+        available.add("readers")
+    if selected_issue is not None:
+        for artifact in database.list_artifacts(selected_issue["id"]):
+            available.add(artifact["stage"])
+    return available
+
+
+def _pipeline_stage_content(selected_user, selected_issue, stage: str):
+    """Return (content, is_audio) for one pipeline element of the selection.
+
+    ``content`` is decoded text, or raw MP3 bytes when ``is_audio`` is True.
+    """
+    if selected_user is None or selected_issue is None:
+        return None, False
+    if stage == "feeds":
+        return database.get_user_file(selected_user["id"], "feeds.yml"), False
+    if stage == "readers":
+        return (
+            database.get_user_file(selected_user["id"], "readers_interests.md"),
+            False,
+        )
+    blob = database.get_artifact(selected_issue["id"], stage)
+    if blob is None:
+        return None, False
+    if stage == "editorial_mp3":
+        return blob, True
+    return blob.decode("utf-8", errors="replace"), False
 
 
 def random_feed_photo() -> dict | None:

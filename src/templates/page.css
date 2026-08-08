@@ -1322,3 +1322,137 @@ footer {
   margin-right: 1rem;
   color: #001F3F;
 }
+
+.admin-data-page {
+  max-width: none;
+}
+
+.admin-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+
+.admin-picker label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-picker select {
+  padding: 0.45rem;
+  border: 1px solid var(--rule);
+  background-color: var(--bg);
+  font: inherit;
+  color: inherit;
+  min-width: 12rem;
+}
+
+.admin-run-info {
+  font-size: 0.85rem;
+  color: #333;
+  padding-bottom: 0.35rem;
+}
+
+.admin-audio {
+  width: 100%;
+  max-width: 40rem;
+}
+
+.flow-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  min-width: max-content;
+  padding: 1.5rem 1rem 1rem;
+  border: 1px solid var(--rule);
+  background-color: var(--highlight-mid);
+  position: relative;
+}
+
+.pipeline-flow .flow-node,
+.pipeline-flow .flow-arrow {
+  background-color: var(--bg);
+  border: 2px solid #001F3F;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  color: #001F3F;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+.pipeline-flow .flow-node:hover {
+  background-color: var(--highlight);
+}
+
+.pipeline-flow .flow-node.is-active {
+  background-color: #001F3F;
+  color: #fff;
+}
+
+.pipeline-flow .flow-node.unavailable {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pipeline-flow .flow-node.unavailable:hover {
+  background-color: var(--bg);
+}
+
+.pipeline-flow .flow-arrow {
+  border: none;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.flow-readers {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.flow-readers-bar {
+  position: relative;
+  width: 100%;
+  max-width: 38rem;
+  height: 1.2rem;
+  border-top: 1px dashed #666;
+}
+
+.flow-readers-tip {
+  position: absolute;
+  top: -0.05rem;
+  transform: translate(-50%, -100%);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #333;
+  background-color: var(--highlight-mid);
+  padding: 0 0.2rem;
+  white-space: nowrap;
+}
+
+.pipeline-flow .reader-node {
+  margin-top: 0.35rem;
+}
