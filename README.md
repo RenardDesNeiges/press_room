@@ -199,7 +199,7 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
 ```bash
 conda create -n press_room python=3.12 pyyaml feedparser requests -y
 conda activate press_room
-pip install wordllama openrouter flask
+pip install wordllama openrouter flask pytest
 ```
 
 2. Add your OpenRouter API key to `src/key.py`.

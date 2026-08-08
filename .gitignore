@@ -11,3 +11,4 @@ data/filtered_entries.yml
 data/pressroom.db
 instance/
 config.yml
+AGENTS.md
