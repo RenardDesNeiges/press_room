@@ -395,9 +395,9 @@
     return Object.keys(value).length === 0;
   }
 
-  function defaultCollapsedKey(key) {
-    if (key === null || key === undefined) return false;
-    const k = String(key).toLowerCase();
+  function defaultCollapsed(record) {
+    if (record.root) return true;
+    const k = String(record.keyName || '').toLowerCase();
     return k === 'facts' || k === 'views';
   }
 
@@ -406,7 +406,11 @@
     let disp = value;
     if (!Array.isArray(disp) && disp !== null && typeof disp === 'object') {
       const keys = Object.keys(disp);
-      if (keys.length === 1 && keys[0] === 'Topics') disp = disp['Topics'];
+      if (keys.length === 1 && keys[0] === 'Topics') {
+        disp = disp['Topics'];
+      } else if (isRoot && keys.length === 1 && keys[0] === 'Regions') {
+        disp = disp['Regions'];
+      }
     }
     const isObject = disp !== null && typeof disp === 'object';
     const isEmptyCont = isEmptyContainer(disp);
@@ -437,6 +441,7 @@
       branch: isBranch,
       children: [],
       group: null,
+      root: !!isRoot,
       keyName: String(searchKey || ''),
       search: normText(isRoot ? '$' : searchKey)
     };
@@ -510,7 +515,7 @@
   }
 
   rootRecord = buildNode('$', 'root', data, '$', true);
-  container.appendChild(rootRecord.el);
+  // The "$" wrapper is always present and uninformative: skip its row.
   if (rootRecord.group) container.appendChild(rootRecord.group);
 
   function setCollapsed(record, collapsed) {
@@ -524,7 +529,7 @@
   }
 
   allRecords.forEach(function (record) {
-    if (record.branch && defaultCollapsedKey(record.keyName)) setCollapsed(record, true);
+    if (record.branch && defaultCollapsed(record)) setCollapsed(record, true);
   });
 
   container.addEventListener('click', function (event) {
@@ -633,7 +638,7 @@
       allRecords.forEach(function (record) {
         record.el.classList.remove(hiddenClass);
         record.el.classList.remove(matchClass);
-        if (record.branch) setCollapsed(record, defaultCollapsedKey(record.keyName));
+        if (record.branch) setCollapsed(record, defaultCollapsed(record));
       });
       matchCount = 0;
       updateCount();
