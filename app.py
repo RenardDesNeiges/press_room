@@ -277,7 +277,7 @@ def create_app() -> Flask:
         available_stages = _available_stages(selected_user, selected_issue)
 
         pipeline_version = _pipeline_version_of(selected_issue)
-        stages = PIPELINE_V1_STAGES if pipeline_version >= 1 else PIPELINE_V0_STAGES
+        pipeline = layout_pipeline_graph(pipeline_version)
 
         stage = request.args.get("stage")
         if stage not in ADMIN_STAGE_KEYS and stage != "readers":
@@ -313,7 +313,7 @@ def create_app() -> Flask:
             day=selected_issue["day"] if selected_issue else None,
             run_at=run_at,
             pipeline_version=pipeline_version,
-            stages=stages,
+            pipeline=pipeline,
             available=available_stages,
             stage=stage,
             content=content,
@@ -484,23 +484,133 @@ ADMIN_STAGES = [
 ]
 ADMIN_STAGE_KEYS = {s["key"] for s in ADMIN_STAGES}
 
-PIPELINE_V0_STAGES = [
-    {"key": "feeds", "label": "feeds.yml"},
-    {"key": "filtered_entries", "label": "filtered_entries"},
-    {"key": "parsed_entries", "label": "parsed_entries"},
-    {"key": "prepared_entries", "label": "prepared_entries"},
-    {"key": "editorial_mp3", "label": "editorial_mp3"},
-]
+PIPELINE_GRAPH_V0 = {
+    "nodes": [
+        {"key": "feeds", "label": "feeds.yml"},
+        {"key": "filtered_entries", "label": "filtered_entries"},
+        {"key": "parsed_entries", "label": "parsed_entries"},
+        {"key": "prepared_entries", "label": "prepared_entries"},
+        {"key": "editorial_mp3", "label": "editorial_mp3"},
+        {"key": "readers", "label": "readers_interests.md"},
+    ],
+    "edges": [
+        {"from": "feeds", "to": "filtered_entries"},
+        {"from": "filtered_entries", "to": "parsed_entries"},
+        {"from": "parsed_entries", "to": "prepared_entries"},
+        {"from": "prepared_entries", "to": "editorial_mp3"},
+        {"from": "readers", "to": "parsed_entries"},
+        {"from": "readers", "to": "prepared_entries"},
+    ],
+}
+
+PIPELINE_GRAPH_V1 = {
+    "nodes": [
+        {"key": "feeds", "label": "feeds.yml"},
+        {"key": "filtered_entries", "label": "filtered_entries"},
+        {"key": "parsed_entries", "label": "parsed_entries"},
+        {"key": "prepared_entries", "label": "prepared_entries"},
+        {"key": "editorial", "label": "editorial"},
+        {"key": "editorial_mp3", "label": "editorial_mp3"},
+        {"key": "readers", "label": "readers_interests.md"},
+    ],
+    "edges": [
+        {"from": "feeds", "to": "filtered_entries"},
+        {"from": "filtered_entries", "to": "parsed_entries"},
+        {"from": "parsed_entries", "to": "prepared_entries"},
+        {"from": "prepared_entries", "to": "editorial"},
+        {"from": "editorial", "to": "editorial_mp3"},
+        {"from": "readers", "to": "parsed_entries"},
+        {"from": "readers", "to": "prepared_entries"},
+    ],
+}
+
+PIPELINE_GRAPHS = {0: PIPELINE_GRAPH_V0, 1: PIPELINE_GRAPH_V1}
 
 DEFAULT_ENTRY_COLUMNS = ("EID", "title", "source", "rerank_reason")
 
-PIPELINE_V1_STAGES = [
-    {"key": "feeds", "label": "feeds.yml"},
-    {"key": "filtered_entries", "label": "filtered_entries"},
-    {"key": "parsed_entries", "label": "parsed_entries"},
-    {"key": "prepared_entries", "label": "prepared_entries"},
-    {"key": "editorial_mp3", "label": "editorial_mp3"},
-]
+_FLOW_NODE_W = 170
+_FLOW_NODE_H = 44
+_FLOW_COL_GAP = 90
+_FLOW_ROW_GAP = 32
+_FLOW_PAD_X = 18
+_FLOW_PAD_Y = 18
+
+
+def layout_pipeline_graph(version: int) -> dict:
+    """Lay the pipeline graph out left-to-right into SVG-ready geometry."""
+    graph = PIPELINE_GRAPHS.get(version, PIPELINE_GRAPH_V1)
+    node_keys = [n["key"] for n in graph["nodes"]]
+
+    successors: dict[str, list[str]] = {}
+    predecessors: dict[str, list[str]] = {}
+    for key in node_keys:
+        successors[key] = []
+        predecessors[key] = []
+    for edge in graph["edges"]:
+        frm, to = edge["from"], edge["to"]
+        if frm in successors and to in successors:
+            successors[frm].append(to)
+            predecessors[to].append(frm)
+
+    depth: dict[str, int] = {}
+    for key in node_keys:
+        incoming = predecessors[key]
+        if not incoming:
+            depth[key] = 0
+        else:
+            depth[key] = 1 + max(depth[p] for p in incoming if p in depth)
+
+    columns: dict[int, list[str]] = {}
+    for key in node_keys:
+        columns.setdefault(depth[key], []).append(key)
+
+    node_geo: dict[str, dict] = {}
+    for col, keys in columns.items():
+        for row, key in enumerate(keys):
+            x = _FLOW_PAD_X + col * (_FLOW_NODE_W + _FLOW_COL_GAP)
+            y = _FLOW_PAD_Y + row * (_FLOW_NODE_H + _FLOW_ROW_GAP)
+            node_geo[key] = {"x": x, "y": y, "w": _FLOW_NODE_W, "h": _FLOW_NODE_H}
+
+    max_col = max(depth.values(), default=0)
+    max_rows = max(len(keys) for keys in columns.values() or [[]])
+    width = _FLOW_PAD_X * 2 + max_col * (_FLOW_NODE_W + _FLOW_COL_GAP) + _FLOW_NODE_W
+    height = (
+        _FLOW_PAD_Y * 2
+        + (max_rows - 1) * (_FLOW_NODE_H + _FLOW_ROW_GAP)
+        + _FLOW_NODE_H
+    )
+
+    nodes = []
+    for n in graph["nodes"]:
+        key = n["key"]
+        geo = node_geo[key]
+        nodes.append(
+            {
+                "key": key,
+                "label": n["label"],
+                "x": geo["x"],
+                "y": geo["y"],
+                "w": geo["w"],
+                "h": geo["h"],
+            }
+        )
+
+    edges = []
+    for edge in graph["edges"]:
+        frm, to = edge["from"], edge["to"]
+        if frm not in node_geo or to not in node_geo:
+            continue
+        fg, tg = node_geo[frm], node_geo[to]
+        sx, sy = fg["x"] + fg["w"], fg["y"] + fg["h"] // 2
+        tx, ty = tg["x"], tg["y"] + tg["h"] // 2
+        if sx == tx:
+            d = f"M {sx} {sy} L {tx} {ty}"
+        else:
+            dx = max(24, (tx - sx) // 2)
+            d = f"M {sx} {sy} C {sx + dx} {sy}, {tx - dx} {ty}, {tx} {ty}"
+        edges.append({"d": d, "dashed": edge["from"] == "readers"})
+
+    return {"width": width, "height": height, "nodes": nodes, "edges": edges}
 
 
 def _format_run_at(issue) -> str:
