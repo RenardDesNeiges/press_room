@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pressroom — Bienvenue</title>
+  <link rel="stylesheet" href="/page.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top-bar">
+      <div class="top-bar-inner">
+        <h1 class="top-bar-title">Pressroom</h1>
+        <div class="top-bar-right">
+          <a class="top-bar-link" href="/settings">Paramètres</a>
+          {% if is_admin %}<a class="top-bar-link" href="/admin">Admin</a>{% endif %}
+          <span class="top-bar-user">{{ username }}</span>
+          <a class="top-bar-logout" href="/logout">Déconnexion</a>
+        </div>
+        <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+      </div>
+    </header>
+
+    <main class="settings">
+      <h1 class="settings-title">Bienvenue</h1>
+
+      <section class="onboarding-intro">
+        <p>Pressroom est un aggregateur de flux RSS qui compile chaque jour une sélection d'articles a partir de sources que vous choisissez vous même. Ensuite il les classe selon vos préférences d'intérêt, les traduit en français et en produit un podcast de revue de presse qui résume pour vous les nouvelles du jour.</p>
+        <p>Pour que Pressroom fonctionne comme prévu, il faut que vous lui transmettiez quelques informations.</p>
+      </section>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <p class="settings-flash">{{ messages[0] }}</p>
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" action="/setup" id="feeds-form">
+        <input type="hidden" name="feeds_json" id="feeds-json">
+
+        <section class="settings-section">
+          <h2>Vos centres d'intéret</h2>
+          <p class="onboarding-intro">La première chose que vous devez transmettre à Pressroom c'est <b>un texte qui décrit vos centre d'intérets</b>. C'est ce texte qui guidera Pressroom dans le choix des articles qui serons sélectionnés pour vous chaque jour, ainsi que la rédaction de l'éditorial.</p>
+          <textarea name="interests" rows="22" class="interests-input">{{ interests }}</textarea>
+        </section>
+
+        <section class="settings-section">
+          <h2>Flux RSS</h2>
+          <p class="onboarding-intro">Pressroom ne trouve pas de nouvelles informations, il vous transmet des informations qui sont publiées par des journaux qui existe déja. Ces informations sont importées a partir des flux RSS de ces journaux (certains journaux produisent plusieurs flux RSS).</p>
+          <div id="publications">
+            {% for pub in publications %}
+            <fieldset class="publication">
+              <div class="pub-fields">
+                <label>Nom <input type="text" class="pub-name" value="{{ pub.name }}"></label>
+                <label class="pub-lang-label">Langue <input type="text" class="pub-lang" value="{{ pub.lang }}"></label>
+                <label class="pub-today-label"><input type="checkbox" class="pub-today" {% if pub.today_only %}checked{% endif %}> Aujourd'hui uniquement</label>
+              </div>
+              <div class="pub-feeds">
+                {% for url in pub.feeds %}
+                <div class="feed-row">
+                  <input type="url" class="feed-url" value="{{ url }}">
+                  <button type="button" class="feed-row-remove" aria-label="Retirer ce flux">×</button>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="pub-actions">
+                <button type="button" class="add-feed">Ajouter un flux</button>
+                <button type="button" class="remove-pub">Supprimer</button>
+              </div>
+            </fieldset>
+            {% endfor %}
+          </div>
+          <div class="settings-actions">
+            <button type="button" id="add-pub">Ajouter une publication</button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <div class="settings-actions">
+            <button type="submit" class="onboarding-submit">Valider mes choix</button>
+          </div>
+        </section>
+      </form>
+    </main>
+  </div>
+  <script src="/page.js"></script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+# Sets the defaults feed assigned to a new user when it is created
 publications:
   - name: "Mediapart"
     lang: "FR"
@@ -29,19 +30,7 @@ publications:
     lang: "DE"
     feeds:
       - "https://www.srf.ch/news/bnf/rss/1890"
-      - "https://www.srf.ch/news/bnf/rss/1926
-      "
-  - name: "24 heures"
-    lang: "FR"
-    feeds:
-      - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/suisse"
-      - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/suisse/elections"
-      - "https://partner-feeds.publishing.tamedia.ch/rss/24heures/nl-vaud"
-  - name: "El Pais"
-    lang: "ES"
-    feeds:
-      - "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"
-      - "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/america/portada"
+      - "https://www.srf.ch/news/bnf/rss/1926"
   - name: "NZZ (Neue Zürcher Zeitung)"
     lang: "DE"
     notes: "https://www.nzz.ch/startseite.rss"
@@ -49,8 +38,6 @@ publications:
     lang: "EN"
     feeds:
       - "https://www.aljazeera.com/xml/rss/all.xml"
-  - name: "Phenomenal World"
-    notes: "https://phenomenalworld.org/rss"
   - name: "Le Temps"
     lang: "FR"
     feeds:
@@ -61,9 +48,6 @@ publications:
   - name: "Le Grand Continent"
     lang: "FR"
     notes: "https://legrandcontinent.eu/fr/rss"
-  - name: "Libération"
-    lang: "FR"
-    notes: "https://www.liberation.fr/arc/outboundfeeds/rss-all/category/politique/"
   - name: "El Diario (España)"
     lang: "ES"
     feeds:
@@ -72,44 +56,16 @@ publications:
     lang: "ES"
     feeds:
       - "http://www.cubadebate.cu/rss"
-  - name: "Granma"
-    lang: "ES"
-    feeds:
-      - "https://www.granma.cu/feed"
-  - name: "China Daily"
-    lang: "EN"
-    feeds:
-      - "https://www.chinadaily.com.cn/rss/china_rss.xml"
-  - name: "Contretemps"
-    lang: "FR"
-    feeds:
-      - "https://contretemps.eu/rss"
   - name: "Le Vent se Lève"
     lang: "FR"
     feeds:
       - "https://lvsl.fr/rss"
-  - name: "Les Jours"
-    lang: "FR"
-    feeds:
-      - "https://lesjours.fr/rss"
-  - name: "La Jornada"
-    lang: "FR"
-    feeds:
-      - "https://www.jornada.com.mx/ultimas/news/RSS"
   - name: "CGTN"
     lang: "EN"
     feeds:
       - "https://www.cgtn.com/subscribe/rss/section/china.xml"
       - "https://www.cgtn.com/subscribe/rss/section/politics.xml"
       - "https://www.cgtn.com/subscribe/rss/section/world.xml"
-  - name: "Solidaires (BE)"
-    lang: "FR"
-    feeds:
-      - "http://www.solidaire.org/rss.xml"
-  - name: "Le Soir (BE)."
-    lang: "FR"
-    feeds:
-      - "https://www.lesoir.be/services/rss"
   - name: "Heidi.news"
     lang: "FR"
     feeds:
@@ -118,10 +74,6 @@ publications:
     lang: "FR"
     feeds:
       - "https://orientxxi.info/?page=backend&lang=fr"
-  - name: "Blast"
-    lang: "FR"
-    feeds:
-      - "https://api.blast-info.fr/rss.xml"
   - name: "Axios"
     lang: "EN"
     feeds:
@@ -130,10 +82,3 @@ publications:
     lang: "DE"
     feeds:
       - "https://www.republik.ch/feed.xml"
-  - name: "Tribune de Genève"
-    lang: "FR"
-    feeds:
-      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/suisse/elections"
-      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/geneve/geneve-internationale"
-      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/economie"
-      - "https://partner-feeds.publishing.tamedia.ch/rss/tdg/suisse"

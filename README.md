@@ -4,26 +4,17 @@
 
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
-Note on how to update the editorializing feature
-```
-I should update how the editorial is produced. I want it to become more structured. 
-
-It should rigidly separate points by 1) country 2) subject. It should then summarize the facts. And compare how they are reported from one source to another.
-
-The editorial should be produced as 
-1) first a list of bullet point summarizing todays news running with an anti-repeat persistence feature ran over the last day's summary.
-2) a nice editorial selecting the key points to show, what to priorize and and translating to more natural language.
-```
-
 ## To-be-added features
 1. Refactored user preference specification setup, which automatically handles translation + better translation behavior, possibly test different translation models/approaches (`llama3.1:8b-instruct` v.s. `deepseeek-v4-flash` v.s. `qwen2.5:7b-instruct` v.s. `argostranslate 1.11.0`).
 2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot + a summary of the day's articles, as a telegram message which you get in the morning. 
 3. Persistence in the writing of briefings, using multiple, lagged news_summary objects.
-3. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
-4. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
-5. make sure datetime are all wrapped in a datetime object which sets the date/time geographically. Make this a standard in the project.
-6. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
-7. Add a map widget, showing geographical coverage (puts the articles on a map).
+4. Add ISSN or DOI feeds for research papers.
+5. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
+6. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
+7. make sure datetime are all wrapped in a datetime object which sets the date/time geographically. Make this a standard in the project.
+8. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
+9. Add a map widget, showing geographical coverage (puts the articles on a map).
+10. Setup a SSL certificate + associate the server with an actual domain
 
 
 ## Webapp

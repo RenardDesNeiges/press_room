@@ -11,8 +11,10 @@ import functools
 import html
 import io
 import json
+import logging
 import os
 import random
+import threading
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -30,6 +32,7 @@ from flask import (
 )
 
 from src.config import (
+    DATA_DIR,
     DEFAULT_TEMPLATE_DIR,
     SCHEDULE_ENABLED,
     SCHEDULE_USERS,
@@ -38,12 +41,19 @@ from src.config import (
 )
 from src import db as database
 from src.scheduler import start_daily
+from src.run_pipeline import run_for_user
 from src.gen_static_page import (
     build_html,
     format_date_fr,
     format_datetime_fr,
     get_french_weekday,
 )
+
+
+logger = logging.getLogger(__name__)
+
+_PIPELINE_RUNNING: set[str] = set()
+_PIPELINE_LOCK = threading.Lock()
 
 
 def create_app() -> Flask:
@@ -95,9 +105,36 @@ def create_app() -> Flask:
         username = session.get("username")
         if not username:
             return redirect(url_for("login"))
+        user = database.get_user(username)
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
+        if database.latest_issue(user["id"]) is None:
+            return _onboarding_page(user)
         day = request.args.get("day")
         page_html = render_issue(username, day)
         return render_template("reader.html", page_html=page_html)
+
+    @app.route("/setup", methods=["POST"])
+    def setup():
+        username = session.get("username")
+        if not username:
+            return redirect(url_for("login"))
+        user = database.get_user(username)
+        if user is None:
+            session.clear()
+            return redirect(url_for("login"))
+        if _is_pipeline_running(username):
+            flash("Préparation de l'édition déjà en cours.")
+            return redirect(url_for("index"))
+        database.set_user_file(
+            user["id"], "readers_interests.md", request.form.get("interests", "")
+        )
+        if not _save_feeds(user["id"], request.form.get("feeds_json", "")):
+            flash("Erreur lors de l'enregistrement des flux RSS.")
+            return redirect(url_for("index"))
+        _start_onboarding_pipeline(username)
+        return redirect(url_for("index"))
 
     @app.route("/audio/<day>/editorial.mp3")
     def audio(day: str):
@@ -385,6 +422,53 @@ def _maybe_start_scheduler(app: Flask) -> None:
         return
     hour, minute = schedule_clock()
     start_daily(list(SCHEDULE_USERS), hour, minute)
+
+
+def _is_pipeline_running(username: str) -> bool:
+    with _PIPELINE_LOCK:
+        return username in _PIPELINE_RUNNING
+
+
+def _start_onboarding_pipeline(username: str) -> None:
+    """Run the pipeline for a user in a background thread, marking them running."""
+    def work() -> None:
+        try:
+            run_for_user(username)
+        except (SystemExit, Exception):
+            logger.exception("Onboarding pipeline failed for '%s'", username)
+        finally:
+            with _PIPELINE_LOCK:
+                _PIPELINE_RUNNING.discard(username)
+
+    with _PIPELINE_LOCK:
+        _PIPELINE_RUNNING.add(username)
+    threading.Thread(target=work, name=f"onboarding-{username}", daemon=True).start()
+
+
+def _onboarding_page(user) -> str:
+    """Home page for a user who has no issue yet (onboarding or in-progress)."""
+    username = user["username"]
+    if _is_pipeline_running(username):
+        return render_template("onboarding_running.html", username=username)
+    return render_template(
+        "onboarding.html",
+        username=username,
+        is_admin=database.user_is_admin(user),
+        publications=_load_feeds(user["id"]),
+        interests=(
+            database.get_user_file(user["id"], "readers_interests.md")
+            or _default_user_file("readers_interests.md")
+            or ""
+        ),
+    )
+
+
+def _default_user_file(name: str) -> str | None:
+    """Return the data/ template for a user file (feeds.yml, readers_interests.md)."""
+    path = DATA_DIR / name
+    if not path.exists():
+        return None
+    return path.read_text(encoding="utf-8")
 
 
 def render_issue(username: str, day: str | None = None) -> str:
@@ -782,6 +866,8 @@ def _load_feeds(user_id: int) -> list[dict]:
     A ``notes`` field that looks like a feed URL is treated as a single feed.
     """
     content = database.get_user_file(user_id, "feeds.yml")
+    if content is None:
+        content = _default_user_file("feeds.yml")
     if not content:
         return []
     data = yaml.safe_load(content) or {}
