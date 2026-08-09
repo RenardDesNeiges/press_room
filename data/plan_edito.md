@@ -128,7 +128,8 @@ Avant de rendre le markdown, vérifie :
 
 ## Contraintes absolues
 
-- **Format** : Markdown uniquement. Pas de JSON, pas de texte libre avant ou après le bloc structuré.
+- **Format** : Respecte strictement le format yaml. 
 - **Sources** : Uniquement les EID du champ `reference`. Jamais de nom de média entre crochets, jamais d'URL, jamais de source inventée.
 - **Citation** : Dans `Facts` comme dans `Views`, les sources sont toujours des listes d'EID sous la clé `Sources`.
 - **Régions obligatoires** : France et Suisse toujours présentes.
+
