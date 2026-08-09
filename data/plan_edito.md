@@ -41,6 +41,8 @@ Regions:
             Note: "<Justification de l'inclusion, contexte manquant, détail critique, ou articulation avec le fil conducteur de la journée>"
 ```
 
+**Note**: un EID bien structure respecte toujours le format <user>_<YYYYMMDD>_<HHMM>_<seq>, par exemple: `demouser_20260410_0400_0097`, ou `philippos_20270301_1810_0032` etc. Always copy the entire EID, not just part of it.
+
 ### Règles de regroupement par région
 
 - Un article peut alimenter **plusieurs régions** s'il traite de relations internationales (ex. : un article sur les sanctions suisses contre la Russie alimente à la fois « Suisse » et « Russie / Europe de l'Est »).
