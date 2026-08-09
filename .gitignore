@@ -12,4 +12,5 @@ data/*.db
 data/*.db.bak
 instance/
 config.yml
-AGENTS.md
+AGENTS.m
+*.sh
