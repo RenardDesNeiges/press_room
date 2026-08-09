@@ -9,6 +9,7 @@ data/parsed_entries.yml
 .gitignore
 data/filtered_entries.yml
 data/*.db
+data/*.db.bak
 instance/
 config.yml
 AGENTS.md
