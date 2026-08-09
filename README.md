@@ -16,11 +16,13 @@ The editorial should be produced as
 ```
 
 ## To-be-added features
-1. Refactored user preference specification setup, which automatically handles translation.
-2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot. 
+1. Refactored user preference specification setup, which automatically handles translation + better translation behavior, possibly test different translation models/approaches (`llama3.1:8b-instruct` v.s. `deepseeek-v4-flash` v.s. `qwen2.5:7b-instruct` v.s. `argostranslate 1.11.0`).
+2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot + a summary of the day's articles, as a telegram message which you get in the morning. 
+3. Persistence in the writing of briefings, using multiple, lagged news_summary objects.
 3. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
-4. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
-6. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
+4. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
+5. make sure datetime are all wrapped in a datetime object which sets the date/time geographically. Make this a standard in the project.
+6. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
 7. Add a map widget, showing geographical coverage (puts the articles on a map).
 
 
@@ -188,56 +190,25 @@ All functions accept an optional `db_path` argument (defaults to `data/pressroom
 ## What it does
 ```mermaid
 flowchart TD
-    F[feeds.yml] -->|Requests + filter| B[filtered_entries]
-    B -->|ranking + reranking + themes and countires| C[parsed_entries]
-    C -->|editorial writing| E[editorial]
-    C -->|sections| D[prepared_entries]
-    D --> E1[editorial_mp3]
-
-    A2(additional_rerank_prompt.md)
-    A2 --> C
-
-    A1[readers_interests.md]
-    A1 --> C
-    A1 --> D
-
-
-    A3(edito.md) --> E
-    
-    A4(title.md) --> E
-```
-
-1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date (24h window, or that day only when the user's `filter_mode` is `"today"` or a publication sets `today_only: true`), and writes `filtered_entries`.
-2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.
-3. **Prepare** – writes the French editorial and headline (stored as its own `editorial` artifact in pipeline_version ≥1), classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and stores the articles relationally in the `prepared_entries` table (one row per EID, in section order) instead of a blob. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
-4. **Speak** – synthesizes the editorial to `editorial.mp3` via OpenRouter's TTS API.
-
-All four artifacts are stored per user/day in SQLite. The newspaper HTML is generated on login from the stored data.
-
-
-**Proposed update**
-
-```mermaid
-flowchart TD
 
     A[feeds.yml] -->|Requests + filter| B[filtered_entries]
-    B -->|ranking + reranking + themes and countires| C{parsed_entries of the day}
+    B -->|translating + ranking + reranking + themes and countires| C{parsed_entries of the day}
     
-    D0(editorial_plan, t-1, t-2...)-->|compare with last day-s|D
+    D0(TODO: editorial_plan, t-1, t-2...)-->|compare with last day-s|D
 
 
     C -->|Select, source and organize informations|E2
     D(editorial_plan, t)-->|editorial writing|E1
 
-    D-->E3(future_calendar)
+    D-->E3(TODO: future_calendar)
 
     E1[editorial]
     E2[prepared_entries]
-    E2-->D
+    E2-->|Structuration in region x topics and facts x views|D
 
     P0[readers interests field]
 
-    P0-->|Multlingual prompt preparation|P1
+    P0-->|TODO: Multlingual prompt preparation|P1
     P1[reader_profile]
     P1-->E1
     P1-->D
@@ -250,6 +221,13 @@ flowchart TD
     F-->H
 
 ```
+
+1. **Scrape** – fetches the RSS feeds listed in the user's `feeds.yml`, filters articles by publication date (24h window, or that day only when the user's `filter_mode` is `"today"` or a publication sets `today_only: true`), and writes `filtered_entries`.
+2. **Parse** – ranks articles by semantic similarity to the user's `readers_interests.md`, diversifies sources, reranks the top candidates with an LLM for diversity and importance, assigns theme and country tags to each selected article ("international" if multiple countries are concerned), translates non-French text to French, and writes `parsed_entries`.
+3. **Prepare** – writes the French editorial and headline (stored as its own `editorial` artifact in pipeline_version ≥1), classifies the parsed articles into thematic sections of ~`section_size` articles each (1–2 word titles), and stores the articles relationally in the `prepared_entries` table (one row per EID, in section order) instead of a blob. The editorial's target length is derived from the user's `editorial_minutes` (word range = 200 × minutes ± 150), injected into the `edito.md` prompt via the `{ word_min }` / `{ word_max }` placeholders.
+4. **Speak** – synthesizes the editorial to `editorial.mp3` via OpenRouter's TTS API.
+
+All four artifacts are stored per user/day in SQLite. The newspaper HTML is generated on login from the stored data.
 
 
 ## Repository layout
