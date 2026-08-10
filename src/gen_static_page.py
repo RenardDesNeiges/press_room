@@ -17,6 +17,7 @@ from src.config import (
     DEFAULT_PARSED_ENTRIES_PATH,
     DEFAULT_PREPARED_ENTRIES_PATH,
     DEFAULT_TEMPLATE_DIR,
+    schedule_now,
 )
 
 
@@ -98,7 +99,7 @@ _MONTHS = [
 
 def get_french_weekday() -> str:
     """Return the current day of the week in French."""
-    return _WEEKDAYS[datetime.now().weekday()]
+    return _WEEKDAYS[schedule_now().weekday()]
 
 
 def format_datetime_fr(dt: datetime) -> str:
@@ -116,7 +117,7 @@ def format_date_fr(dt: datetime) -> str:
 
 def get_generated_at() -> str:
     """Return the current date and time in French."""
-    return format_datetime_fr(datetime.now())
+    return format_datetime_fr(schedule_now())
 
 
 def format_inline(text: str, excluded_domains: set[str] | None = None) -> str:

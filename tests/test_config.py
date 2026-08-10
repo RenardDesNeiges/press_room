@@ -64,3 +64,10 @@ def test_schedule_timezone_invalid_falls_back_to_paris(monkeypatch):
 
     monkeypatch.setattr(config, "SCHEDULE_TIMEZONE", "Mars/Base-1")
     assert config.schedule_timezone() == ZoneInfo("Europe/Paris")
+
+
+def test_schedule_now_is_aware_in_schedule_tz(monkeypatch):
+    monkeypatch.setattr(config, "SCHEDULE_TIMEZONE", "America/New_York")
+    now = config.schedule_now()
+    assert now.tzinfo is not None
+    assert now.tzinfo.key == "America/New_York"

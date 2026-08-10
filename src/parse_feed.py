@@ -63,6 +63,7 @@ def translate_to_french(text: str, model_name: str = DEFAULT_MODEL) -> str:
 
     prompt = (
         "Translate the following text into French. "
+        "This is text written for a journal. "
         "Preserve the original meaning, tone, and formatting. "
         "Do not add explanations, notes, or quotation marks around the output. "
         "Return only the translation.\n\n"

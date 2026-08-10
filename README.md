@@ -4,6 +4,9 @@
 
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
+## To-do-list 
+1. The pipeline **does not run for all users**, this is a bug to address!
+
 ## To-be-added features
 1. Refactored user preference specification setup, which automatically handles translation + better translation behavior, possibly test different translation models/approaches (`llama3.1:8b-instruct` v.s. `deepseeek-v4-flash` v.s. `qwen2.5:7b-instruct` v.s. `argostranslate 1.11.0`).
 2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot + a summary of the day's articles, as a telegram message which you get in the morning. 
@@ -26,11 +29,11 @@ The system is a Flask webapp hooked onto SQLite (`data/pressroom.db`).
 - **Per-user data** — each user stores their own `feeds.yml` and `readers_interests.md` in the `user_files` table, plus an `editorial_minutes` setting (target editorial read time, 2-10 minutes), an `excluded_domains` list (domains left out of the archive.ph link wrapper), and a `filter_mode` setting (`"24h"` or `"today"`) controlling how recent articles are kept.
 - **Article date filtering** — during scraping, a publication in `feeds.yml` can carry `today_only: true` to keep only that day's articles instead of the rolling `max_age` window (24h). This overrides the user's global `filter_mode`. The global setting is exposed in the settings page ("Dernières 24 heures" vs "Aujourd'hui uniquement").
 - **Per-user per-day issues** — each pipeline stage's output (`filtered_entries`, `parsed_entries`, `prepared_entries`, `editorial.mp3`) is stored in `issue_artifacts`, keyed by `(user, day)` in `issues`. History of editorials, one per day.
-- **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time.
+- **Date shown in the top bar** — is the time the pipeline ran for that issue (`issues.run_at`), not the page-rendering time. That time is displayed in the configured `schedule.timezone` (default `Europe/Paris`).
 - **Report picker** — clicking the date in the top bar opens a dropdown listing the last 7 days' issues (at most); clicking an entry regenerates the page from that report. The currently displayed day is highlighted.
 - **Settings** — the top bar links to `/settings`, where the user can edit their RSS feeds (`feeds.yml`) through a form (add/remove publications and feed URLs, set language, optionally tick "Aujourd'hui uniquement" per publication), download or import the full `feeds.yml` file, edit `readers_interests.md` as free text, set the target editorial length (2-10 minutes slider), choose the article date filter ("Dernières 24 heures" vs "Aujourd'hui uniquement"), set the list of domains excluded from the archive.ph link wrapper, change their username/password, and see the history of past pipeline runs. On narrow screens the top bar collapses into a hamburger menu. The feeds editor is collapsed by default and sits at the bottom of the page.
 - **Archive.ph links** — article links are wrapped through `archive.ph` unless their domain is in the user's `excluded_domains` list (one per line in settings). Users who have never set the list fall back to the built-in `DEFAULT_EXCLUDED_DOMAINS` in `src/config.py`.
-- **Daily schedule** — the webapp runs the pipeline once per day at a configured local time (default 06:00) for the configured users. See `config.yml` (`schedule.time`, `schedule.users`, `schedule.enabled`). The scheduling thread starts with the app (a daemon thread in `src/scheduler.py`).
+- **Daily schedule** — the webapp runs the pipeline once per day at a configured local time (default 06:00) for every user currently in the database (accounts created through the admin panel are picked up automatically, no restart needed); users lacking `feeds.yml`/`readers_interests.md` are skipped. The schedule is configured in `config.yml` (`schedule.time`, `schedule.enabled`). The scheduling thread starts with the app (a daemon thread in `src/scheduler.py`).
 - **Page generation on login** — after login, the latest (or a historical) issue is rendered from the database.
 
 ### Running
@@ -252,7 +255,7 @@ All four artifacts are stored per user/day in SQLite. The newspaper HTML is gene
     ├── rank_entries.py       # WordLlama semantic ranking helper
     ├── rerank_llm.py         # LLM reranking helper
     ├── run_pipeline.py       # Per-user pipeline trigger (writes to SQLite)
-    ├── scheduler.py          # Daily pipeline scheduler thread
+    ├── scheduler.py          # Daily scheduler thread (runs the pipeline for every DB user, re-read each run)
     ├── serve.py              # Legacy static file server
     └── templates/
         ├── article.html
@@ -330,7 +333,8 @@ python app.py
 - Add `?day=YYYY-MM-DD` to view a historical issue stored in the database.
 
 The app starts a background thread (see `config.yml` → `schedule`) that runs the
-pipeline daily at the configured local time (default 06:00) for each listed user.
+pipeline daily at the configured local time (default 06:00) for every user in the
+database, re-reading the user list at each run.
 
 ## Customization
 
@@ -344,11 +348,11 @@ a `config.yml`. Values in `config.yml` override the defaults:
 - **Pipeline:** the `pipeline:` block — `candidates_count`, `final_count` (number of articles), `section_size`, and `max_per_source` (cap candidates per newspaper before LLM reranking).
 - **Web:** the `web:` block — `secret_key` and `port`. The secret key resolves with this precedence: `PRESSROOM_SECRET_KEY` env var → `config.yml` → a fresh key generated and persisted into the gitignored `config.yml` on first boot (the placeholder `dev-secret-change-me` does not count as a real key).
 - **Archive.ph exclusions:** `excluded_domains` (list of domains left out of the archive.ph link wrapper; this is the default list new/never-configured users fall back to).
-- **Schedule:** the `schedule:` block — `enabled`, `time` (`"HH:MM"`, local time in `timezone`), `timezone` (IANA zone, e.g. `Europe/Paris`; default, falling back to `Europe/Paris` if invalid), and `users`.
+- **Schedule:** the `schedule:` block — `enabled` and `time` (`"HH:MM"`, local time in `timezone`; `timezone` is an IANA zone, e.g. `Europe/Paris`, falling back to `Europe/Paris` if invalid). The daily run covers all users in the database; `users` is ignored by the scheduler (kept only for compatibility).
 - **TTS voice:** edit `DEFAULT_VOICE` in `src/editorial_to_mp3.py`.
 - **Styling:** edit `src/templates/page.html`, `src/templates/article.html`, and `src/templates/page.css`.
 
 ## Notes
 
-- The extracted headline and the pipeline run time (in French) are displayed at the top of the generated page in a large, responsive font.
+- The extracted headline and the pipeline run time (in French) are displayed at the top of the generated page in a large, responsive font. Run timestamps are stored as UTC ISO-8601 (with offset) and rendered in `schedule.timezone`.
 - The database `data/pressroom.db` is created on first run and ignored by git.

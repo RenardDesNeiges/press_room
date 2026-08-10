@@ -130,6 +130,8 @@ def filter_feeds_by_date(
     if reference_date is None:
         reference_date = datetime.now(timezone.utc)
 
+    tz = schedule_timezone()
+
     filtered: dict[str, dict[str, Any]] = {}
     for url, meta in feeds.items():
         flag = meta.get("today_only")
@@ -140,7 +142,7 @@ def filter_feeds_by_date(
             if entry_date is None:
                 continue
             if today_only:
-                if entry_date.astimezone().date() == reference_date.astimezone().date():
+                if entry_date.astimezone(tz).date() == reference_date.astimezone(tz).date():
                     recent_entries.append(entry)
             elif (reference_date - entry_date) <= max_age:
                 recent_entries.append(entry)

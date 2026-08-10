@@ -67,9 +67,8 @@ excluded_domains:
 
 # Daily pipeline schedule for the webapp. `time` is interpreted in `timezone`
 # (a valid IANA timezone; falls back to Europe/Paris if absent or invalid).
+# The daily run covers every user in the database; `users` below is ignored.
 schedule:
   enabled: true
   time: "06:00"
   timezone: "Europe/Paris"
-  users:
-    - "titou"

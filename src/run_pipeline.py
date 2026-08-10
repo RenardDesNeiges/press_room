@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import argparse
 import tempfile
-from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +24,7 @@ import yaml
 
 from src import db as database
 from src import editorial_to_mp3, feed_reader, parse_feed, prepare_entries
+from src.config import schedule_now
 from src.feed_reader import make_eid
 
 
@@ -43,7 +43,7 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         raise SystemExit(f"Unknown user: {username}. Create it first (see db.py).")
 
     user_id = user["id"]
-    day = day or date.today().isoformat()
+    day = day or schedule_now().date().isoformat()
     try:
         editorial_minutes = user["editorial_minutes"]
     except (KeyError, IndexError):
@@ -71,7 +71,7 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
         mp3_path = work / "editorial.mp3"
 
         print(f"\n>>> Running pipeline for '{username}' ({day})")
-        run_stamp = datetime.now()
+        run_stamp = schedule_now()
 
         def eid_factory(seq: int) -> str:
             return make_eid(username, run_stamp, seq)

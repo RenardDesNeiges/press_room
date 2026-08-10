@@ -11,7 +11,7 @@ Schema:
 from __future__ import annotations
 
 import sqlite3
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -19,7 +19,12 @@ import yaml
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from src.config import DEFAULT_DB_PATH, DATA_DIR, DEFAULT_EXCLUDED_DOMAINS
+from src.config import (
+    DEFAULT_DB_PATH,
+    DATA_DIR,
+    DEFAULT_EXCLUDED_DOMAINS,
+    schedule_now,
+)
 
 
 SCHEMA = """
@@ -48,7 +53,7 @@ CREATE TABLE IF NOT EXISTS issues (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     day TEXT NOT NULL,
     pipeline_version INTEGER NOT NULL DEFAULT 0,
-    run_at TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+    run_at TEXT NOT NULL DEFAULT (datetime('now')),
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(user_id, day)
 );
@@ -369,18 +374,19 @@ def get_or_create_issue(
 
     ``run_at`` records when the pipeline last ran for this issue.
     """
+    run_at = datetime.now(timezone.utc).isoformat()
     with connect(db_path) as conn:
         row = conn.execute(
             "SELECT id FROM issues WHERE user_id = ? AND day = ?", (user_id, day)
         ).fetchone()
         if row:
             conn.execute(
-                "UPDATE issues SET run_at = datetime('now','localtime') WHERE id = ?",
-                (row["id"],),
+                "UPDATE issues SET run_at = ? WHERE id = ?", (run_at, row["id"])
             )
             return int(row["id"])
         cursor = conn.execute(
-            "INSERT INTO issues (user_id, day) VALUES (?, ?)", (user_id, day)
+            "INSERT INTO issues (user_id, day, run_at) VALUES (?, ?, ?)",
+            (user_id, day, run_at),
         )
         return int(cursor.lastrowid)
 
@@ -709,7 +715,7 @@ def _seed_user_account(username: str, password: str, db_path: Path) -> None:
 
     seed_default_files(user_id, db_path)
 
-    today = date.today().isoformat()
+    today = schedule_now().date().isoformat()
     issue_id = get_or_create_issue(user_id, today, db_path)
 
     for stage, filename in (

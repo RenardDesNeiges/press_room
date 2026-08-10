@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 import secrets
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -199,6 +200,9 @@ _SCHEDULE = _section("schedule")
 
 SCHEDULE_ENABLED = bool(_SCHEDULE.get("enabled", True))
 SCHEDULE_TIME = str(_SCHEDULE.get("time", "06:00"))
+# Retained for backwards compatibility with existing config.yml files, but no
+# longer consulted by the scheduler (the scheduler resolves users from the DB
+# at each run).
 SCHEDULE_USERS = [u for u in (_SCHEDULE.get("users") or ["titou"]) if u]
 SCHEDULE_TIMEZONE = str(_SCHEDULE.get("timezone", "Europe/Paris"))
 
@@ -220,3 +224,8 @@ def schedule_timezone() -> "ZoneInfo":
         return ZoneInfo(SCHEDULE_TIMEZONE)
     except ZoneInfoNotFoundError:
         return ZoneInfo("Europe/Paris")
+
+
+def schedule_now() -> datetime:
+    """Return the current time as an aware datetime in the schedule timezone."""
+    return datetime.now(schedule_timezone())

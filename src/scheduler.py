@@ -2,8 +2,9 @@
 
 The webapp starts a daemon thread that waits until the configured local time
 each day (config.yml -> schedule.time) in the configured timezone
-(config.yml -> schedule.timezone), then runs the pipeline for each user listed
-in schedule.users.
+(config.yml -> schedule.timezone), then runs the pipeline for every user
+currently in the database, re-read at each run (so newly-added users are picked
+up without restart).
 """
 
 from __future__ import annotations
@@ -15,6 +16,7 @@ from datetime import datetime, timedelta, timezone
 
 from zoneinfo import ZoneInfo
 
+from src import db as database
 from src.config import schedule_timezone
 from src.run_pipeline import run_for_user
 
@@ -30,8 +32,14 @@ def next_run(hour: int, minute: int, tz: ZoneInfo, now: datetime | None = None) 
     return candidate
 
 
-def run_pipeline_for_all(users: list[str]) -> None:
+def scheduled_usernames() -> list[str]:
+    return [row["username"] for row in database.list_users()]
+
+
+def run_pipeline_for_all(users: list[str] | None = None) -> None:
     """Run the pipeline for every listed user, logging failures without aborting."""
+    if users is None:
+        users = scheduled_usernames()
     for username in users:
         try:
             logger.info("Scheduled pipeline run for '%s'", username)
@@ -42,8 +50,8 @@ def run_pipeline_for_all(users: list[str]) -> None:
             logger.exception("Scheduled pipeline run failed for '%s'", username)
 
 
-def start_daily(users: list[str], hour: int, minute: int) -> threading.Thread:
-    """Start a daemon thread that runs ``users`` each day at HH:MM in the schedule timezone."""
+def start_daily(hour: int, minute: int) -> threading.Thread:
+    """Start a daemon thread that runs all DB users each day at HH:MM in the schedule timezone."""
     tz = schedule_timezone()
 
     def loop() -> None:
@@ -57,7 +65,7 @@ def start_daily(users: list[str], hour: int, minute: int) -> threading.Thread:
                 delay,
             )
             time.sleep(delay)
-            run_pipeline_for_all(users)
+            run_pipeline_for_all()
 
     thread = threading.Thread(target=loop, name="pressroom-daily-pipeline", daemon=True)
     thread.start()

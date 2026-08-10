@@ -15,7 +15,7 @@ import logging
 import os
 import random
 import threading
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import yaml
@@ -35,8 +35,9 @@ from src.config import (
     DATA_DIR,
     DEFAULT_TEMPLATE_DIR,
     SCHEDULE_ENABLED,
-    SCHEDULE_USERS,
     schedule_clock,
+    schedule_now,
+    schedule_timezone,
     setup_secret_key,
 )
 from src import db as database
@@ -416,12 +417,12 @@ def _maybe_start_scheduler(app: Flask) -> None:
     Under Flask's debug reloader the module is executed twice (watcher + child);
     only the child (WERKZEUG_RUN_MAIN) should start the scheduler.
     """
-    if not (SCHEDULE_ENABLED and SCHEDULE_USERS):
+    if not SCHEDULE_ENABLED:
         return
     if app.debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true":
         return
     hour, minute = schedule_clock()
-    start_daily(list(SCHEDULE_USERS), hour, minute)
+    start_daily(hour, minute)
 
 
 def _is_pipeline_running(username: str) -> bool:
@@ -530,14 +531,18 @@ def render_issue(username: str, day: str | None = None) -> str:
 
 
 def _parse_run_at(issue) -> datetime:
-    """Return the pipeline run time for an issue (fallback: now)."""
+    """Return the issue's pipeline run time as an aware datetime in the schedule
+    timezone (naive stored values are treated as UTC)."""
     run_at = issue["run_at"]
     if not run_at:
-        return datetime.now()
+        return schedule_now()
     try:
-        return datetime.fromisoformat(run_at)
+        dt = datetime.fromisoformat(run_at)
     except ValueError:
-        return datetime.now()
+        return schedule_now()
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(schedule_timezone())
 
 
 def _issue_editorial(issue, prepared_data: dict) -> tuple[str | None, str | None]:
@@ -845,7 +850,7 @@ def _build_day_menu(user_id: int, current_day: str) -> str:
     Each item links to the issue for that day. The currently displayed day is
     marked with the ``is-current`` class.
     """
-    cutoff = (datetime.now() - timedelta(days=7)).date().isoformat()
+    cutoff = (schedule_now() - timedelta(days=7)).date().isoformat()
     items = []
     for issue in database.list_issues(user_id):
         if issue["day"] < cutoff:
