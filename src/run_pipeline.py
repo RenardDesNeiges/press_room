@@ -16,6 +16,7 @@ All artifacts are written to the database, keyed by (user, day).
 from __future__ import annotations
 
 import argparse
+import logging
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -24,8 +25,14 @@ import yaml
 
 from src import db as database
 from src import editorial_to_mp3, feed_reader, parse_feed, prepare_entries
+from src import telegram as tg
 from src.config import schedule_now
 from src.feed_reader import make_eid
+from src.gen_static_page import format_date_fr
+
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 def _write(path: Path, content: str | bytes) -> None:
@@ -123,9 +130,60 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
             if content:
                 database.set_artifact(issue_id, name, content.encode("utf-8"))
         database.set_pipeline_version(issue_id, 1)
+        _notify_telegram(user_id, issue_id, day)
 
     print(f"\nStored all artifacts for '{username}' / {day} in the database.")
     return {"user": username, "day": day, "issue_id": issue_id}
+
+
+def _notify_telegram(user_id, issue_id, day) -> None:
+
+    day_fr = format_date_fr(datetime.strptime(day,"%Y-%m-%d"))
+
+    if not database.telegram_enabled(user_id):
+        return
+    cfg = database.get_telegram_config(user_id)
+    try:
+        blob = database.get_artifact(issue_id, "editorial_mp3")
+        editorial_blob = database.get_artifact(issue_id, "editorial")
+        prepared_entries_blob = database.get_artifact(issue_id, "prepared_entries")
+        if editorial_blob:
+            try:
+                title = (yaml.safe_load(editorial_blob.decode("utf-8", errors="replace")) or {}).get("title") or ""
+            except Exception:
+                title = ""
+            try:
+                edito = (yaml.safe_load(editorial_blob.decode("utf-8", errors="replace")) or {}).get("editorial") or ""
+            except Exception:
+                edito = ""
+        if prepared_entries_blob:
+            try:
+                title = (yaml.safe_load(editorial_blob.decode("utf-8", errors="replace")) or {}).get("title") or ""
+            except Exception:
+                title = ""
+            try:
+                entries = (yaml.safe_load(prepared_entries_blob.decode("utf-8", errors="replace")) or {}).get("entries") or ""
+            except Exception:
+                entries = ""
+            try:
+                media = [e['media'] for e in entries if e['media'] is not None][0]
+            except:
+                media = None
+        if blob:
+            caption = f"_{title}_\n\nL'édition _Pressroom_ du {day_fr} est prête\.\n\n_{edito[:1000].replace('.','\.')}_\.\.\."
+            tg.send_audio(cfg["token"], cfg["chat_id"], blob, 
+                            filename="editorial.mp3",
+                            caption=caption,
+                            media = media,
+                            link={
+                                "text": "Lire l'édition complète",
+                                "url": "http://press-room.ch",
+                                }
+                          )
+        else:
+            tg.send_text(cfg["token"], cfg["chat_id"], caption=caption)
+    except Exception:
+        logger.exception("Telegram notification failed for issue %s", issue_id)
 
 
 def main() -> None:

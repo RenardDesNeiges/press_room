@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import src.translate as translate_mod
 from src import parse_feed
 
 
@@ -54,7 +55,7 @@ def test_non_french_entry_translates_all_text_fields(monkeypatch):
         calls.append(prompt)
         return "TRADUIT"
 
-    monkeypatch.setattr(parse_feed, "query_model", fake_query)
+    monkeypatch.setattr(translate_mod, "query_model", fake_query)
     entry = {
         "title": "Hello",
         "summary": "A summary.",
@@ -76,7 +77,7 @@ def test_french_entry_translates_reason_only(monkeypatch):
         calls.append(prompt)
         return "RAISON TRADUITE"
 
-    monkeypatch.setattr(parse_feed, "query_model", fake_translate)
+    monkeypatch.setattr(translate_mod, "query_model", fake_translate)
     entry = {
         "title": "Titre français",
         "summary": "Résumé.",
@@ -95,7 +96,7 @@ def test_translate_entry_ignores_empty_fields(monkeypatch):
     def fake_translate(prompt, model_name=None, temperature=0.2):
         return "X"
 
-    monkeypatch.setattr(parse_feed, "query_model", fake_translate)
+    monkeypatch.setattr(translate_mod, "query_model", fake_translate)
     entry = {"title": "", "summary": None, "rerank_reason": "", "lang": "EN", "url": "http://x"}
     out = parse_feed.translate_entry(entry)
     assert out["title"] == ""
@@ -106,7 +107,7 @@ def test_translate_entry_ignores_empty_fields(monkeypatch):
 
 
 def test_input_entry_is_not_mutated(monkeypatch):
-    monkeypatch.setattr(parse_feed, "query_model", lambda *a, **k: "TRADUIT")
+    monkeypatch.setattr(translate_mod, "query_model", lambda *a, **k: "TRADUIT")
     entry = {"title": "T", "lang": "EN"}
     before = dict(entry)
     parse_feed.translate_entry(entry)

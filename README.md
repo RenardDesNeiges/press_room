@@ -4,20 +4,19 @@
 
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
-## To-do-list 
-1. The pipeline **does not run for all users**, this is a bug to address!
 
 ## To-be-added features
-1. Refactored user preference specification setup, which automatically handles translation + better translation behavior, possibly test different translation models/approaches (`llama3.1:8b-instruct` v.s. `deepseeek-v4-flash` v.s. `qwen2.5:7b-instruct` v.s. `argostranslate 1.11.0`).
-2. Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot + a summary of the day's articles, as a telegram message which you get in the morning. 
-3. Persistence in the writing of briefings, using multiple, lagged news_summary objects.
-4. Add ISSN or DOI feeds for research papers.
-5. Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot. 
-6. Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events.
-7. make sure datetime are all wrapped in a datetime object which sets the date/time geographically. Make this a standard in the project.
-8. Ability for people to request signup, only allow if they have access to a unique key sent to the admin's telegram account.
-9. Add a map widget, showing geographical coverage (puts the articles on a map).
-10. Setup a SSL certificate + associate the server with an actual domain
+
+|  Feature  | Category  |
+|  ---  | ---  |
+|  Refactored user preference specification setup, which automatically handles translation + better translation behavior, possibly test different translation models/approaches (`llama3.1:8b-instruct` v.s. `deepseeek-v4-flash` v.s. `qwen2.5:7b-instruct` v.s. `argostranslate 1.11.0`).  |  **Streamline** the base `edition` experience |
+| Ability to send the press briefings (especially the editorials, in audio format) via a telegram bot + a summary of the day's articles, as a telegram message which you get in the morning.  |  **Streamline** the base `edition` experience |
+| Persistence in the writing of briefings, using multiple, lagged news_summary objects.  |  **Improve** the base `edition` experience |
+| Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events. |  **Improve** the base `edition` experience |
+| Add a map widget, showing geographical coverage (puts the articles on a map). |  **Improve** the base `edition` experience |
+| Create a mode selector page, and the possibility to enable/disable schedueles.  | **Enable** new modes|
+| Add an alert/dedicated briefing system, where the user can setup alerts on specific topics/geographies/organization/people. And get a special section generated accordingly. This section should also be possible to share on an open page to be sent to people, or via a telegram bot.  | **Create** `alert` mode|
+| Add ISSN or DOI feeds for research papers.  |  **Create** a research version of the alert mode `lab` |
 
 
 ## Webapp

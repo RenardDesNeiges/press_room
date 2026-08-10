@@ -32,7 +32,7 @@
 
       <section class="settings-section">
         <h2>Préférences de lecture</h2>
-        <p class="settings-hint">Texte libre décrivant les goûts et intérêts de la/du lecteur·ice (utilisé par Pressroom pour sélectionner les articles).</p>
+        <p class="settings-hint">Écrivez en français un texte décrivant les goûts et intérêts de la/du lecteur·ice.</p>
         <form method="post">
           <input type="hidden" name="action" value="save_interests">
           <textarea name="interests" rows="12" class="interests-input">{{ interests }}</textarea>
@@ -49,7 +49,7 @@
           <input type="hidden" name="action" value="save_editorial_minutes">
           <div class="slider-row">
             <span id="editorial-minutes-value" class="slider-value">{{ editorial_minutes }} min</span>
-            <input type="range" id="editorial-minutes" name="editorial_minutes" min="2" max="10" step="1" value="{{ editorial_minutes }}">
+            <input type="range" id="editorial-minutes" name="editorial_minutes" min="1" max="7" step="1" value="{{ editorial_minutes }}">
           </div>
           <div class="settings-actions">
             <button type="submit">Enregistrer</button>
@@ -114,6 +114,26 @@
             <button type="submit">Mettre à jour</button>
           </div>
         </form>
+      </section>
+
+      <section class="settings-section">
+        <h2>Bot Telegram</h2>
+        <p class="settings-hint">Recevez l'audio de votre édition sur Telegram après chaque passage du pipeline. Pour obtenir votre identifiant de discussion, envoyez <code>/start</code> au bot que vous avez créé via <a href="https://t.me/BotFather">@BotFather</a>.</p>
+        <form method="post">
+          <input type="hidden" name="action" value="save_telegram">
+          <label class="telegram-enable-label">
+            <input type="checkbox" name="telegram_enabled" value="1" {% if telegram_enabled %}checked{% endif %}>
+            Activer le bot Telegram
+          </label>
+          <div id="telegram-fields"{% if not telegram_enabled %} hidden{% endif %}>
+            <label>Token du bot <input type="text" name="telegram_token" value="{{ telegram_token }}"></label>
+            <label>Identifiant de discussion (chat id) <input type="text" name="telegram_chat_id" value="{{ telegram_chat_id }}"></label>
+          </div>
+          <div class="settings-actions">
+            <button type="submit">Enregistrer</button>
+          </div>
+        </form>
+        <p class="settings-hint">Après chaque passage du pipeline, Pressroom envoie l'audio de l'éditorial quand la case « Activer le bot Telegram » est cochée et que le token et l'identifiant sont tous deux renseignés.</p>
       </section>
 
       <section class="settings-section">

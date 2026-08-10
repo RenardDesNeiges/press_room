@@ -1,18 +1,3 @@
-English
-
-The reader is a left-wing activist interested in the following topics. 
-Evolutions of the political landscape, especially in these countries: France, Switzerland, Germany, Spain, the United States and China.
-Changes in the balance of power between left and right. 
-The rise of far-right/nationalists/right-populist politicians and parties. Especially Vox (Spain), AfD (Germany), Front-National (France) and UDC/SVP (Switzerland). 
-The rise of the far-left, communist, anticapitalist, left-populist politicians. Especially La France Insoumise and Mélenchon (in France), Die Linke (in Germany), the PTB (in Belgium). 
-Any social movement, strike, protests, riots.
-Also they want, where possible to read articles from a newspaper that comes from the right country, or at least the right-language group. For instance NZZ about Switzerland, the Financial Times or Jacobin about the US and the UK, Mediapart about France etc.
-Any massive change in a big firm's profitability or in the competitive environment. 
-They are also very interested in geopolitics, especially when it concerns the USA, China or France. 
-The articles may be in French, English, German, or Spanish.
-
------
-
 Français
 
 Le lecteur est un militant de gauche qui s'intéresse aux sujets suivants.
@@ -25,6 +10,21 @@ Il souhaite également, dans la mesure du possible, lire des articles provenant 
 Tout changement majeur dans la rentabilité d’une grande entreprise ou dans son environnement concurrentiel.
 Ils s’intéressent également beaucoup à la géopolitique, en particulier lorsqu’elle concerne les États-Unis, la Chine ou la France.
 Les articles peuvent être en français, en anglais, en allemand ou en espagnol.
+
+-----
+
+English
+
+The reader is a left-wing activist interested in the following topics. 
+Evolutions of the political landscape, especially in these countries: France, Switzerland, Germany, Spain, the United States and China.
+Changes in the balance of power between left and right. 
+The rise of far-right/nationalists/right-populist politicians and parties. Especially Vox (Spain), AfD (Germany), Front-National (France) and UDC/SVP (Switzerland). 
+The rise of the far-left, communist, anticapitalist, left-populist politicians. Especially La France Insoumise and Mélenchon (in France), Die Linke (in Germany), the PTB (in Belgium). 
+Any social movement, strike, protests, riots.
+Also they want, where possible to read articles from a newspaper that comes from the right country, or at least the right-language group. For instance NZZ about Switzerland, the Financial Times or Jacobin about the US and the UK, Mediapart about France etc.
+Any massive change in a big firm's profitability or in the competitive environment. 
+They are also very interested in geopolitics, especially when it concerns the USA, China or France. 
+The articles may be in French, English, German, or Spanish.
 
 -----
 
@@ -49,7 +49,7 @@ Der Leser ist ein linker Aktivist, der sich für folgende Themen interessiert.
 Entwicklungen in der politischen Landschaft, insbesondere in folgenden Ländern: Frankreich, Schweiz, Deutschland, Spanien, den Vereinigten Staaten und China.
 Veränderungen im Kräfteverhältnis zwischen Linken und Rechten.
 Der Aufstieg rechtsextremer, nationalistischer und rechtspopulistischer Politiker und Parteien. Insbesondere Vox (Spanien), AfD (Deutschland), Front National (Frankreich) und UDC/SVP (Schweiz).
-Der Aufstieg von Politikern der extremen Linken, Kommunisten, Antikapitalisten und linkspopulistischen Politikern. Insbesondere „La France Insoumise“ und Mélenchon (in Frankreich), „Die Linke“ (in Deutschland) sowie die PTB (in Belgien).
+Der Aufstieg von Politikern der extremen Linken, Kommunisten, Antikapitalisten und linkspopulistischen Politikern. Insbesondere „La France Insoumise" und Mélenchon (in Frankreich), „Die Linke" (in Deutschland) sowie die PTB (in Belgien).
 Jegliche sozialen Bewegungen, Streiks, Proteste und Unruhen.
 Außerdem möchte er, soweit möglich, Artikel aus einer Zeitung lesen, die aus dem jeweiligen Land oder zumindest aus dem jeweiligen Sprachraum stammt. Zum Beispiel die NZZ über die Schweiz, die Financial Times oder Jacobin über die USA und Großbritannien, Mediapart über Frankreich usw.
 Jede massive Veränderung der Rentabilität eines großen Unternehmens oder des Wettbewerbsumfelds.

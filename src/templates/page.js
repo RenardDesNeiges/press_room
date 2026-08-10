@@ -683,3 +683,15 @@
     });
   }
 })();
+
+(function () {
+  const telegramToggle = document.querySelector('[name="telegram_enabled"]');
+  const telegramFields = document.getElementById('telegram-fields');
+  if (!telegramToggle || !telegramFields) return;
+
+  function syncTelegramFields() {
+    telegramFields.hidden = !telegramToggle.checked;
+  }
+  telegramToggle.addEventListener('change', syncTelegramFields);
+  syncTelegramFields();
+})();

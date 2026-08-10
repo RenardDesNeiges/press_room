@@ -50,7 +50,7 @@ def build_rerank_prompt(
     additional_prompt_path: str | Path = DEFAULT_ARRANK_PROMPT_PATH,
 ) -> str:
     """Build the full prompt for the LLM reranking step."""
-    interests = load_interests(interests_path).split('-----')[0]  # ignore multilingual repeats
+    interests = load_interests(interests_path).split('-----')[0]  # first section is Français (French-first file)
     additional_prompt = load_additional_prompt(additional_prompt_path)
     candidates_block = build_candidate_prompt_block(entries)
 

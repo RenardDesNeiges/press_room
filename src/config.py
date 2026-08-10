@@ -91,6 +91,7 @@ _MODELS = _section("models")
 DEFAULT_MODEL = str(_MODELS.get("default", "qwen/qwen-2.5-7b-instruct:nitro"))
 FANCY_MODEL = str(_MODELS.get("fancy", "deepseek/deepseek-v4-flash-0731:nitro"))
 DEFAULT_SECTION_MODEL = str(_MODELS.get("section", FANCY_MODEL))
+TRANSLATION_MODEL = str(_MODELS.get("translation", "meta-llama/llama-3.1-8b-instruct"))
 
 # --- pipeline ---------------------------------------------------------------
 _PIPELINE = _section("pipeline")

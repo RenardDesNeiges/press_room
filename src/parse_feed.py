@@ -18,12 +18,13 @@ from src.config import (
     DEFAULT_FINAL_COUNT,
     DEFAULT_INTERESTS_PATH,
     DEFAULT_MAX_PER_SOURCE,
-    DEFAULT_MODEL,
     DEFAULT_PARSED_ENTRIES_PATH,
     FANCY_MODEL,
+    TRANSLATION_MODEL,
 )
 from src.rank_entries import rank_entries
-from src.rerank_llm import query_model, rerank_with_llm
+from src.rerank_llm import rerank_with_llm
+from src.translate import translate
 
 
 def load_entries(path: Path = DEFAULT_ENTRIES_PATH) -> list[dict[str, Any]]:
@@ -56,26 +57,13 @@ def export_entries_yaml(
         )
 
 
-def translate_to_french(text: str, model_name: str = DEFAULT_MODEL) -> str:
-    """Translate a single text to French using an LLM."""
-    if not text or not text.strip():
-        return text
-
-    prompt = (
-        "Translate the following text into French. "
-        "This is text written for a journal. "
-        "Preserve the original meaning, tone, and formatting. "
-        "Do not add explanations, notes, or quotation marks around the output. "
-        "Return only the translation.\n\n"
-        f"Text:\n{text}"
-    )
-
-    translation = query_model(prompt, model_name=model_name, temperature=0.2)
-    return translation.strip()
+def translate_to_french(text: str, model_name: str = TRANSLATION_MODEL) -> str:
+    """Translate a single text to French using the central translation helper."""
+    return translate(text, "fr", model_name=model_name)
 
 
 def translate_entry(
-    entry: dict[str, Any], model_name: str = DEFAULT_MODEL
+    entry: dict[str, Any], model_name: str = TRANSLATION_MODEL
 ) -> dict[str, Any]:
     """Translate an entry's textual fields to French.
 
@@ -99,7 +87,7 @@ def translate_entry(
 
 
 def translate_entries(
-    entries: list[dict[str, Any]], model_name: str = DEFAULT_MODEL
+    entries: list[dict[str, Any]], model_name: str = TRANSLATION_MODEL
 ) -> list[dict[str, Any]]:
     """Translate every entry's text fields to French."""
     translated_entries = []
@@ -145,7 +133,7 @@ def parse_feed(
     candidates_count: int = DEFAULT_CANDIDATES_COUNT,
     final_count: int = DEFAULT_FINAL_COUNT,
     max_per_source: int = DEFAULT_MAX_PER_SOURCE,
-    model_name: str = DEFAULT_MODEL,
+    model_name: str = TRANSLATION_MODEL,
     translate: bool = True,
     interests_path: str | Path = DEFAULT_INTERESTS_PATH,
 ) -> list[dict[str, Any]]:

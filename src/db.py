@@ -36,6 +36,9 @@ CREATE TABLE IF NOT EXISTS users (
     editorial_minutes INTEGER NOT NULL DEFAULT 5,
     excluded_domains TEXT,
     filter_mode TEXT,
+    telegram_token TEXT NOT NULL DEFAULT 'none',
+    telegram_chat_id TEXT,
+    telegram_enabled INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -133,6 +136,20 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
             conn.execute(
                 "ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"
             )
+        if "telegram_token" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN telegram_token "
+                "TEXT NOT NULL DEFAULT 'none'"
+            )
+        if "telegram_chat_id" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN telegram_chat_id TEXT"
+            )
+        if "telegram_enabled" not in user_cols:
+            conn.execute(
+                "ALTER TABLE users ADD COLUMN telegram_enabled "
+                "INTEGER NOT NULL DEFAULT 0"
+            )
         prepared_cols = {
             row["name"]
             for row in conn.execute("PRAGMA table_info(prepared_entries)").fetchall()
@@ -222,6 +239,27 @@ def list_user_files(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> dict[str, 
             "SELECT name, content FROM user_files WHERE user_id = ?", (user_id,)
         ).fetchall()
         return {row["name"]: row["content"] for row in rows}
+
+
+def get_reader_interest_field(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> str | None:
+    return get_user_file(user_id, READER_INTEREST_FIELD_FILE, db_path)
+
+
+def set_reader_interest_field(user_id: int, content: str, db_path: Path = DEFAULT_DB_PATH) -> None:
+    set_user_file(user_id, READER_INTEREST_FIELD_FILE, content, db_path)
+
+
+def ensure_reader_interest_field(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> str:
+    """Return the user's reader interest field; if unset, backfill it by
+    copying the current readers_interests.md content (copy-paste semantics)."""
+    current = get_reader_interest_field(user_id, db_path)
+    if current:
+        return current
+    legacy = get_user_file(user_id, "readers_interests.md", db_path)
+    if legacy:
+        set_reader_interest_field(user_id, legacy, db_path)
+        return legacy
+    return ""
 
 
 def list_users(db_path: Path = DEFAULT_DB_PATH) -> list[sqlite3.Row]:
@@ -359,6 +397,52 @@ def set_filter_mode(user_id: int, mode: str, db_path: Path = DEFAULT_DB_PATH) ->
         )
 
 
+DEFAULT_TELEGRAM_TOKEN = "none"
+
+
+def get_telegram_config(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> dict[str, str]:
+    """Return {"enabled": bool, "token": ..., "chat_id": ...}. Token defaults to
+    'none' (and a NULL/blank stored token is normalized to 'none')."""
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT telegram_token, telegram_chat_id, telegram_enabled "
+            "FROM users WHERE id = ?",
+            (user_id,),
+        ).fetchone()
+    if row is None:
+        return {"enabled": False, "token": DEFAULT_TELEGRAM_TOKEN, "chat_id": ""}
+    token = row["telegram_token"] or DEFAULT_TELEGRAM_TOKEN
+    chat_id = row["telegram_chat_id"] or ""
+    return {"enabled": bool(row["telegram_enabled"]), "token": token, "chat_id": chat_id}
+
+
+def set_telegram_config(user_id: int, token: str, chat_id: str, db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Store the user's bot token (blank -> 'none') and chat_id."""
+    token = (token or "").strip() or DEFAULT_TELEGRAM_TOKEN
+    chat_id = (chat_id or "").strip()
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET telegram_token = ?, telegram_chat_id = ? WHERE id = ?",
+            (token, chat_id, user_id),
+        )
+
+
+def set_telegram_enabled(user_id: int, enabled: bool, db_path: Path = DEFAULT_DB_PATH) -> None:
+    """Set the user's telegram_enabled flag (does not touch stored credentials)."""
+    with connect(db_path) as conn:
+        conn.execute(
+            "UPDATE users SET telegram_enabled = ? WHERE id = ?",
+            (1 if enabled else 0, user_id),
+        )
+
+
+def telegram_enabled(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> bool:
+    """True when the box is ticked AND both fields are set (token is not
+    empty/'none' and chat_id non-empty)."""
+    cfg = get_telegram_config(user_id, db_path)
+    return bool(cfg["enabled"]) and bool(cfg["chat_id"]) and bool(cfg["token"]) and cfg["token"] != "none"
+
+
 def seed_default_files(user_id: int, db_path: Path = DEFAULT_DB_PATH) -> None:
     """Copy the demo feeds.yml and readers_interests.md into a user's config files."""
     for name in ("feeds.yml", "readers_interests.md"):
@@ -455,6 +539,8 @@ def set_pipeline_version(
 
 
 SOURCE_FILES = ("feeds.yml", "readers_interests.md")
+
+READER_INTEREST_FIELD_FILE = "readers_interest_field"
 
 
 def backfill_issue_source_files(db_path: Path = DEFAULT_DB_PATH) -> int:

@@ -43,6 +43,7 @@ from src.config import (
 from src import db as database
 from src.scheduler import start_daily
 from src.run_pipeline import run_for_user
+from src.translate import build_readers_interests
 from src.gen_static_page import (
     build_html,
     format_date_fr,
@@ -55,6 +56,9 @@ logger = logging.getLogger(__name__)
 
 _PIPELINE_RUNNING: set[str] = set()
 _PIPELINE_LOCK = threading.Lock()
+
+_TRANSLATING: set[str] = set()
+_TRANSLATION_LOCK = threading.Lock()
 
 
 def create_app() -> Flask:
@@ -128,9 +132,17 @@ def create_app() -> Flask:
         if _is_pipeline_running(username):
             flash("Préparation de l'édition déjà en cours.")
             return redirect(url_for("index"))
-        database.set_user_file(
-            user["id"], "readers_interests.md", request.form.get("interests", "")
-        )
+        field = request.form.get("interests", "")
+        database.set_reader_interest_field(user["id"], field)
+        if field.strip():
+            try:
+                database.set_user_file(
+                    user["id"], "readers_interests.md", build_readers_interests(field)
+                )
+            except Exception:
+                logger.exception(
+                    "Failed to build readers_interests.md for '%s'", username
+                )
         if not _save_feeds(user["id"], request.form.get("feeds_json", "")):
             flash("Erreur lors de l'enregistrement des flux RSS.")
             return redirect(url_for("index"))
@@ -196,10 +208,21 @@ def create_app() -> Flask:
                 else:
                     flash("Erreur lors de l'enregistrement des flux RSS.")
             elif action == "save_interests":
-                database.set_user_file(
-                    user["id"], "readers_interests.md", request.form.get("interests", "")
+                database.set_reader_interest_field(
+                    user["id"], request.form.get("interests", "")
                 )
+                _start_interest_translation(user["id"], username)
                 flash("Préférences de lecture enregistrées.")
+            elif action == "save_telegram":
+                enabled = request.form.get("telegram_enabled") == "1"
+                database.set_telegram_enabled(user["id"], enabled)
+                if enabled:
+                    database.set_telegram_config(
+                        user["id"],
+                        request.form.get("telegram_token", ""),
+                        request.form.get("telegram_chat_id", ""),
+                    )
+                flash("Paramètres Telegram enregistrés.")
             elif action == "save_credentials":
                 flash(_save_credentials(user, session, request.form))
             elif action == "save_editorial_minutes":
@@ -229,7 +252,8 @@ def create_app() -> Flask:
             return redirect(url_for("settings"))
 
         publications = _load_feeds(user["id"])
-        interests = database.get_user_file(user["id"], "readers_interests.md") or ""
+        interests = database.ensure_reader_interest_field(user["id"])
+        tele = database.get_telegram_config(user["id"])
         editorial_minutes = database.get_editorial_minutes(user["id"])
         excluded_domains = "\n".join(database.get_excluded_domains(user["id"]))
         filter_mode = database.get_filter_mode(user["id"])
@@ -250,6 +274,9 @@ def create_app() -> Flask:
             excluded_domains=excluded_domains,
             filter_mode=filter_mode,
             runs=runs,
+            telegram_enabled=tele["enabled"],
+            telegram_token=str(tele["token"]),
+            telegram_chat_id=str(tele["chat_id"]),
         )
 
     @app.route("/admin")
@@ -446,6 +473,30 @@ def _start_onboarding_pipeline(username: str) -> None:
     threading.Thread(target=work, name=f"onboarding-{username}", daemon=True).start()
 
 
+def _start_interest_translation(user_id: int, username: str) -> None:
+    """Rebuild readers_interests.md from the interest field in a background thread."""
+    def work() -> None:
+        try:
+            field = database.get_reader_interest_field(user_id) or ""
+            if field.strip():
+                database.set_user_file(
+                    user_id, "readers_interests.md", build_readers_interests(field)
+                )
+        except Exception:
+            logger.exception("Interest translation failed for '%s'", username)
+        finally:
+            with _TRANSLATION_LOCK:
+                _TRANSLATING.discard(username)
+
+    with _TRANSLATION_LOCK:
+        if username in _TRANSLATING:
+            return
+        _TRANSLATING.add(username)
+    threading.Thread(
+        target=work, name=f"interest-translation-{username}", daemon=True
+    ).start()
+
+
 def _onboarding_page(user) -> str:
     """Home page for a user who has no issue yet (onboarding or in-progress)."""
     username = user["username"]
@@ -457,7 +508,7 @@ def _onboarding_page(user) -> str:
         is_admin=database.user_is_admin(user),
         publications=_load_feeds(user["id"]),
         interests=(
-            database.get_user_file(user["id"], "readers_interests.md")
+            database.ensure_reader_interest_field(user["id"])
             or _default_user_file("readers_interests.md")
             or ""
         ),

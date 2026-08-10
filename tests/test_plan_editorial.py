@@ -27,7 +27,7 @@ def test_build_plan_edito_prompt_replaces_placeholders(tmp_path, monkeypatch):
     )
     interests = _write(
         tmp_path / "interests.md",
-        "En-tête avant séparateur\n-----\nJe veux lire le journal.",
+        "Je veux lire le journal.\n-----\nEn-tête avant séparateur",
     )
     entries = [
         {
@@ -71,7 +71,7 @@ def test_build_edito_from_plan_prompt_replaces_placeholders(tmp_path: Path):
     )
     interests = _write(
         tmp_path / "interests.md",
-        "En-tête\n-----\nTonalité analytique.",
+        "Tonalité analytique.\n-----\nEn-tête",
     )
     prompt = prepare_entries.build_edito_from_plan_prompt(
         "Regions:\n  - France: []",
@@ -95,7 +95,7 @@ def test_build_edito_from_plan_prompt_defaults_word_range(tmp_path, monkeypatch)
         tmp_path / "edito_from_plan.md",
         "{ synthesis_yaml } | { word_min }-{ word_max }",
     )
-    interests = _write(tmp_path / "interests.md", "-----\nprefs")
+    interests = _write(tmp_path / "interests.md", "prefs\n-----")
     prompt = prepare_entries.build_edito_from_plan_prompt(
         "s", edito_from_plan_path=template, interests_path=interests
     )
@@ -115,7 +115,7 @@ def test_generate_editorial_from_plan_resolves_links(tmp_path: Path, monkeypatch
         edito_from_plan_path=_write(
             tmp_path / "edito_from_plan.md", "{ synthesis_yaml }"
         ),
-        interests_path=_write(tmp_path / "interests.md", "-----\nprefs"),
+        interests_path=_write(tmp_path / "interests.md", "prefs\n-----"),
     )
     assert editorial == "Selon [Le Monde](https://lemonde.fr/a)."
 
@@ -134,7 +134,7 @@ def test_plan_and_export_writes_file(tmp_path: Path, monkeypatch):
     result = prepare_entries.plan_and_export(
         entries_path=parsed,
         output_path=out,
-        interests_path=_write(tmp_path / "interests.md", "-----\nprefs"),
+        interests_path=_write(tmp_path / "interests.md", "prefs\n-----"),
     )
     assert result == "Regions:\n  - France: []"
     assert out.read_text(encoding="utf-8") == "Regions:\n  - France: []"
@@ -214,7 +214,7 @@ def test_plan_and_export_empty_entries_raises(tmp_path: Path, monkeypatch):
         prepare_entries.plan_and_export(
             entries_path=parsed,
             output_path=tmp_path / "news_summary.yml",
-            interests_path=_write(tmp_path / "interests.md", "-----\nprefs"),
+            interests_path=_write(tmp_path / "interests.md", "prefs\n-----"),
         )
     except ValueError as exc:
         assert "no articles to summarize" in str(exc)

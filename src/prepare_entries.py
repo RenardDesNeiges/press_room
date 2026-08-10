@@ -146,7 +146,7 @@ def build_edito_prompt(
 
     return (
         prompt_template.replace("{ rss_feed_yaml }", rss_feed_yaml)
-        .replace("{ user_preferences.md }", user_preferences.split('-----')[1])
+        .replace("{ user_preferences.md }", user_preferences.split('-----')[0])
         .replace("{ word_min }", str(word_min))
         .replace("{ word_max }", str(word_max))
     )
@@ -188,7 +188,8 @@ def extract_editorial_title(
 
 
 def _load_interests_preferences(interests_path: Path) -> str:
-    """Read the interests file and return the part after the ``-----`` separator.
+    """Read the interests file and return the first section (Français, since the
+    interests file is French-first).
 
     Falls back to the whole file content if the separator is missing, to keep
     prompt building robust to partial user files.
@@ -196,7 +197,7 @@ def _load_interests_preferences(interests_path: Path) -> str:
     with open(interests_path, "r", encoding="utf-8") as fh:
         user_preferences = fh.read()
     parts = user_preferences.split("-----")
-    return parts[1] if len(parts) > 1 else user_preferences
+    return parts[0] if len(parts) > 1 else user_preferences
 
 
 def build_plan_edito_prompt(
