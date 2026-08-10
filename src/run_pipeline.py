@@ -170,7 +170,7 @@ def _notify_telegram(user_id, issue_id, day) -> None:
             except:
                 media = None
         if blob:
-            caption = f"_{title}_\n\nL'édition _Pressroom_ du {day_fr} est prête\.\n\n_{edito[:1000].replace('.','\.')}_\.\.\."
+            caption = f"_{title}_\n\nL'édition _Pressroom_ du {day_fr} est prête\.\n\n_{edito[:1000].replace('.','\.').replace('-','\-')}_\.\.\."
             tg.send_audio(cfg["token"], cfg["chat_id"], blob, 
                             filename="editorial.mp3",
                             caption=caption,
