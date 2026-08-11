@@ -110,3 +110,24 @@ def test_build_candidate_prompt_block_short_summary_untouched():
         max_summary_length=20,
     )
     assert "Summary: short" in block
+
+
+def test_rerank_with_llm_dedups_duplicate_eids(monkeypatch):
+    entries = [
+        {"EID": "titou_20260808_1430_0001", "title": "A"},
+        {"EID": "titou_20260808_1430_0002", "title": "B"},
+        {"EID": "titou_20260808_1430_0003", "title": "C"},
+    ]
+    canned = (
+        '[{"EID": "titou_20260808_1430_0003", "reason": "r", "theme": "t", "country": "c"}, '
+        '{"EID": "titou_20260808_1430_0001", "reason": "r", "theme": "t", "country": "c"}, '
+        '{"EID": "titou_20260808_1430_0003", "reason": "r", "theme": "t", "country": "c"}]'
+    )
+    monkeypatch.setattr(rerank_llm, "query_model", lambda *a, **k: canned)
+    selected = rerank_llm.rerank_with_llm(entries, final_count=3)
+    eids = [e["EID"] for e in selected]
+    assert eids == [
+        "titou_20260808_1430_0003",
+        "titou_20260808_1430_0001",
+    ]
+    assert len(eids) == len(set(eids))

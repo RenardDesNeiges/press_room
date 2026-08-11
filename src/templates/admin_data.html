@@ -60,6 +60,7 @@
           {% if pipeline_version >= 1 %}
           <span class="pipeline-version-tag">v{{ pipeline_version }}</span>
           {% endif %}
+          {% if run_incomplete %}<span class="pipeline-version-tag is-failed">édition incomplète</span>{% endif %}
         </h2>
         {% if day %}
         <div class="flow-scroll">

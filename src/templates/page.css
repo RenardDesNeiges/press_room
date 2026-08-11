@@ -1551,6 +1551,12 @@ footer {
   vertical-align: middle;
 }
 
+.pipeline-version-tag.is-failed {
+  border-color: #b00020;
+  background-color: #fde7ec;
+  color: #b00020;
+}
+
 /* === JSON tree viewer (news_summary) === */
 .tree-toolbar {
   display: flex;

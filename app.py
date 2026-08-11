@@ -342,6 +342,7 @@ def create_app() -> Flask:
         available_stages = _available_stages(selected_user, selected_issue)
 
         pipeline_version = _pipeline_version_of(selected_issue)
+        run_incomplete = _run_is_incomplete(selected_issue)
         pipeline = layout_pipeline_graph(pipeline_version)
 
         stage = request.args.get("stage")
@@ -380,6 +381,7 @@ def create_app() -> Flask:
             issues=issues,
             day=selected_issue["day"] if selected_issue else None,
             run_at=run_at,
+            run_incomplete=run_incomplete,
             pipeline_version=pipeline_version,
             pipeline=pipeline,
             available=available_stages,
@@ -795,6 +797,26 @@ def _pipeline_version_of(issue) -> int:
         return int(issue["pipeline_version"] or 0)
     except (KeyError, IndexError, TypeError, ValueError):
         return 0
+
+
+def _run_is_incomplete(issue) -> bool:
+    """True when a current-engine issue was never stamped pipeline v1.
+
+    Current-engine runs write an aware ISO-8601 ``run_at`` (contains the "T"
+    separator); legacy v0 issues store a naive SQLite timestamp without it. An
+    issue that is still version 0 but has an aware run_at was an interrupted
+    run, not a genuine v0 pipeline.
+    """
+    if issue is None:
+        return False
+    version = _pipeline_version_of(issue)
+    if version >= 1:
+        return False
+    try:
+        run_at = issue["run_at"] or ""
+    except (KeyError, IndexError, TypeError):
+        run_at = ""
+    return "T" in run_at
 
 
 def _pipeline_stage_content(selected_user, selected_issue, stage: str):

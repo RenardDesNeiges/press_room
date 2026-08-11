@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS issues (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     day TEXT NOT NULL,
     pipeline_version INTEGER NOT NULL DEFAULT 0,
+    run_status TEXT,
     run_at TEXT NOT NULL DEFAULT (datetime('now')),
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE(user_id, day)
@@ -116,6 +117,8 @@ def init_db(db_path: Path = DEFAULT_DB_PATH) -> None:
                 "ALTER TABLE issues ADD COLUMN pipeline_version "
                 "INTEGER NOT NULL DEFAULT 0"
             )
+        if "run_status" not in issue_cols:
+            conn.execute("ALTER TABLE issues ADD COLUMN run_status TEXT")
         user_cols = {
             row["name"] for row in conn.execute("PRAGMA table_info(users)").fetchall()
         }
@@ -665,6 +668,29 @@ PREPARED_COLUMNS = (
 _QUERY_FIELDS = ("title", "source", "section", "theme", "country", "lang")
 
 
+def dedupe_entries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Drop non-dict entries and entries without an EID; collapse duplicate EIDs.
+
+    The prepared_entries table keys rows by ``(issue_id, eid)`` with a UNIQUE
+    constraint, so two articles sharing an EID would raise IntegrityError. First
+    occurrence wins and order is preserved.
+    """
+    seen: set[str] = set()
+    result: list[dict[str, Any]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        eid = entry.get("EID")
+        if eid is None or str(eid).strip() == "":
+            continue
+        key = str(eid)
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(entry)
+    return result
+
+
 def _row_to_entry(row: sqlite3.Row) -> dict[str, Any]:
     """Rebuild an entry dict from a prepared_entries row.
 
@@ -703,6 +729,7 @@ def set_prepared_entries(
     is keyed by ``(issue_id, eid)`` so a re-run overwrites in place. Returns the
     number of rows written.
     """
+    entries = dedupe_entries(entries)
     with connect(db_path) as conn:
         conn.execute("DELETE FROM prepared_entries WHERE issue_id = ?", (issue_id,))
         for position, entry in enumerate(entries):
@@ -736,6 +763,103 @@ def set_prepared_entries(
                 ),
             )
     return len(entries)
+
+
+def persist_issue_run(
+    user_id: int,
+    day: str,
+    artifacts: dict[str, bytes | None],
+    prepared_entries_data: list[dict[str, Any]],
+    source_files: dict[str, str],
+    version: int = 1,
+    db_path: Path = DEFAULT_DB_PATH,
+) -> int:
+    """Atomically persist a full pipeline run for (user, day).
+
+    Creates (or reuses) the issue row, writes every artifact blob, the relational
+    prepared entries, the archived source files, and stamps ``pipeline_version``
+    + ``run_status`` all inside a SINGLE transaction. On any exception the whole
+    transaction rolls back (sqlite3 ``with connect()`` rolls back on raise), so a
+    failed run can never leave a partial, version-0 issue behind.
+    """
+    entries = dedupe_entries(prepared_entries_data)
+    run_at = datetime.now(timezone.utc).isoformat()
+    with connect(db_path) as conn:
+        row = conn.execute(
+            "SELECT id FROM issues WHERE user_id = ? AND day = ?", (user_id, day)
+        ).fetchone()
+        if row:
+            issue_id = int(row["id"])
+            conn.execute(
+                "UPDATE issues SET run_at = ?, run_status = ? WHERE id = ?",
+                (run_at, "running", issue_id),
+            )
+            conn.execute("DELETE FROM prepared_entries WHERE issue_id = ?", (issue_id,))
+        else:
+            cursor = conn.execute(
+                "INSERT INTO issues (user_id, day, run_at, run_status) VALUES (?, ?, ?, ?)",
+                (user_id, day, run_at, "running"),
+            )
+            issue_id = int(cursor.lastrowid)
+
+        for stage, content in artifacts.items():
+            if content is None:
+                continue
+            conn.execute(
+                "INSERT INTO issue_artifacts (issue_id, stage, content) "
+                "VALUES (?, ?, ?) "
+                "ON CONFLICT(issue_id, stage) DO UPDATE SET content = excluded.content, "
+                "created_at = datetime('now')",
+                (issue_id, stage, content),
+            )
+
+        for name, content in source_files.items():
+            if not content:
+                continue
+            conn.execute(
+                "INSERT INTO issue_artifacts (issue_id, stage, content) "
+                "VALUES (?, ?, ?) "
+                "ON CONFLICT(issue_id, stage) DO UPDATE SET content = excluded.content, "
+                "created_at = datetime('now')",
+                (issue_id, name, content.encode("utf-8")),
+            )
+
+        for position, entry in enumerate(entries):
+            eid = entry.get("EID")
+            data_text = yaml.safe_dump(
+                dict(entry), allow_unicode=True, sort_keys=False, default_flow_style=False
+            )
+            conn.execute(
+                "INSERT INTO prepared_entries "
+                "(issue_id, eid, data, title, summary, media, url, date, lang, "
+                "author, source, similarity_score, rerank_reason, theme, country, "
+                "section, position) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    issue_id,
+                    str(eid),
+                    data_text,
+                    entry.get("title"),
+                    entry.get("summary"),
+                    entry.get("media"),
+                    entry.get("url"),
+                    entry.get("date"),
+                    entry.get("lang"),
+                    entry.get("author"),
+                    entry.get("source"),
+                    entry.get("similarity_score"),
+                    entry.get("rerank_reason"),
+                    entry.get("theme"),
+                    entry.get("country"),
+                    entry.get("section"),
+                    position,
+                ),
+            )
+
+        conn.execute(
+            "UPDATE issues SET pipeline_version = ?, run_status = 'ok' WHERE id = ?",
+            (int(version), issue_id),
+        )
+    return issue_id
 
 
 def get_prepared_entries(

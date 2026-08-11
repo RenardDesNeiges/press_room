@@ -211,6 +211,18 @@ def rerank_with_llm(
 
     eids = parse_eids_from_response(response_text)
 
+    # Guard: the LLM may echo a candidate EID twice; select each EID once or the
+    # (issue_id, eid) UNIQUE key in prepared_entries will be violated downstream.
+    seen_eids: set[str] = set()
+    unique_eids = []
+    for eid in eids:
+        key = str(eid)
+        if key in seen_eids:
+            continue
+        seen_eids.add(key)
+        unique_eids.append(eid)
+    eids = unique_eids
+
     # Build a lookup by EID.
     entry_by_eid = {entry.get("EID"): entry for entry in entries}
 

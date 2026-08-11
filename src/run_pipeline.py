@@ -111,25 +111,32 @@ def run_for_user(username: str, day: str | None = None) -> dict[str, Any]:
             parsed_entries_path=editorial_path, output_path=mp3_path
         )
 
-        issue_id = database.get_or_create_issue(user_id, day)
-        database.set_artifact(issue_id, "filtered_entries", filtered_path.read_bytes())
-        database.set_artifact(issue_id, "parsed_entries", parsed_path.read_bytes())
-        database.set_artifact(issue_id, "prepared_entries", prepared_path.read_bytes())
-        database.set_artifact(issue_id, "news_summary", news_summary_path.read_bytes())
-        database.set_artifact(issue_id, "editorial", editorial_path.read_bytes())
+        artifacts = {
+            "filtered_entries": filtered_path.read_bytes(),
+            "parsed_entries": parsed_path.read_bytes(),
+            "prepared_entries": prepared_path.read_bytes(),
+            "news_summary": news_summary_path.read_bytes(),
+            "editorial": editorial_path.read_bytes(),
+        }
         if mp3_path.exists():
-            database.set_artifact(issue_id, "editorial_mp3", mp3_path.read_bytes())
+            artifacts["editorial_mp3"] = mp3_path.read_bytes()
 
         prepared_data = yaml.safe_load(prepared_path.read_bytes()) or {}
         seeded_entries = prepared_data.get("entries") or []
-        if seeded_entries:
-            database.set_prepared_entries(issue_id, seeded_entries)
 
+        source_files = {}
         for name in database.SOURCE_FILES:
             content = database.get_user_file(user_id, name)
             if content:
-                database.set_artifact(issue_id, name, content.encode("utf-8"))
-        database.set_pipeline_version(issue_id, 1)
+                source_files[name] = content
+
+        issue_id = database.persist_issue_run(
+            user_id,
+            day,
+            artifacts=artifacts,
+            prepared_entries_data=seeded_entries,
+            source_files=source_files,
+        )
         _notify_telegram(user_id, issue_id, day)
 
     print(f"\nStored all artifacts for '{username}' / {day} in the database.")
