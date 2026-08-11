@@ -41,6 +41,7 @@ from src.config import (
     setup_secret_key,
 )
 from src import db as database
+from src.app_log import setup_file_logging
 from src.scheduler import start_daily
 from src.run_pipeline import run_for_user
 from src.translate import build_readers_interests
@@ -62,6 +63,7 @@ _TRANSLATION_LOCK = threading.Lock()
 
 
 def create_app() -> Flask:
+    setup_file_logging()
     app = Flask(__name__, template_folder=str(DEFAULT_TEMPLATE_DIR))
     app.secret_key = setup_secret_key()
 

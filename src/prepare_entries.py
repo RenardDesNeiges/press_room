@@ -18,6 +18,7 @@ The result is written to data/prepared_entries.yml with each entry carrying a
 from __future__ import annotations
 
 import json
+import logging
 import re
 from pathlib import Path
 from typing import Any
@@ -39,6 +40,9 @@ from src.config import (
     FANCY_MODEL,
 )
 from src.rerank_llm import extract_json_list, query_model
+
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_EDITO_PATH = DATA_DIR / "edito.md"
@@ -224,19 +228,71 @@ def build_plan_edito_prompt(
     )
 
 
+def strip_yaml_code_fence(text: str) -> str:
+    """Return ``text`` with a surrounding markdown YAML code fence removed, if present."""
+    if not text or not text.strip():
+        return text
+    fence_re = re.compile(r"^\s*(`{3,}|~{3,})\s*(?:yaml|yml)?\s*$")
+    lines = text.split("\n")
+    start = 0
+    while start < len(lines) and not lines[start].strip():
+        start += 1
+    end = len(lines)
+    while end > start and not lines[end - 1].strip():
+        end -= 1
+    if end - start < 2:
+        return text
+    opener = fence_re.match(lines[start].rstrip())
+    closer = fence_re.match(lines[end - 1].rstrip())
+    if not (opener and closer and opener.group(1) == closer.group(1)):
+        return text
+    return "\n".join(lines[start + 1:end - 1])
+
+
+def is_valid_yaml(text: str) -> bool:
+    """Return True iff ``text`` parses as valid YAML (and is non-empty)."""
+    if not text or not text.strip():
+        return False
+    try:
+        yaml.safe_load(text)
+    except yaml.YAMLError:
+        return False
+    return True
+
+
 def generate_news_summary(
     entries: list[dict[str, Any]],
     plan_edito_path: Path = DEFAULT_PLAN_EDITO_PATH,
     interests_path: Path = DEFAULT_INTERESTS_PATH,
     model_name: str = FANCY_MODEL,
+    max_attempts: int = 2,
 ) -> str:
-    """Generate a structured news summary (news_summary.yml content) from entries."""
+    """Generate a structured news summary (news_summary.yml content) from entries.
+
+    The LLM output must be valid YAML; invalid generations are retried (at most
+    ``max_attempts`` runs total) and finally raise ``ValueError``.
+    """
     if not entries:
         raise ValueError("news_summary generation requires at least one article")
     prompt = build_plan_edito_prompt(entries, plan_edito_path, interests_path)
-    print(f"Generating news summary with {model_name}...")
-    text = query_model(prompt, model_name=model_name, temperature=0.7)
-    return text.strip()
+    last_bad = ""
+    for attempt in range(1, max_attempts + 1):
+        print(f"Generating news summary with {model_name}... (attempt {attempt}/{max_attempts})")
+        candidate = query_model(prompt, model_name=model_name, temperature=0.7)
+        candidate = strip_yaml_code_fence(candidate).strip()
+        if is_valid_yaml(candidate):
+            return candidate
+        last_bad = candidate
+        print(
+            f"WARNING: news summary is not valid YAML (attempt {attempt}/{max_attempts}); retrying..."
+        )
+    msg = (
+        f"news_summary generation failed to produce valid YAML after {max_attempts} attempts.\n"
+        f"Last invalid output:\n{last_bad}"
+    )
+    logger.error(msg)
+    print(msg)
+    raise ValueError(msg)
 
 
 def build_edito_from_plan_prompt(

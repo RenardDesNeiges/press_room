@@ -12,5 +12,6 @@ data/*.db
 data/*.db.bak
 instance/
 config.yml
+pressroom.log
 AGENTS.md
 *.sh

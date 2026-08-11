@@ -24,25 +24,6 @@ Ces éléments dictent la sélection des topics, le regroupement des faits, l'at
 
 ## Phase 2 : Structuration
 
-Organise la sortie en markdown selon cette hiérarchie stricte :
-
-```yaml
-Regions:
-  - <Nom de la région ou du pays>:
-      Topics:
-        - "<Intitulé du sujet>":
-            Facts:
-              - "<Énoncé du fait, concis et factuel>":
-                  Sources: [<EID1>, <EID2>]
-            Views:
-              - "<Angle éditorial, cadre narratif ou biais identifié dans le traitement médiatique>":
-                  Sources: [<EID3>]
-            Importance: <0 | 1 | 2>
-            Note: "<Justification de l'inclusion, contexte manquant, détail critique, ou articulation avec le fil conducteur de la journée>"
-```
-
-**Note**: un EID bien structure respecte toujours le format <user>_<YYYYMMDD>_<HHMM>_<seq>, par exemple: `demouser_20260410_0400_0097`, ou `philippos_20270301_1810_0032` etc. Copie toujours l'EID en entier, pas seulement partiellement.
-
 ### Règles de regroupement par région
 
 - Un article peut alimenter **plusieurs régions** s'il traite de relations internationales (ex. : un article sur les sanctions suisses contre la Russie alimente à la fois « Suisse » et « Russie / Europe de l'Est »).
@@ -114,13 +95,34 @@ La note fait 1 à 3 phrases maximum. Elle sert à :
 
 ---
 
-## Phase 3 : Vérification avant sortie
+## Phase 3 : Formattage et vérification avant sortie
 
-Avant de rendre le markdown, vérifie :
+
+Organise la sortie en YAML selon cette hiérarchie stricte :
+
+```yaml
+Regions:
+  - <Nom de la région ou du pays>:
+      Topics:
+        - "<Intitulé du sujet>":
+            Facts:
+              - "<Énoncé du fait, concis et factuel>":
+                  Sources: [<EID1>, <EID2>]
+            Views:
+              - "<Angle éditorial, cadre narratif ou biais identifié dans le traitement médiatique>":
+                  Sources: [<EID3>]
+            Importance: <0 | 1 | 2>
+            Note: "<Justification de l'inclusion, contexte manquant, détail critique, ou articulation avec le fil conducteur de la journée>"
+```
+
+**Note**: un EID bien structure respecte toujours le format <user>_<YYYYMMDD>_<HHMM>_<seq>, par exemple: `demouser_20260410_0400_0097`, ou `philippos_20270301_1810_0032` etc. Copie toujours l'EID en entier, pas seulement partiellement.
+
+
+Avant de rendre le yaml, vérifie :
 
 1. **Exhaustivité** : Chaque article du flux YAML est-il référencé au moins une fois via son EID ? Si un article ne rentre dans aucun topic, crée un topic « Autres » dans la région appropriée.
 2. **Cohérence des sources** : Les EID cités dans `Sources` existent-ils bien dans le flux ? Aucun EID inventé.
-3. **Hiérarchie** : Le format markdown respecte-t-il exactement la structure `Regions > [Pays] > Topics > Facts / Views / Importance / Note` ?
+3. **Hiérarchie** : Le format yaml respecte-t-il exactement la structure `Regions > [Pays] > Topics > Facts / Views / Importance / Note` ?
 4. **Qualité des Views** : Chaque view est-elle une constatation sur le traitement médiatique (pas un jugement arbitraire) ? Y a-t-il au moins une view par topic `High` ?
 5. **Pas de narratif** : Aucune phrase de liaison, aucune introduction, aucune conclusion narrative en dehors des champs structurés.
 
@@ -128,7 +130,7 @@ Avant de rendre le markdown, vérifie :
 
 ## Contraintes absolues
 
-- **Format** : Markdown uniquement. Pas de JSON, pas de texte libre avant ou après le bloc structuré.
+- **Format** : YAML uniquement, pas de texte libre avant ou après le bloc structuré.
 - **Sources** : Uniquement les EID du champ `reference`. Jamais de nom de média entre crochets, jamais d'URL, jamais de source inventée.
 - **Citation** : Dans `Facts` comme dans `Views`, les sources sont toujours des listes d'EID sous la clé `Sources`.
 - **Régions obligatoires** : France et Suisse toujours présentes.

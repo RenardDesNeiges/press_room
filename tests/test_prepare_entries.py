@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from src import prepare_entries
 
 
@@ -170,3 +172,155 @@ def test_assign_sections_string_eids():
 
 def test_assign_sections_empty():
     assert prepare_entries.assign_sections([], []) == []
+
+
+# --- strip_yaml_code_fence ---------------------------------------------------
+
+def test_strip_yaml_code_fence_removes_fence():
+    assert prepare_entries.strip_yaml_code_fence(
+        "```yaml\nRegions:\n  - France: []\n```"
+    ) == "Regions:\n  - France: []"
+
+
+def test_strip_yaml_code_fence_no_fence_unchanged():
+    assert prepare_entries.strip_yaml_code_fence(
+        "Regions:\n  - France: []"
+    ) == "Regions:\n  - France: []"
+    assert prepare_entries.strip_yaml_code_fence(
+        "Du texte sans bloc de code."
+    ) == "Du texte sans bloc de code."
+
+
+def test_strip_yaml_code_fence_trailing_newline():
+    assert prepare_entries.strip_yaml_code_fence(
+        "```yaml\nRegions:\n  - France: []\n```\n"
+    ) == "Regions:\n  - France: []"
+
+
+def test_strip_yaml_code_fence_leading_and_trailing_blank_lines():
+    assert prepare_entries.strip_yaml_code_fence(
+        "\n```yaml\nRegions: []\n```\n\n"
+    ) == "Regions: []"
+
+
+def test_strip_yaml_code_fence_fence_without_lang():
+    assert prepare_entries.strip_yaml_code_fence("```\nRegions: []\n```") == "Regions: []"
+
+
+# --- is_valid_yaml -----------------------------------------------------------
+
+def test_is_valid_yaml_valid_mapping():
+    assert prepare_entries.is_valid_yaml("Regions:\n  - France:\n      Topics: []\n")
+
+
+def test_is_valid_yaml_rejects_prose():
+    assert not prepare_entries.is_valid_yaml(
+        "L'actualité du jour, en bref:\n  - un article important\n  et la suite sans indentation"
+    )
+
+
+def test_is_valid_yaml_rejects_empty_and_whitespace():
+    assert not prepare_entries.is_valid_yaml("")
+    assert not prepare_entries.is_valid_yaml("   \n\t ")
+
+
+def test_is_valid_yaml_rejects_invalid_mapping():
+    assert not prepare_entries.is_valid_yaml("a: b\n: c\n")
+
+
+# --- generate_news_summary ---------------------------------------------------
+
+def _write_prompt_files(tmp_path):
+    plan_edito_path = tmp_path / "plan_edito.md"
+    interests_path = tmp_path / "readers_interests.md"
+    plan_edito_path.write_text("{ rss_feed_yaml }\n{ user_preferences.md }", encoding="utf-8")
+    interests_path.write_text("Intérêts du lecteur", encoding="utf-8")
+    return plan_edito_path, interests_path
+
+
+def _news_summary_entries():
+    return [{"EID": 1, "title": "Titre", "url": "https://mediapart.fr/1", "summary": "Résumé"}]
+
+
+VALID_SUMMARY = "Regions:\n  - France:\n      Topics: []"
+INVALID_SUMMARY = "L'actualité du jour, en bref:\n  - un article important\n  et la suite sans indentation"
+
+
+def test_generate_news_summary_valid_first_try(tmp_path, monkeypatch):
+    plan_edito_path, interests_path = _write_prompt_files(tmp_path)
+    calls = []
+
+    def fake_query(prompt, **kwargs):
+        calls.append(kwargs)
+        return "\n" + VALID_SUMMARY + "\n"
+
+    monkeypatch.setattr(prepare_entries, "query_model", fake_query)
+    out = prepare_entries.generate_news_summary(
+        _news_summary_entries(),
+        plan_edito_path=plan_edito_path,
+        interests_path=interests_path,
+    )
+    assert out == VALID_SUMMARY
+    assert len(calls) == 1
+
+
+def test_generate_news_summary_accepts_fenced_yaml(tmp_path, monkeypatch):
+    plan_edito_path, interests_path = _write_prompt_files(tmp_path)
+    calls = []
+
+    def fake_query(prompt, **kwargs):
+        calls.append(kwargs)
+        return "```yaml\nRegions: []\n```"
+
+    monkeypatch.setattr(prepare_entries, "query_model", fake_query)
+    out = prepare_entries.generate_news_summary(
+        _news_summary_entries(),
+        plan_edito_path=plan_edito_path,
+        interests_path=interests_path,
+        model_name="m",
+    )
+    assert out == "Regions: []"
+    assert len(calls) == 1
+    assert prepare_entries.is_valid_yaml(out) is True
+
+
+def test_generate_news_summary_retries_after_invalid(tmp_path, monkeypatch):
+    plan_edito_path, interests_path = _write_prompt_files(tmp_path)
+    calls = {"count": 0}
+
+    def fake_query(prompt, **kwargs):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            return INVALID_SUMMARY
+        return VALID_SUMMARY
+
+    monkeypatch.setattr(prepare_entries, "query_model", fake_query)
+    out = prepare_entries.generate_news_summary(
+        _news_summary_entries(),
+        plan_edito_path=plan_edito_path,
+        interests_path=interests_path,
+    )
+    assert out == VALID_SUMMARY
+    assert calls["count"] == 2
+
+
+def test_generate_news_summary_raises_when_all_invalid(tmp_path, monkeypatch):
+    plan_edito_path, interests_path = _write_prompt_files(tmp_path)
+    calls = {"count": 0}
+    bad_output = "bogus: [invalid\n\tnot: yaml"
+
+    def fake_query(prompt, **kwargs):
+        calls["count"] += 1
+        return bad_output
+
+    monkeypatch.setattr(prepare_entries, "query_model", fake_query)
+    with pytest.raises(ValueError) as excinfo:
+        prepare_entries.generate_news_summary(
+            _news_summary_entries(),
+            plan_edito_path=plan_edito_path,
+            interests_path=interests_path,
+        )
+    assert calls["count"] == 2
+    assert "failed to produce valid YAML" in str(excinfo.value)
+    assert "bogus: [invalid" in str(excinfo.value)
+    assert "\tnot: yaml" in str(excinfo.value)
