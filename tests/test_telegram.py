@@ -70,6 +70,43 @@ def test_send_text_raises_runtime_error_on_api_failure(monkeypatch):
     assert "Unauthorized" in str(excinfo.value)
 
 
+def test_escape_markdown_v2_escapes_reserved():
+    assert telegram.escape_markdown_v2("a-b_c.d!e[f]") == "a\\-b\\_c\\.d\\!e\\[f\\]"
+    assert telegram.escape_markdown_v2("Titre: 1+2=3") == "Titre: 1\\+2\\=3"
+
+
+def test_send_audio_bolds_title_and_escapes_caption(monkeypatch):
+    captured = {}
+
+    def fake_post(url, data=None, files=None, **kwargs):
+        captured["data"] = data
+        return _FakeResponse({"ok": True, "result": {}})
+
+    monkeypatch.setattr(telegram.requests, "post", fake_post)
+    telegram.send_audio(
+        "tok",
+        "456",
+        b"x",
+        caption="L'édition 1-2 est prête.",
+        title="Premier Titre",
+    )
+    assert captured["data"]["caption"] == "*Premier Titre*\n\nL'édition 1\\-2 est prête\\."
+    assert captured["data"]["parse_mode"] == "MarkdownV2"
+
+
+def test_send_audio_no_parse_mode_without_caption_or_title(monkeypatch):
+    captured = {}
+
+    def fake_post(url, data=None, files=None, **kwargs):
+        captured["data"] = data
+        return _FakeResponse({"ok": True, "result": {}})
+
+    monkeypatch.setattr(telegram.requests, "post", fake_post)
+    telegram.send_audio("tok", "456", b"x")
+    assert "parse_mode" not in captured["data"]
+    assert "caption" not in captured["data"]
+
+
 def test_send_audio_posts_with_files(monkeypatch):
     captured = {}
     audio_bytes = b"\x00\xffmp3data"

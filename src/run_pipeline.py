@@ -191,18 +191,23 @@ def _notify_telegram(user_id, issue_id, day) -> None:
             except:
                 media = None
         if blob:
-            caption = f"_{title}_\n\nL'édition _Pressroom_ du {day_fr} est prête\.\n\n_{edito[:1000].replace('.','\.').replace('-','\-')}_\.\.\."
-            tg.send_audio(cfg["token"], cfg["chat_id"], blob, 
-                            filename="editorial.mp3",
-                            caption=caption,
-                            media = media,
-                            link={
-                                "text": "Lire l'édition complète",
-                                "url": "http://press-room.ch",
-                                }
-                          )
+            body = f"L'édition Pressroom du {day_fr} est prête.\n\n{edito[:1000]}…"
+            link_dict = {
+                "text": "Lire l'édition complète",
+                "url": "http://press-room.ch",
+            }
+            tg.send_audio(
+                cfg["token"],
+                cfg["chat_id"],
+                blob,
+                filename="editorial.mp3",
+                caption=body,
+                title=title,
+                media=media,
+                link=link_dict,
+            )
         else:
-            tg.send_text(cfg["token"], cfg["chat_id"], caption=caption)
+            tg.send_text(cfg["token"], cfg["chat_id"], f"L'édition Pressroom du {day_fr} est prête.")
     except Exception:
         logger.exception("Telegram notification failed for issue %s", issue_id)
 

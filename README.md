@@ -4,9 +4,6 @@
 
 A small, automated pipeline that turns a curated list of RSS feeds into a daily static newspaper page with a synthesized editorial, served as a multi-user Flask webapp backed by SQLite.
 
-## To-do
-1. debug how the system decides which pipeline to run for which user (there is currently a bug on the deployed server, philippe's pipeline was the wrong one today)
-2. Debug the yaml news_summary generation (titou's summary on the last run is not a yaml file but rather a simple markown). It's functionnal but prevents filering and other nice operations which I would want to implement. This is a matter of 1) changing the prompt. 2) implementing a check and re-run behaviour in the pipeline so it is robust. 
 
 ## To-be-added features
 

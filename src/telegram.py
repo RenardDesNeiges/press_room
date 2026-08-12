@@ -32,6 +32,14 @@ def _is_configured(token: str, chat_id: str) -> bool:
     return bool(token) and bool(chat_id) and token != DEFAULT_TOKEN
 
 
+_MARKDOWN_V2_RESERVED = set('_*[]()~`>#+-=|{}.!')
+
+
+def escape_markdown_v2(text: str) -> str:
+    """Escape every character Telegram's MarkdownV2 reserves (prefix each with '\\')."""
+    return "".join(f"\\{c}" if c in _MARKDOWN_V2_RESERVED else c for c in text)
+
+
 def _post(token: str, method: str, *, json: dict | None = None,
           data: dict | None = None, files: dict | None = None, timeout: int = 30) -> dict:
     """POST to a bot API method and return the JSON result, raising on failure."""
@@ -63,14 +71,23 @@ def send_audio(
     caption: str = "",
     link: dict | None = None,
     media: str | None = None,
+    title: str | None = None,
 ) -> dict | None:
-    """Send an audio file (raw bytes) with an optional caption. Returns the API
-    result dict, or None when the bot is not configured."""
+    """Send an audio file (raw bytes) with an optional caption. The caption and
+    title are plain text: every Telegram MarkdownV2 reserved character is escaped
+    with `escape_markdown_v2`, and the title (when given) is rendered in bold.
+    Returns the API result dict, or None when the bot is not configured."""
     if not _is_configured(token, chat_id):
         return None
-    data: dict = {"chat_id": chat_id, "parse_mode": "MarkdownV2"}
+    data: dict = {"chat_id": chat_id}
+    caption_parts: list[str] = []
+    if title:
+        caption_parts.append(f"*{escape_markdown_v2(title)}*")
     if caption:
-        data["caption"] = caption
+        caption_parts.append(escape_markdown_v2(caption))
+    if caption_parts:
+        data["parse_mode"] = "MarkdownV2"
+        data["caption"] = "\n\n".join(caption_parts)
 
     if link:
         # Build the keyboard dict, then serialize it to a JSON string
