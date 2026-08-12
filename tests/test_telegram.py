@@ -75,6 +75,18 @@ def test_escape_markdown_v2_escapes_reserved():
     assert telegram.escape_markdown_v2("Titre: 1+2=3") == "Titre: 1\\+2\\=3"
 
 
+def test_escape_markdown_v2_preserves_links():
+    s = "Contexte [selon la NZZ](https://nzz.ch/abc-def_1) point final."
+    out = telegram.escape_markdown_v2(s)
+    assert "[selon la NZZ](https://nzz.ch/abc-def_1)" in out
+    assert out == "Contexte [selon la NZZ](https://nzz.ch/abc-def_1) point final\\."
+
+
+def test_escape_markdown_v2_escapes_reserved_around_links():
+    s = "(avant) [lien](https://x.ch/a-b) (après)"
+    assert telegram.escape_markdown_v2(s) == "\\(avant\\) [lien](https://x.ch/a-b) \\(après\\)"
+
+
 def test_send_audio_bolds_title_and_escapes_caption(monkeypatch):
     captured = {}
 

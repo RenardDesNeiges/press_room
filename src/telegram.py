@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -33,11 +34,23 @@ def _is_configured(token: str, chat_id: str) -> bool:
 
 
 _MARKDOWN_V2_RESERVED = set('_*[]()~`>#+-=|{}.!')
+_MARKDOWN_LINK_RE = re.compile(r"\[[^\]]*\]\([^)]*\)")
 
 
 def escape_markdown_v2(text: str) -> str:
-    """Escape every character Telegram's MarkdownV2 reserves (prefix each with '\\')."""
-    return "".join(f"\\{c}" if c in _MARKDOWN_V2_RESERVED else c for c in text)
+    """Escape Telegram MarkdownV2 reserved chars outside of markdown links (links pass through untouched)."""
+    if not text:
+        return text
+    parts = _MARKDOWN_LINK_RE.split(text)
+    links = _MARKDOWN_LINK_RE.findall(text)
+    out: list[str] = []
+    for i, part in enumerate(parts):
+        out.append(
+            "".join(f"\\{c}" if c in _MARKDOWN_V2_RESERVED else c for c in part)
+        )
+        if i < len(links):
+            out.append(links[i])
+    return "".join(out)
 
 
 def _post(token: str, method: str, *, json: dict | None = None,
