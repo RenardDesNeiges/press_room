@@ -134,3 +134,5 @@ Avant de rendre le yaml, vérifie :
 - **Sources** : Uniquement les EID du champ `reference`. Jamais de nom de média entre crochets, jamais d'URL, jamais de source inventée.
 - **Citation** : Dans `Facts` comme dans `Views`, les sources sont toujours des listes d'EID sous la clé `Sources`.
 - **Régions obligatoires** : France et Suisse toujours présentes.
+
+APRES CE MESSAGE NE RENDS RIEN D'AUTRE QUE LE YAML CORRECTEMENT STRUCTURE
