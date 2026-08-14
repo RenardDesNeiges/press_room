@@ -265,7 +265,7 @@ def generate_news_summary(
     plan_edito_path: Path = DEFAULT_PLAN_EDITO_PATH,
     interests_path: Path = DEFAULT_INTERESTS_PATH,
     model_name: str = FANCY_MODEL,
-    max_attempts: int = 2,
+    max_attempts: int = 4,
 ) -> str:
     """Generate a structured news summary (news_summary.yml content) from entries.
 
