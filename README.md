@@ -9,6 +9,8 @@ A small, automated pipeline that turns a curated list of RSS feeds into a daily 
 
 |  Feature  | Category  |
 |  ---  | ---  |
+|  Add a per-source option which decides how to (and if to) bypass paywalls  | base `edition` experience polish |
+|  Redesign the settings page so it looks more cute (two columns)  | base `edition` experience polish |
 | Persistence in the writing of briefings, using multiple, lagged news_summary objects.  |  **Improve** the base `edition` experience |
 | Add calendar persistent variable, which feeds into a calendar widget. The idea being that this displays upcoming (political) events. |  **Improve** the base `edition` experience |
 | Add a map widget, showing geographical coverage (puts the articles on a map). |  **Improve** the base `edition` experience |

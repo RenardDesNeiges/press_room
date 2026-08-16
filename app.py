@@ -862,11 +862,37 @@ def _strip_code_fences(text: str | None) -> str:
     return "\n".join(lines)
 
 
-def _news_summary_tree(content: str | None) -> dict | list | None:
-    """Parse stored news_summary text (possibly markdown-fenced) into a JSON-safe structure.
+def _is_news_summary_shape(data) -> bool:
+    """Return True iff ``data`` matches the plan_edito news_summary schema.
 
-    Returns a dict/list for the tree view, or None if the content is empty or
-    not object/array YAML (so the caller falls back to the raw <pre> display).
+    Required shape: a top-level dict with a "Regions" list, where every item is
+    a single-key dict (the region name) whose value is a dict containing a
+    "Topics" list (possibly empty).
+    """
+    if not isinstance(data, dict) or "Regions" not in data:
+        return False
+    regions = data["Regions"]
+    if not isinstance(regions, list):
+        return False
+    for region in regions:
+        if not isinstance(region, dict) or len(region) != 1:
+            return False
+        region_body = next(iter(region.values()))
+        if not isinstance(region_body, dict) or list(region_body.keys()) != ["Topics"]:
+            return False
+        if not isinstance(region_body["Topics"], list):
+            return False
+    return True
+
+
+def _news_summary_tree(content: str | None) -> dict | None:
+    """Parse stored news_summary text into a JSON-safe tree, or None.
+
+    Returns a dict for the tree view only when the content parses as YAML AND
+    matches the plan_edito schema (top-level dict with a "Regions" list of
+    single-key region dicts, each with a "Topics" list); otherwise, or when the
+    content is empty / invalid YAML, returns None so the caller falls back to
+    the raw <pre> display.
     """
     text = _strip_code_fences(content).strip()
     if not text:
@@ -875,7 +901,7 @@ def _news_summary_tree(content: str | None) -> dict | list | None:
         data = yaml.safe_load(text)
     except yaml.YAMLError:
         return None
-    if not isinstance(data, (dict, list)):
+    if not _is_news_summary_shape(data):
         return None
     # Normalize anything YAML turned into a non-JSON type (e.g. date) to strings.
     return json.loads(json.dumps(data, default=str))
