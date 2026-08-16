@@ -207,7 +207,8 @@ def rerank_with_llm(
         return []
 
     prompt = build_rerank_prompt(entries, final_count=final_count, interests_path=interests_path)
-    response_text = query_model(prompt, model_name=model_name, max_tokens=500000)
+    response_text = query_model(prompt, model_name=model_name, max_tokens=50000)
+    
 
     eids = parse_eids_from_response(response_text)
 

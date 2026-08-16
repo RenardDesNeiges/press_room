@@ -15,6 +15,7 @@ The JSON API result is printed to stdout; the process exits 0 on success.
 
 from __future__ import annotations
 
+import re
 import argparse
 import json
 import re
@@ -23,6 +24,10 @@ from pathlib import Path
 
 import requests
 
+def escape_markdown_v2(text: str) -> str:
+    """Escape all Telegram MarkdownV2 reserved characters."""
+    reserved = r'[_*\[\]()~`>#+\-=|{}.!\\]'
+    return re.sub(reserved, r'\\\1', text)
 
 DEFAULT_TOKEN = "none"
 API_BASE = "https://api.telegram.org/bot{token}"
@@ -95,12 +100,13 @@ def send_audio(
     data: dict = {"chat_id": chat_id}
     caption_parts: list[str] = []
     if title:
-        caption_parts.append(f"*{escape_markdown_v2(title)}*")
+        caption_parts.append(f"*{title}*")
     if caption:
-        caption_parts.append(escape_markdown_v2(caption))
+        caption_parts.append(caption)
     if caption_parts:
         data["parse_mode"] = "MarkdownV2"
-        data["caption"] = "\n\n".join(caption_parts)
+        data["caption"] = escape_markdown_v2("\n\n".join(caption_parts))
+        #print(data["caption"])
 
     if link:
         # Build the keyboard dict, then serialize it to a JSON string
