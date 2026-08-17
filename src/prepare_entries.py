@@ -267,32 +267,22 @@ def generate_news_summary(
     model_name: str = FANCY_MODEL,
     max_attempts: int = 4,
 ) -> str:
-    """Generate a structured news summary (news_summary.yml content) from entries.
+    """Generate a news summary (news_summary.yml content) from entries.
 
-    The LLM output must be valid YAML; invalid generations are retried (at most
-    ``max_attempts`` runs total) and finally raise ``ValueError``.
+    The LLM output is parsed once as YAML; if it is valid it is returned as-is,
+    otherwise the raw text is stored as plain text anyway (no retry, no error).
     """
     if not entries:
         raise ValueError("news_summary generation requires at least one article")
     prompt = build_plan_edito_prompt(entries, plan_edito_path, interests_path)
-    last_bad = ""
-    for attempt in range(1, max_attempts + 1):
-        print(f"Generating news summary with {model_name}... (attempt {attempt}/{max_attempts})")
-        candidate = query_model(prompt, model_name=model_name, temperature=0.7)
-        candidate = strip_yaml_code_fence(candidate).strip()
-        if is_valid_yaml(candidate):
-            return candidate
-        last_bad = candidate
-        print(
-            f"WARNING: news summary is not valid YAML (attempt {attempt}/{max_attempts}); retrying..."
-        )
-    msg = (
-        f"news_summary generation failed to produce valid YAML after {max_attempts} attempts.\n"
-        f"Last invalid output:\n{last_bad}"
-    )
-    logger.error(msg)
-    print(msg)
-    raise ValueError(msg)
+    print(f"Generating news summary with {model_name}...")
+    candidate = query_model(prompt, model_name=model_name, temperature=0.7)
+    candidate = strip_yaml_code_fence(candidate).strip()
+    if is_valid_yaml(candidate):
+        return candidate
+    print("WARNING: news summary is not valid YAML; storing it as plain text.")
+    logger.warning("news summary is not valid YAML; storing it as plain text.")
+    return candidate
 
 
 def build_edito_from_plan_prompt(

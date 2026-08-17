@@ -284,15 +284,13 @@ def test_generate_news_summary_accepts_fenced_yaml(tmp_path, monkeypatch):
     assert prepare_entries.is_valid_yaml(out) is True
 
 
-def test_generate_news_summary_retries_after_invalid(tmp_path, monkeypatch):
+def test_generate_news_summary_plain_text_when_invalid(tmp_path, monkeypatch):
     plan_edito_path, interests_path = _write_prompt_files(tmp_path)
     calls = {"count": 0}
 
     def fake_query(prompt, **kwargs):
         calls["count"] += 1
-        if calls["count"] == 1:
-            return INVALID_SUMMARY
-        return VALID_SUMMARY
+        return INVALID_SUMMARY
 
     monkeypatch.setattr(prepare_entries, "query_model", fake_query)
     out = prepare_entries.generate_news_summary(
@@ -300,27 +298,6 @@ def test_generate_news_summary_retries_after_invalid(tmp_path, monkeypatch):
         plan_edito_path=plan_edito_path,
         interests_path=interests_path,
     )
-    assert out == VALID_SUMMARY
-    assert calls["count"] == 2
-
-
-def test_generate_news_summary_raises_when_all_invalid(tmp_path, monkeypatch):
-    plan_edito_path, interests_path = _write_prompt_files(tmp_path)
-    calls = {"count": 0}
-    bad_output = "bogus: [invalid\n\tnot: yaml"
-
-    def fake_query(prompt, **kwargs):
-        calls["count"] += 1
-        return bad_output
-
-    monkeypatch.setattr(prepare_entries, "query_model", fake_query)
-    with pytest.raises(ValueError) as excinfo:
-        prepare_entries.generate_news_summary(
-            _news_summary_entries(),
-            plan_edito_path=plan_edito_path,
-            interests_path=interests_path,
-        )
-    assert calls["count"] == 2
-    assert "failed to produce valid YAML" in str(excinfo.value)
-    assert "bogus: [invalid" in str(excinfo.value)
-    assert "\tnot: yaml" in str(excinfo.value)
+    assert out == INVALID_SUMMARY
+    assert calls["count"] == 1
+    assert prepare_entries.is_valid_yaml(out) is False
